@@ -4,7 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct RefundDestinationDetails {
     pub affirm: Option<stripe_shared::DestinationDetailsUnimplemented>,
-    pub afterpay_clearpay: Option<stripe_shared::DestinationDetailsUnimplemented>,
+    pub afterpay_clearpay: Option<stripe_shared::RefundDestinationDetailsAfterpayClearpay>,
     pub alipay: Option<stripe_shared::DestinationDetailsUnimplemented>,
     pub alma: Option<stripe_shared::DestinationDetailsUnimplemented>,
     pub amazon_pay: Option<stripe_shared::DestinationDetailsUnimplemented>,
@@ -21,7 +21,7 @@ pub struct RefundDestinationDetails {
     pub giropay: Option<stripe_shared::DestinationDetailsUnimplemented>,
     pub grabpay: Option<stripe_shared::DestinationDetailsUnimplemented>,
     pub jp_bank_transfer: Option<stripe_shared::RefundDestinationDetailsJpBankTransfer>,
-    pub klarna: Option<stripe_shared::DestinationDetailsUnimplemented>,
+    pub klarna: Option<stripe_shared::RefundDestinationDetailsKlarna>,
     pub mb_way: Option<stripe_shared::RefundDestinationDetailsMbWay>,
     pub multibanco: Option<stripe_shared::RefundDestinationDetailsMultibanco>,
     pub mx_bank_transfer: Option<stripe_shared::RefundDestinationDetailsMxBankTransfer>,
@@ -54,7 +54,7 @@ impl std::fmt::Debug for RefundDestinationDetails {
 #[doc(hidden)]
 pub struct RefundDestinationDetailsBuilder {
     affirm: Option<Option<stripe_shared::DestinationDetailsUnimplemented>>,
-    afterpay_clearpay: Option<Option<stripe_shared::DestinationDetailsUnimplemented>>,
+    afterpay_clearpay: Option<Option<stripe_shared::RefundDestinationDetailsAfterpayClearpay>>,
     alipay: Option<Option<stripe_shared::DestinationDetailsUnimplemented>>,
     alma: Option<Option<stripe_shared::DestinationDetailsUnimplemented>>,
     amazon_pay: Option<Option<stripe_shared::DestinationDetailsUnimplemented>>,
@@ -71,7 +71,7 @@ pub struct RefundDestinationDetailsBuilder {
     giropay: Option<Option<stripe_shared::DestinationDetailsUnimplemented>>,
     grabpay: Option<Option<stripe_shared::DestinationDetailsUnimplemented>>,
     jp_bank_transfer: Option<Option<stripe_shared::RefundDestinationDetailsJpBankTransfer>>,
-    klarna: Option<Option<stripe_shared::DestinationDetailsUnimplemented>>,
+    klarna: Option<Option<stripe_shared::RefundDestinationDetailsKlarna>>,
     mb_way: Option<Option<stripe_shared::RefundDestinationDetailsMbWay>>,
     multibanco: Option<Option<stripe_shared::RefundDestinationDetailsMultibanco>>,
     mx_bank_transfer: Option<Option<stripe_shared::RefundDestinationDetailsMxBankTransfer>>,
@@ -256,7 +256,7 @@ const _: () = {
                 Some(zip),
             ) = (
                 self.affirm,
-                self.afterpay_clearpay,
+                self.afterpay_clearpay.take(),
                 self.alipay,
                 self.alma,
                 self.amazon_pay,
@@ -273,7 +273,7 @@ const _: () = {
                 self.giropay,
                 self.grabpay,
                 self.jp_bank_transfer.take(),
-                self.klarna,
+                self.klarna.take(),
                 self.mb_way.take(),
                 self.multibanco.take(),
                 self.mx_bank_transfer.take(),

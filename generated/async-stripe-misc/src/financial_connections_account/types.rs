@@ -28,7 +28,7 @@ pub struct FinancialConnectionsAccount {
     /// If the object exists in live mode, the value is `true`.
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
-    /// The most recent information about the account's owners.
+    /// The ID of the [Financial Connections Account Ownership](https://docs.stripe.com/api/financial_connections/ownership) object associated with this account.
     pub ownership:
         Option<stripe_types::Expandable<stripe_misc::FinancialConnectionsAccountOwnership>>,
     /// The state of the most recent attempt to refresh the account owners.

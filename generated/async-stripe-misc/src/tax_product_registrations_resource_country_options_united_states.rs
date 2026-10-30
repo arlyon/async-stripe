@@ -30,6 +30,8 @@ pub struct TaxProductRegistrationsResourceCountryOptionsUnitedStates {
     /// Type of registration in the US.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: TaxProductRegistrationsResourceCountryOptionsUnitedStatesType,
+    pub utility_users_tax:
+        Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsUsUtilityUsersTax>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsUnitedStates {
@@ -72,6 +74,8 @@ pub struct TaxProductRegistrationsResourceCountryOptionsUnitedStatesBuilder {
     tourism_tax:
         Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsUsTourismTax>>,
     type_: Option<TaxProductRegistrationsResourceCountryOptionsUnitedStatesType>,
+    utility_users_tax:
+        Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsUsUtilityUsersTax>>,
 }
 
 #[allow(
@@ -133,6 +137,7 @@ const _: () = {
                 "state_sales_tax" => Deserialize::begin(&mut self.state_sales_tax),
                 "tourism_tax" => Deserialize::begin(&mut self.tourism_tax),
                 "type" => Deserialize::begin(&mut self.type_),
+                "utility_users_tax" => Deserialize::begin(&mut self.utility_users_tax),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -154,6 +159,7 @@ const _: () = {
                 state_sales_tax: Some(None),
                 tourism_tax: Some(None),
                 type_: None,
+                utility_users_tax: Some(None),
             }
         }
 
@@ -174,6 +180,7 @@ const _: () = {
                 Some(state_sales_tax),
                 Some(tourism_tax),
                 Some(type_),
+                Some(utility_users_tax),
             ) = (
                 self.admissions_tax.take(),
                 self.attendance_tax.take(),
@@ -190,6 +197,7 @@ const _: () = {
                 self.state_sales_tax.take(),
                 self.tourism_tax.take(),
                 self.type_.take(),
+                self.utility_users_tax.take(),
             )
             else {
                 return None;
@@ -210,6 +218,7 @@ const _: () = {
                 state_sales_tax,
                 tourism_tax,
                 type_,
+                utility_users_tax,
             })
         }
     }
@@ -255,6 +264,7 @@ const _: () = {
                     "state_sales_tax" => b.state_sales_tax = FromValueOpt::from_value(v),
                     "tourism_tax" => b.tourism_tax = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
+                    "utility_users_tax" => b.utility_users_tax = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }
@@ -268,6 +278,7 @@ const _: () = {
 pub enum TaxProductRegistrationsResourceCountryOptionsUnitedStatesType {
     AdmissionsTax,
     AttendanceTax,
+    DigitalExciseTax,
     EntertainmentTax,
     GrossReceiptsTax,
     HospitalityTax,
@@ -281,6 +292,7 @@ pub enum TaxProductRegistrationsResourceCountryOptionsUnitedStatesType {
     StateRetailDeliveryFee,
     StateSalesTax,
     TourismTax,
+    UtilityUsersTax,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -290,6 +302,7 @@ impl TaxProductRegistrationsResourceCountryOptionsUnitedStatesType {
         match self {
             AdmissionsTax => "admissions_tax",
             AttendanceTax => "attendance_tax",
+            DigitalExciseTax => "digital_excise_tax",
             EntertainmentTax => "entertainment_tax",
             GrossReceiptsTax => "gross_receipts_tax",
             HospitalityTax => "hospitality_tax",
@@ -303,6 +316,7 @@ impl TaxProductRegistrationsResourceCountryOptionsUnitedStatesType {
             StateRetailDeliveryFee => "state_retail_delivery_fee",
             StateSalesTax => "state_sales_tax",
             TourismTax => "tourism_tax",
+            UtilityUsersTax => "utility_users_tax",
             Unknown(v) => v,
         }
     }
@@ -315,6 +329,7 @@ impl std::str::FromStr for TaxProductRegistrationsResourceCountryOptionsUnitedSt
         match s {
             "admissions_tax" => Ok(AdmissionsTax),
             "attendance_tax" => Ok(AttendanceTax),
+            "digital_excise_tax" => Ok(DigitalExciseTax),
             "entertainment_tax" => Ok(EntertainmentTax),
             "gross_receipts_tax" => Ok(GrossReceiptsTax),
             "hospitality_tax" => Ok(HospitalityTax),
@@ -328,6 +343,7 @@ impl std::str::FromStr for TaxProductRegistrationsResourceCountryOptionsUnitedSt
             "state_retail_delivery_fee" => Ok(StateRetailDeliveryFee),
             "state_sales_tax" => Ok(StateSalesTax),
             "tourism_tax" => Ok(TourismTax),
+            "utility_users_tax" => Ok(UtilityUsersTax),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",

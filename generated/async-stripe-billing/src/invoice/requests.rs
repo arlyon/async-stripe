@@ -2037,8 +2037,8 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsPix {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_includes_iof:
         Option<CreateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof>,
-    /// The number of seconds (between 10 and 1209600) after which Pix payment will expire.
-    /// Defaults to 86400 seconds.
+    /// The number of seconds after PaymentIntent confirmation when the Pix expires (between 60 and 1209600, inclusive).
+    /// If unspecified, defaults to 14400 seconds (4 hours).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_seconds: Option<i64>,
 }
@@ -2776,6 +2776,7 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
     Satispay,
     SepaCreditTransfer,
     SepaDebit,
+    Sequra,
     Sofort,
     Swish,
     Twint,
@@ -2833,6 +2834,7 @@ impl CreateInvoicePaymentSettingsPaymentMethodTypes {
             Satispay => "satispay",
             SepaCreditTransfer => "sepa_credit_transfer",
             SepaDebit => "sepa_debit",
+            Sequra => "sequra",
             Sofort => "sofort",
             Swish => "swish",
             Twint => "twint",
@@ -2893,6 +2895,7 @@ impl std::str::FromStr for CreateInvoicePaymentSettingsPaymentMethodTypes {
             "satispay" => Ok(Satispay),
             "sepa_credit_transfer" => Ok(SepaCreditTransfer),
             "sepa_debit" => Ok(SepaDebit),
+            "sequra" => Ok(Sequra),
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
@@ -5672,8 +5675,8 @@ pub struct UpdateInvoicePaymentSettingsPaymentMethodOptionsPix {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_includes_iof:
         Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof>,
-    /// The number of seconds (between 10 and 1209600) after which Pix payment will expire.
-    /// Defaults to 86400 seconds.
+    /// The number of seconds after PaymentIntent confirmation when the Pix expires (between 60 and 1209600, inclusive).
+    /// If unspecified, defaults to 14400 seconds (4 hours).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_seconds: Option<i64>,
 }
@@ -6411,6 +6414,7 @@ pub enum UpdateInvoicePaymentSettingsPaymentMethodTypes {
     Satispay,
     SepaCreditTransfer,
     SepaDebit,
+    Sequra,
     Sofort,
     Swish,
     Twint,
@@ -6468,6 +6472,7 @@ impl UpdateInvoicePaymentSettingsPaymentMethodTypes {
             Satispay => "satispay",
             SepaCreditTransfer => "sepa_credit_transfer",
             SepaDebit => "sepa_debit",
+            Sequra => "sequra",
             Sofort => "sofort",
             Swish => "swish",
             Twint => "twint",
@@ -6528,6 +6533,7 @@ impl std::str::FromStr for UpdateInvoicePaymentSettingsPaymentMethodTypes {
             "satispay" => Ok(Satispay),
             "sepa_credit_transfer" => Ok(SepaCreditTransfer),
             "sepa_debit" => Ok(SepaDebit),
+            "sequra" => Ok(Sequra),
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
@@ -8138,22 +8144,32 @@ impl<'de> serde::Deserialize<'de> for AddLinesInvoiceLinesTaxAmountsTaxRateDataJ
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum AddLinesInvoiceLinesTaxAmountsTaxRateDataTaxType {
+    AdmissionsTax,
     AmusementTax,
+    AttendanceTax,
     CommunicationsTax,
     DigitalExciseTax,
+    EntertainmentTax,
+    GetFund,
+    GrossReceiptsTax,
     Gst,
+    HospitalityTax,
     Hst,
     Igst,
     Jct,
     LeaseTax,
+    LuxuryTax,
     MassTransitParkingTax,
+    Nhil,
     ParkingTax,
     Pst,
     Qst,
+    ResortTax,
     RetailDeliveryFee,
     Rst,
     SalesTax,
     ServiceTax,
+    TourismTax,
     UtilityUsersTax,
     Vat,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
@@ -8163,22 +8179,32 @@ impl AddLinesInvoiceLinesTaxAmountsTaxRateDataTaxType {
     pub fn as_str(&self) -> &str {
         use AddLinesInvoiceLinesTaxAmountsTaxRateDataTaxType::*;
         match self {
+            AdmissionsTax => "admissions_tax",
             AmusementTax => "amusement_tax",
+            AttendanceTax => "attendance_tax",
             CommunicationsTax => "communications_tax",
             DigitalExciseTax => "digital_excise_tax",
+            EntertainmentTax => "entertainment_tax",
+            GetFund => "get_fund",
+            GrossReceiptsTax => "gross_receipts_tax",
             Gst => "gst",
+            HospitalityTax => "hospitality_tax",
             Hst => "hst",
             Igst => "igst",
             Jct => "jct",
             LeaseTax => "lease_tax",
+            LuxuryTax => "luxury_tax",
             MassTransitParkingTax => "mass_transit_parking_tax",
+            Nhil => "nhil",
             ParkingTax => "parking_tax",
             Pst => "pst",
             Qst => "qst",
+            ResortTax => "resort_tax",
             RetailDeliveryFee => "retail_delivery_fee",
             Rst => "rst",
             SalesTax => "sales_tax",
             ServiceTax => "service_tax",
+            TourismTax => "tourism_tax",
             UtilityUsersTax => "utility_users_tax",
             Vat => "vat",
             Unknown(v) => v,
@@ -8191,22 +8217,32 @@ impl std::str::FromStr for AddLinesInvoiceLinesTaxAmountsTaxRateDataTaxType {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use AddLinesInvoiceLinesTaxAmountsTaxRateDataTaxType::*;
         match s {
+            "admissions_tax" => Ok(AdmissionsTax),
             "amusement_tax" => Ok(AmusementTax),
+            "attendance_tax" => Ok(AttendanceTax),
             "communications_tax" => Ok(CommunicationsTax),
             "digital_excise_tax" => Ok(DigitalExciseTax),
+            "entertainment_tax" => Ok(EntertainmentTax),
+            "get_fund" => Ok(GetFund),
+            "gross_receipts_tax" => Ok(GrossReceiptsTax),
             "gst" => Ok(Gst),
+            "hospitality_tax" => Ok(HospitalityTax),
             "hst" => Ok(Hst),
             "igst" => Ok(Igst),
             "jct" => Ok(Jct),
             "lease_tax" => Ok(LeaseTax),
+            "luxury_tax" => Ok(LuxuryTax),
             "mass_transit_parking_tax" => Ok(MassTransitParkingTax),
+            "nhil" => Ok(Nhil),
             "parking_tax" => Ok(ParkingTax),
             "pst" => Ok(Pst),
             "qst" => Ok(Qst),
+            "resort_tax" => Ok(ResortTax),
             "retail_delivery_fee" => Ok(RetailDeliveryFee),
             "rst" => Ok(Rst),
             "sales_tax" => Ok(SalesTax),
             "service_tax" => Ok(ServiceTax),
+            "tourism_tax" => Ok(TourismTax),
             "utility_users_tax" => Ok(UtilityUsersTax),
             "vat" => Ok(Vat),
             v => {
@@ -9541,22 +9577,32 @@ impl<'de> serde::Deserialize<'de>
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateLinesInvoiceLinesTaxAmountsTaxRateDataTaxType {
+    AdmissionsTax,
     AmusementTax,
+    AttendanceTax,
     CommunicationsTax,
     DigitalExciseTax,
+    EntertainmentTax,
+    GetFund,
+    GrossReceiptsTax,
     Gst,
+    HospitalityTax,
     Hst,
     Igst,
     Jct,
     LeaseTax,
+    LuxuryTax,
     MassTransitParkingTax,
+    Nhil,
     ParkingTax,
     Pst,
     Qst,
+    ResortTax,
     RetailDeliveryFee,
     Rst,
     SalesTax,
     ServiceTax,
+    TourismTax,
     UtilityUsersTax,
     Vat,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
@@ -9566,22 +9612,32 @@ impl UpdateLinesInvoiceLinesTaxAmountsTaxRateDataTaxType {
     pub fn as_str(&self) -> &str {
         use UpdateLinesInvoiceLinesTaxAmountsTaxRateDataTaxType::*;
         match self {
+            AdmissionsTax => "admissions_tax",
             AmusementTax => "amusement_tax",
+            AttendanceTax => "attendance_tax",
             CommunicationsTax => "communications_tax",
             DigitalExciseTax => "digital_excise_tax",
+            EntertainmentTax => "entertainment_tax",
+            GetFund => "get_fund",
+            GrossReceiptsTax => "gross_receipts_tax",
             Gst => "gst",
+            HospitalityTax => "hospitality_tax",
             Hst => "hst",
             Igst => "igst",
             Jct => "jct",
             LeaseTax => "lease_tax",
+            LuxuryTax => "luxury_tax",
             MassTransitParkingTax => "mass_transit_parking_tax",
+            Nhil => "nhil",
             ParkingTax => "parking_tax",
             Pst => "pst",
             Qst => "qst",
+            ResortTax => "resort_tax",
             RetailDeliveryFee => "retail_delivery_fee",
             Rst => "rst",
             SalesTax => "sales_tax",
             ServiceTax => "service_tax",
+            TourismTax => "tourism_tax",
             UtilityUsersTax => "utility_users_tax",
             Vat => "vat",
             Unknown(v) => v,
@@ -9594,22 +9650,32 @@ impl std::str::FromStr for UpdateLinesInvoiceLinesTaxAmountsTaxRateDataTaxType {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateLinesInvoiceLinesTaxAmountsTaxRateDataTaxType::*;
         match s {
+            "admissions_tax" => Ok(AdmissionsTax),
             "amusement_tax" => Ok(AmusementTax),
+            "attendance_tax" => Ok(AttendanceTax),
             "communications_tax" => Ok(CommunicationsTax),
             "digital_excise_tax" => Ok(DigitalExciseTax),
+            "entertainment_tax" => Ok(EntertainmentTax),
+            "get_fund" => Ok(GetFund),
+            "gross_receipts_tax" => Ok(GrossReceiptsTax),
             "gst" => Ok(Gst),
+            "hospitality_tax" => Ok(HospitalityTax),
             "hst" => Ok(Hst),
             "igst" => Ok(Igst),
             "jct" => Ok(Jct),
             "lease_tax" => Ok(LeaseTax),
+            "luxury_tax" => Ok(LuxuryTax),
             "mass_transit_parking_tax" => Ok(MassTransitParkingTax),
+            "nhil" => Ok(Nhil),
             "parking_tax" => Ok(ParkingTax),
             "pst" => Ok(Pst),
             "qst" => Ok(Qst),
+            "resort_tax" => Ok(ResortTax),
             "retail_delivery_fee" => Ok(RetailDeliveryFee),
             "rst" => Ok(Rst),
             "sales_tax" => Ok(SalesTax),
             "service_tax" => Ok(ServiceTax),
+            "tourism_tax" => Ok(TourismTax),
             "utility_users_tax" => Ok(UtilityUsersTax),
             "vat" => Ok(Vat),
             v => {
@@ -10313,7 +10379,7 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceCustomerDetailsTaxExem
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreatePreviewInvoiceCustomerDetailsTaxIds {
-    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_arn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `fo_vat`, `gb_vat`, `ge_vat`, `gi_tin`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `ic_nif`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `it_cf`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `lk_vat`, `ma_vat`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `pl_nip`, `py_ruc`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
+    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_acn`, `au_arn`, `au_wpn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `bw_vat`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `ci_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `cz_dic`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `fo_vat`, `fr_siren`, `fr_siret`, `fr_spi`, `gb_vat`, `ge_vat`, `gh_tin`, `gi_tin`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `ic_nif`, `id_npwp`, `il_vat`, `in_gst`, `is_kt`, `is_vat`, `it_cf`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `lk_vat`, `ma_vat`, `md_cf`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mu_vat`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `mz_nuit`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_bn`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `pl_nip`, `pt_nif`, `py_ruc`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sm_coe`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tt_bir`, `tt_vat`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
     #[serde(rename = "type")]
     pub type_: CreatePreviewInvoiceCustomerDetailsTaxIdsType,
     /// Value of the tax ID.
@@ -10333,7 +10399,7 @@ impl CreatePreviewInvoiceCustomerDetailsTaxIds {
         Self { type_: type_.into(), value: value.into() }
     }
 }
-/// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_arn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `fo_vat`, `gb_vat`, `ge_vat`, `gi_tin`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `ic_nif`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `it_cf`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `lk_vat`, `ma_vat`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `pl_nip`, `py_ruc`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
+/// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_acn`, `au_arn`, `au_wpn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `bw_vat`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `ci_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `cz_dic`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `fo_vat`, `fr_siren`, `fr_siret`, `fr_spi`, `gb_vat`, `ge_vat`, `gh_tin`, `gi_tin`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `ic_nif`, `id_npwp`, `il_vat`, `in_gst`, `is_kt`, `is_vat`, `it_cf`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `lk_vat`, `ma_vat`, `md_cf`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mu_vat`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `mz_nuit`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_bn`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `pl_nip`, `pt_nif`, `py_ruc`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sm_coe`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tt_bir`, `tt_vat`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreatePreviewInvoiceCustomerDetailsTaxIdsType {
@@ -10344,7 +10410,9 @@ pub enum CreatePreviewInvoiceCustomerDetailsTaxIdsType {
     AoTin,
     ArCuit,
     AuAbn,
+    AuAcn,
     AuArn,
+    AuWpn,
     AwTin,
     AzTin,
     BaTin,
@@ -10358,6 +10426,7 @@ pub enum CreatePreviewInvoiceCustomerDetailsTaxIdsType {
     BrCnpj,
     BrCpf,
     BsTin,
+    BwVat,
     ByTin,
     CaBn,
     CaGstHst,
@@ -10368,12 +10437,14 @@ pub enum CreatePreviewInvoiceCustomerDetailsTaxIdsType {
     CdNif,
     ChUid,
     ChVat,
+    CiVat,
     ClTin,
     CmNiu,
     CnTin,
     CoNit,
     CrTin,
     CvNif,
+    CzDic,
     DeStn,
     DoRcn,
     EcRuc,
@@ -10383,8 +10454,12 @@ pub enum CreatePreviewInvoiceCustomerDetailsTaxIdsType {
     EuOssVat,
     EuVat,
     FoVat,
+    FrSiren,
+    FrSiret,
+    FrSpi,
     GbVat,
     GeVat,
+    GhTin,
     GiTin,
     GnNif,
     HkBr,
@@ -10394,6 +10469,7 @@ pub enum CreatePreviewInvoiceCustomerDetailsTaxIdsType {
     IdNpwp,
     IlVat,
     InGst,
+    IsKt,
     IsVat,
     ItCf,
     JpCn,
@@ -10409,23 +10485,28 @@ pub enum CreatePreviewInvoiceCustomerDetailsTaxIdsType {
     LiVat,
     LkVat,
     MaVat,
+    MdCf,
     MdVat,
     MePib,
     MkVat,
     MrNif,
+    MuVat,
     MxRfc,
     MyFrp,
     MyItn,
     MySst,
+    MzNuit,
     NgTin,
     NoVat,
     NoVoec,
     NpPan,
+    NzBn,
     NzGst,
     OmVat,
     PeRuc,
     PhTin,
     PlNip,
+    PtNif,
     PyRuc,
     RoTin,
     RsPib,
@@ -10435,12 +10516,15 @@ pub enum CreatePreviewInvoiceCustomerDetailsTaxIdsType {
     SgGst,
     SgUen,
     SiTin,
+    SmCoe,
     SnNinea,
     SrFin,
     SvNit,
     ThVat,
     TjTin,
     TrTin,
+    TtBir,
+    TtVat,
     TwVat,
     TzVat,
     UaVat,
@@ -10468,7 +10552,9 @@ impl CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             AoTin => "ao_tin",
             ArCuit => "ar_cuit",
             AuAbn => "au_abn",
+            AuAcn => "au_acn",
             AuArn => "au_arn",
+            AuWpn => "au_wpn",
             AwTin => "aw_tin",
             AzTin => "az_tin",
             BaTin => "ba_tin",
@@ -10482,6 +10568,7 @@ impl CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             BrCnpj => "br_cnpj",
             BrCpf => "br_cpf",
             BsTin => "bs_tin",
+            BwVat => "bw_vat",
             ByTin => "by_tin",
             CaBn => "ca_bn",
             CaGstHst => "ca_gst_hst",
@@ -10492,12 +10579,14 @@ impl CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             CdNif => "cd_nif",
             ChUid => "ch_uid",
             ChVat => "ch_vat",
+            CiVat => "ci_vat",
             ClTin => "cl_tin",
             CmNiu => "cm_niu",
             CnTin => "cn_tin",
             CoNit => "co_nit",
             CrTin => "cr_tin",
             CvNif => "cv_nif",
+            CzDic => "cz_dic",
             DeStn => "de_stn",
             DoRcn => "do_rcn",
             EcRuc => "ec_ruc",
@@ -10507,8 +10596,12 @@ impl CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             EuOssVat => "eu_oss_vat",
             EuVat => "eu_vat",
             FoVat => "fo_vat",
+            FrSiren => "fr_siren",
+            FrSiret => "fr_siret",
+            FrSpi => "fr_spi",
             GbVat => "gb_vat",
             GeVat => "ge_vat",
+            GhTin => "gh_tin",
             GiTin => "gi_tin",
             GnNif => "gn_nif",
             HkBr => "hk_br",
@@ -10518,6 +10611,7 @@ impl CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             IdNpwp => "id_npwp",
             IlVat => "il_vat",
             InGst => "in_gst",
+            IsKt => "is_kt",
             IsVat => "is_vat",
             ItCf => "it_cf",
             JpCn => "jp_cn",
@@ -10533,23 +10627,28 @@ impl CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             LiVat => "li_vat",
             LkVat => "lk_vat",
             MaVat => "ma_vat",
+            MdCf => "md_cf",
             MdVat => "md_vat",
             MePib => "me_pib",
             MkVat => "mk_vat",
             MrNif => "mr_nif",
+            MuVat => "mu_vat",
             MxRfc => "mx_rfc",
             MyFrp => "my_frp",
             MyItn => "my_itn",
             MySst => "my_sst",
+            MzNuit => "mz_nuit",
             NgTin => "ng_tin",
             NoVat => "no_vat",
             NoVoec => "no_voec",
             NpPan => "np_pan",
+            NzBn => "nz_bn",
             NzGst => "nz_gst",
             OmVat => "om_vat",
             PeRuc => "pe_ruc",
             PhTin => "ph_tin",
             PlNip => "pl_nip",
+            PtNif => "pt_nif",
             PyRuc => "py_ruc",
             RoTin => "ro_tin",
             RsPib => "rs_pib",
@@ -10559,12 +10658,15 @@ impl CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             SgGst => "sg_gst",
             SgUen => "sg_uen",
             SiTin => "si_tin",
+            SmCoe => "sm_coe",
             SnNinea => "sn_ninea",
             SrFin => "sr_fin",
             SvNit => "sv_nit",
             ThVat => "th_vat",
             TjTin => "tj_tin",
             TrTin => "tr_tin",
+            TtBir => "tt_bir",
+            TtVat => "tt_vat",
             TwVat => "tw_vat",
             TzVat => "tz_vat",
             UaVat => "ua_vat",
@@ -10595,7 +10697,9 @@ impl std::str::FromStr for CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             "ao_tin" => Ok(AoTin),
             "ar_cuit" => Ok(ArCuit),
             "au_abn" => Ok(AuAbn),
+            "au_acn" => Ok(AuAcn),
             "au_arn" => Ok(AuArn),
+            "au_wpn" => Ok(AuWpn),
             "aw_tin" => Ok(AwTin),
             "az_tin" => Ok(AzTin),
             "ba_tin" => Ok(BaTin),
@@ -10609,6 +10713,7 @@ impl std::str::FromStr for CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             "br_cnpj" => Ok(BrCnpj),
             "br_cpf" => Ok(BrCpf),
             "bs_tin" => Ok(BsTin),
+            "bw_vat" => Ok(BwVat),
             "by_tin" => Ok(ByTin),
             "ca_bn" => Ok(CaBn),
             "ca_gst_hst" => Ok(CaGstHst),
@@ -10619,12 +10724,14 @@ impl std::str::FromStr for CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             "cd_nif" => Ok(CdNif),
             "ch_uid" => Ok(ChUid),
             "ch_vat" => Ok(ChVat),
+            "ci_vat" => Ok(CiVat),
             "cl_tin" => Ok(ClTin),
             "cm_niu" => Ok(CmNiu),
             "cn_tin" => Ok(CnTin),
             "co_nit" => Ok(CoNit),
             "cr_tin" => Ok(CrTin),
             "cv_nif" => Ok(CvNif),
+            "cz_dic" => Ok(CzDic),
             "de_stn" => Ok(DeStn),
             "do_rcn" => Ok(DoRcn),
             "ec_ruc" => Ok(EcRuc),
@@ -10634,8 +10741,12 @@ impl std::str::FromStr for CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             "eu_oss_vat" => Ok(EuOssVat),
             "eu_vat" => Ok(EuVat),
             "fo_vat" => Ok(FoVat),
+            "fr_siren" => Ok(FrSiren),
+            "fr_siret" => Ok(FrSiret),
+            "fr_spi" => Ok(FrSpi),
             "gb_vat" => Ok(GbVat),
             "ge_vat" => Ok(GeVat),
+            "gh_tin" => Ok(GhTin),
             "gi_tin" => Ok(GiTin),
             "gn_nif" => Ok(GnNif),
             "hk_br" => Ok(HkBr),
@@ -10645,6 +10756,7 @@ impl std::str::FromStr for CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             "id_npwp" => Ok(IdNpwp),
             "il_vat" => Ok(IlVat),
             "in_gst" => Ok(InGst),
+            "is_kt" => Ok(IsKt),
             "is_vat" => Ok(IsVat),
             "it_cf" => Ok(ItCf),
             "jp_cn" => Ok(JpCn),
@@ -10660,23 +10772,28 @@ impl std::str::FromStr for CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             "li_vat" => Ok(LiVat),
             "lk_vat" => Ok(LkVat),
             "ma_vat" => Ok(MaVat),
+            "md_cf" => Ok(MdCf),
             "md_vat" => Ok(MdVat),
             "me_pib" => Ok(MePib),
             "mk_vat" => Ok(MkVat),
             "mr_nif" => Ok(MrNif),
+            "mu_vat" => Ok(MuVat),
             "mx_rfc" => Ok(MxRfc),
             "my_frp" => Ok(MyFrp),
             "my_itn" => Ok(MyItn),
             "my_sst" => Ok(MySst),
+            "mz_nuit" => Ok(MzNuit),
             "ng_tin" => Ok(NgTin),
             "no_vat" => Ok(NoVat),
             "no_voec" => Ok(NoVoec),
             "np_pan" => Ok(NpPan),
+            "nz_bn" => Ok(NzBn),
             "nz_gst" => Ok(NzGst),
             "om_vat" => Ok(OmVat),
             "pe_ruc" => Ok(PeRuc),
             "ph_tin" => Ok(PhTin),
             "pl_nip" => Ok(PlNip),
+            "pt_nif" => Ok(PtNif),
             "py_ruc" => Ok(PyRuc),
             "ro_tin" => Ok(RoTin),
             "rs_pib" => Ok(RsPib),
@@ -10686,12 +10803,15 @@ impl std::str::FromStr for CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             "sg_gst" => Ok(SgGst),
             "sg_uen" => Ok(SgUen),
             "si_tin" => Ok(SiTin),
+            "sm_coe" => Ok(SmCoe),
             "sn_ninea" => Ok(SnNinea),
             "sr_fin" => Ok(SrFin),
             "sv_nit" => Ok(SvNit),
             "th_vat" => Ok(ThVat),
             "tj_tin" => Ok(TjTin),
             "tr_tin" => Ok(TrTin),
+            "tt_bir" => Ok(TtBir),
+            "tt_vat" => Ok(TtVat),
             "tw_vat" => Ok(TwVat),
             "tz_vat" => Ok(TzVat),
             "ua_vat" => Ok(UaVat),
@@ -10825,11 +10945,10 @@ pub struct CreatePreviewInvoiceInvoiceItems {
     /// See the [Revenue Recognition documentation](https://docs.stripe.com/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<Period>,
-    /// The ID of the price object. One of `price` or `price_data` is required.
+    /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
     /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-    /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<CreatePreviewInvoiceInvoiceItemsPriceData>,
     /// Non-negative integer.
@@ -10929,7 +11048,6 @@ impl Default for CreatePreviewInvoiceInvoiceItemsDiscounts {
     }
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-/// One of `price` or `price_data` is required.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -11312,6 +11430,12 @@ pub struct CreatePreviewInvoiceScheduleDetails {
     /// `cancel` will end the subscription schedule and cancel the underlying subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_behavior: Option<CreatePreviewInvoiceScheduleDetailsEndBehavior>,
+    /// The subscription's pause behavior and optional resume behavior.
+    /// You can provide one entry.
+    /// Include its `key` to update an existing pause schedule.
+    /// Omit `pause_schedules` to leave the existing schedule unchanged, or pass an empty string (`""`) to clear it.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pause_schedules: Option<Vec<CreatePreviewInvoiceScheduleDetailsPauseSchedules>>,
     /// List representing phases of the subscription schedule.
     /// Each phase can be customized to have different durations, plans, and coupons.
     /// If there are multiple phases, the `end_date` of one phase will always equal the `start_date` of the next phase.
@@ -11329,7 +11453,13 @@ impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetails {
 }
 impl CreatePreviewInvoiceScheduleDetails {
     pub fn new() -> Self {
-        Self { billing_mode: None, end_behavior: None, phases: None, proration_behavior: None }
+        Self {
+            billing_mode: None,
+            end_behavior: None,
+            pause_schedules: None,
+            phases: None,
+            proration_behavior: None,
+        }
     }
 }
 impl Default for CreatePreviewInvoiceScheduleDetails {
@@ -11613,6 +11743,1204 @@ impl serde::Serialize for CreatePreviewInvoiceScheduleDetailsEndBehavior {
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceScheduleDetailsEndBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// The subscription's pause behavior and optional resume behavior.
+/// You can provide one entry.
+/// Include its `key` to update an existing pause schedule.
+/// Omit `pause_schedules` to leave the existing schedule unchanged, or pass an empty string (`""`) to clear it.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPauseSchedules {
+    /// A unique identifier for this pause schedule entry.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Configuration for when and how the subscription pauses.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pause: Option<CreatePreviewInvoiceScheduleDetailsPauseSchedulesPause>,
+    /// Configuration for when and how the subscription resumes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub resume: Option<CreatePreviewInvoiceScheduleDetailsPauseSchedulesResume>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPauseSchedules {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePreviewInvoiceScheduleDetailsPauseSchedules").finish_non_exhaustive()
+    }
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedules {
+    pub fn new() -> Self {
+        Self { key: None, pause: None, resume: None }
+    }
+}
+impl Default for CreatePreviewInvoiceScheduleDetailsPauseSchedules {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration for when and how the subscription pauses.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPauseSchedulesPause {
+    /// When to pause the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pause_at: Option<CreatePreviewInvoiceScheduleDetailsPauseSchedulesPausePauseAt>,
+    /// Settings controlling billing behavior during the pause.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub settings: Option<CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettings>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPause {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePreviewInvoiceScheduleDetailsPauseSchedulesPause")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedulesPause {
+    pub fn new() -> Self {
+        Self { pause_at: None, settings: None }
+    }
+}
+impl Default for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPause {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// When to pause the subscription.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPauseSchedulesPausePauseAt {
+    /// The Unix timestamp at which to pause the subscription. Required when `type` is `timestamp`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<stripe_types::Timestamp>,
+    /// When to pause the subscription.
+    /// Use `now` to pause immediately or `timestamp` to pause at a specific time.
+    #[serde(rename = "type")]
+    pub type_: CreatePreviewInvoiceScheduleDetailsPauseSchedulesPausePauseAtType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPausePauseAt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePreviewInvoiceScheduleDetailsPauseSchedulesPausePauseAt")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedulesPausePauseAt {
+    pub fn new(
+        type_: impl Into<CreatePreviewInvoiceScheduleDetailsPauseSchedulesPausePauseAtType>,
+    ) -> Self {
+        Self { timestamp: None, type_: type_.into() }
+    }
+}
+/// When to pause the subscription.
+/// Use `now` to pause immediately or `timestamp` to pause at a specific time.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePreviewInvoiceScheduleDetailsPauseSchedulesPausePauseAtType {
+    Now,
+    Timestamp,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedulesPausePauseAtType {
+    pub fn as_str(&self) -> &str {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesPausePauseAtType::*;
+        match self {
+            Now => "now",
+            Timestamp => "timestamp",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPausePauseAtType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesPausePauseAtType::*;
+        match s {
+            "now" => Ok(Now),
+            "timestamp" => Ok(Timestamp),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePreviewInvoiceScheduleDetailsPauseSchedulesPausePauseAtType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPausePauseAtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPausePauseAtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPausePauseAtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePreviewInvoiceScheduleDetailsPauseSchedulesPausePauseAtType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPausePauseAtType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPausePauseAtType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Settings controlling billing behavior during the pause.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettings {
+    /// Controls what to bill for when pausing the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bill_for: Option<CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillFor>,
+    /// Determines whether to generate an invoice for outstanding amounts when pausing.
+    /// When adding a pause schedule, defaults to `pending_invoice_item`.
+    /// On updates, the existing value is preserved if not provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoicing_behavior:
+        Option<CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsInvoicingBehavior>,
+    /// The pause type. Currently only `subscription` is supported.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettings")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettings {
+    pub fn new() -> Self {
+        Self { bill_for: None, invoicing_behavior: None, type_: None }
+    }
+}
+impl Default for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettings {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls what to bill for when pausing the subscription.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillFor {
+    /// Controls whether to collect metered usage accrued up to the pause date.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub outstanding_usage_through: Option<CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForOutstandingUsageThrough>,
+    /// Controls how unused time on subscription items is credited when pausing.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub unused_time_from: Option<CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForUnusedTimeFrom>,
+
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillFor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillFor")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillFor {
+    pub fn new() -> Self {
+        Self { outstanding_usage_through: None, unused_time_from: None }
+    }
+}
+impl Default for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillFor {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls whether to collect metered usage accrued up to the pause date.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForOutstandingUsageThrough {
+        /// Determines whether to collect metered usage accrued up to the pause date.
+    /// When adding a pause schedule, defaults to `pause_at`.
+    /// On updates, the existing value is preserved if not provided.
+#[serde(rename = "type")]
+#[serde(skip_serializing_if = "Option::is_none")]
+pub type_: Option<CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForOutstandingUsageThroughType>,
+
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForOutstandingUsageThrough
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForOutstandingUsageThrough").finish_non_exhaustive()
+    }
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForOutstandingUsageThrough {
+    pub fn new() -> Self {
+        Self { type_: None }
+    }
+}
+impl Default
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForOutstandingUsageThrough
+{
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Determines whether to collect metered usage accrued up to the pause date.
+/// When adding a pause schedule, defaults to `pause_at`.
+/// On updates, the existing value is preserved if not provided.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForOutstandingUsageThroughType
+{
+    None,
+    PauseAt,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl
+    CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForOutstandingUsageThroughType
+{
+    pub fn as_str(&self) -> &str {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForOutstandingUsageThroughType::*;
+        match self {
+            None => "none",
+            PauseAt => "pause_at",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForOutstandingUsageThroughType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForOutstandingUsageThroughType::*;
+        match s {
+    "none" => Ok(None),
+"pause_at" => Ok(PauseAt),
+v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForOutstandingUsageThroughType"); Ok(Unknown(v.to_owned())) }
+
+        }
+    }
+}
+impl std::fmt::Display for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForOutstandingUsageThroughType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForOutstandingUsageThroughType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForOutstandingUsageThroughType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForOutstandingUsageThroughType)).finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForOutstandingUsageThroughType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForOutstandingUsageThroughType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Controls how unused time on subscription items is credited when pausing.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForUnusedTimeFrom {
+    /// Determines which point in the billing period unused time is credited from.
+    /// When adding a pause schedule, defaults to `pause_at`.
+    /// On updates, the existing value is preserved if not provided.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<
+        CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForUnusedTimeFromType,
+    >,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForUnusedTimeFrom
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForUnusedTimeFrom",
+        )
+        .finish_non_exhaustive()
+    }
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForUnusedTimeFrom {
+    pub fn new() -> Self {
+        Self { type_: None }
+    }
+}
+impl Default
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForUnusedTimeFrom
+{
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Determines which point in the billing period unused time is credited from.
+/// When adding a pause schedule, defaults to `pause_at`.
+/// On updates, the existing value is preserved if not provided.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForUnusedTimeFromType {
+    ItemCurrentPeriodStart,
+    None,
+    PauseAt,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForUnusedTimeFromType {
+    pub fn as_str(&self) -> &str {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForUnusedTimeFromType::*;
+        match self {
+            ItemCurrentPeriodStart => "item_current_period_start",
+            None => "none",
+            PauseAt => "pause_at",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForUnusedTimeFromType
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForUnusedTimeFromType::*;
+        match s {
+            "item_current_period_start" => Ok(ItemCurrentPeriodStart),
+            "none" => Ok(None),
+            "pause_at" => Ok(PauseAt),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForUnusedTimeFromType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForUnusedTimeFromType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForUnusedTimeFromType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForUnusedTimeFromType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForUnusedTimeFromType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForUnusedTimeFromType
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsBillForUnusedTimeFromType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Determines whether to generate an invoice for outstanding amounts when pausing.
+/// When adding a pause schedule, defaults to `pending_invoice_item`.
+/// On updates, the existing value is preserved if not provided.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsInvoicingBehavior {
+    Invoice,
+    PendingInvoiceItem,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsInvoicingBehavior {
+    pub fn as_str(&self) -> &str {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsInvoicingBehavior::*;
+        match self {
+            Invoice => "invoice",
+            PendingInvoiceItem => "pending_invoice_item",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsInvoicingBehavior
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsInvoicingBehavior::*;
+        match s {
+            "invoice" => Ok(Invoice),
+            "pending_invoice_item" => Ok(PendingInvoiceItem),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsInvoicingBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsInvoicingBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsInvoicingBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsInvoicingBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsInvoicingBehavior
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsInvoicingBehavior
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsInvoicingBehavior
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// The pause type. Currently only `subscription` is supported.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsType {
+    Subscription,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsType {
+    pub fn as_str(&self) -> &str {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsType::*;
+        match self {
+            Subscription => "subscription",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsType::*;
+        match s {
+            "subscription" => Ok(Subscription),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesPauseSettingsType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Configuration for when and how the subscription resumes.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPauseSchedulesResume {
+    /// When to resume the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub resume_at: Option<CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAt>,
+    /// Settings controlling how the subscription resumes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub settings: Option<CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettings>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResume {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePreviewInvoiceScheduleDetailsPauseSchedulesResume")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedulesResume {
+    pub fn new() -> Self {
+        Self { resume_at: None, settings: None }
+    }
+}
+impl Default for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResume {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// When to resume the subscription.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAt {
+    /// The duration after which to resume the subscription. Required when `type` is `duration`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duration: Option<CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtDuration>,
+    /// The Unix timestamp at which to resume the subscription. Required when `type` is `timestamp`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<stripe_types::Timestamp>,
+    /// When to resume the subscription.
+    /// Use `now` to resume immediately, `duration` to resume after a set duration, or `timestamp` to resume at a specific time.
+    #[serde(rename = "type")]
+    pub type_: CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAt")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAt {
+    pub fn new(
+        type_: impl Into<CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtType>,
+    ) -> Self {
+        Self { duration: None, timestamp: None, type_: type_.into() }
+    }
+}
+/// The duration after which to resume the subscription. Required when `type` is `duration`.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtDuration {
+    /// The time unit for the resume duration. One of `day`, `week`, `month`, or `year`.
+    pub interval: CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtDurationInterval,
+    /// The number of intervals after which the subscription resumes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtDuration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtDuration")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtDuration {
+    pub fn new(
+        interval: impl Into<
+            CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtDurationInterval,
+        >,
+    ) -> Self {
+        Self { interval: interval.into(), interval_count: None }
+    }
+}
+/// The time unit for the resume duration. One of `day`, `week`, `month`, or `year`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtDurationInterval {
+    Day,
+    Month,
+    Week,
+    Year,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtDurationInterval {
+    pub fn as_str(&self) -> &str {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtDurationInterval::*;
+        match self {
+            Day => "day",
+            Month => "month",
+            Week => "week",
+            Year => "year",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtDurationInterval
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtDurationInterval::*;
+        match s {
+            "day" => Ok(Day),
+            "month" => Ok(Month),
+            "week" => Ok(Week),
+            "year" => Ok(Year),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtDurationInterval"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtDurationInterval
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtDurationInterval
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtDurationInterval
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtDurationInterval
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtDurationInterval
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtDurationInterval
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// When to resume the subscription.
+/// Use `now` to resume immediately, `duration` to resume after a set duration, or `timestamp` to resume at a specific time.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtType {
+    Duration,
+    Now,
+    Timestamp,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtType {
+    pub fn as_str(&self) -> &str {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtType::*;
+        match self {
+            Duration => "duration",
+            Now => "now",
+            Timestamp => "timestamp",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtType::*;
+        match s {
+            "duration" => Ok(Duration),
+            "now" => Ok(Now),
+            "timestamp" => Ok(Timestamp),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeResumeAtType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Settings controlling how the subscription resumes.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettings {
+    /// Controls the billing cycle anchor when the subscription resumes.
+    /// When adding a pause schedule, defaults to `resume_at`.
+    /// On updates, the existing value is preserved if not provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_cycle_anchor:
+        Option<CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsBillingCycleAnchor>,
+    /// Controls whether Stripe attempts payment on the resumption invoice and how payment affects the subscription's status.
+    /// When adding a pause schedule, defaults to `resume_on_payment_success`.
+    /// On updates, the existing value is preserved if not provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_behavior:
+        Option<CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsPaymentBehavior>,
+    /// Determines how to handle prorations when the subscription resumes.
+    /// When adding a pause schedule, defaults to `create_prorations`.
+    /// On updates, the existing value is preserved if not provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proration_behavior:
+        Option<CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsProrationBehavior>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettings")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettings {
+    pub fn new() -> Self {
+        Self { billing_cycle_anchor: None, payment_behavior: None, proration_behavior: None }
+    }
+}
+impl Default for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettings {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls the billing cycle anchor when the subscription resumes.
+/// When adding a pause schedule, defaults to `resume_at`.
+/// On updates, the existing value is preserved if not provided.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsBillingCycleAnchor {
+    ResumeAt,
+    Unchanged,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsBillingCycleAnchor {
+    pub fn as_str(&self) -> &str {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsBillingCycleAnchor::*;
+        match self {
+            ResumeAt => "resume_at",
+            Unchanged => "unchanged",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsBillingCycleAnchor
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsBillingCycleAnchor::*;
+        match s {
+            "resume_at" => Ok(ResumeAt),
+            "unchanged" => Ok(Unchanged),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsBillingCycleAnchor"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsBillingCycleAnchor
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsBillingCycleAnchor
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsBillingCycleAnchor
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsBillingCycleAnchor
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsBillingCycleAnchor
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsBillingCycleAnchor
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Controls whether Stripe attempts payment on the resumption invoice and how payment affects the subscription's status.
+/// When adding a pause schedule, defaults to `resume_on_payment_success`.
+/// On updates, the existing value is preserved if not provided.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsPaymentBehavior {
+    ResumeOnPaymentAttempt,
+    ResumeOnPaymentSuccess,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsPaymentBehavior {
+    pub fn as_str(&self) -> &str {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsPaymentBehavior::*;
+        match self {
+            ResumeOnPaymentAttempt => "resume_on_payment_attempt",
+            ResumeOnPaymentSuccess => "resume_on_payment_success",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsPaymentBehavior
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsPaymentBehavior::*;
+        match s {
+            "resume_on_payment_attempt" => Ok(ResumeOnPaymentAttempt),
+            "resume_on_payment_success" => Ok(ResumeOnPaymentSuccess),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsPaymentBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsPaymentBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsPaymentBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsPaymentBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsPaymentBehavior
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsPaymentBehavior
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsPaymentBehavior
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Determines how to handle prorations when the subscription resumes.
+/// When adding a pause schedule, defaults to `create_prorations`.
+/// On updates, the existing value is preserved if not provided.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsProrationBehavior {
+    AlwaysInvoice,
+    CreateProrations,
+    None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsProrationBehavior {
+    pub fn as_str(&self) -> &str {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsProrationBehavior::*;
+        match self {
+            AlwaysInvoice => "always_invoice",
+            CreateProrations => "create_prorations",
+            None => "none",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsProrationBehavior
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsProrationBehavior::*;
+        match s {
+            "always_invoice" => Ok(AlwaysInvoice),
+            "create_prorations" => Ok(CreateProrations),
+            "none" => Ok(None),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsProrationBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsProrationBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsProrationBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsProrationBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsProrationBehavior
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsProrationBehavior
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePreviewInvoiceScheduleDetailsPauseSchedulesResumeSettingsProrationBehavior
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;

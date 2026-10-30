@@ -33,6 +33,8 @@ pub struct PaymentIntentPaymentMethodOptionsCard {
     /// When enabled, using a card that is attached to a customer will require the CVC to be provided again (i.e.
     /// using the cvc_token parameter).
     pub require_cvc_recollection: Option<bool>,
+    /// Set to indicate the future transaction type usage for the card being set up.
+    pub setup_credential_usage: Option<PaymentIntentPaymentMethodOptionsCardSetupCredentialUsage>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -52,6 +54,8 @@ pub struct PaymentIntentPaymentMethodOptionsCard {
     /// Maximum 17 characters.
     /// On card statements, the *concatenation* of both prefix and suffix (including separators) will appear truncated to 17 characters.
     pub statement_descriptor_suffix_kanji: Option<String>,
+    /// Selected usage to indicate the transaction type of the off-session payment.
+    pub stored_credential_usage: Option<PaymentIntentPaymentMethodOptionsCardStoredCredentialUsage>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsCard {
@@ -74,9 +78,13 @@ pub struct PaymentIntentPaymentMethodOptionsCardBuilder {
     request_three_d_secure:
         Option<Option<PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure>>,
     require_cvc_recollection: Option<Option<bool>>,
+    setup_credential_usage:
+        Option<Option<PaymentIntentPaymentMethodOptionsCardSetupCredentialUsage>>,
     setup_future_usage: Option<Option<PaymentIntentPaymentMethodOptionsCardSetupFutureUsage>>,
     statement_descriptor_suffix_kana: Option<Option<String>>,
     statement_descriptor_suffix_kanji: Option<Option<String>>,
+    stored_credential_usage:
+        Option<Option<PaymentIntentPaymentMethodOptionsCardStoredCredentialUsage>>,
 }
 
 #[allow(
@@ -135,6 +143,7 @@ const _: () = {
                 "require_cvc_recollection" => {
                     Deserialize::begin(&mut self.require_cvc_recollection)
                 }
+                "setup_credential_usage" => Deserialize::begin(&mut self.setup_credential_usage),
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
                 "statement_descriptor_suffix_kana" => {
                     Deserialize::begin(&mut self.statement_descriptor_suffix_kana)
@@ -142,6 +151,7 @@ const _: () = {
                 "statement_descriptor_suffix_kanji" => {
                     Deserialize::begin(&mut self.statement_descriptor_suffix_kanji)
                 }
+                "stored_credential_usage" => Deserialize::begin(&mut self.stored_credential_usage),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -158,9 +168,11 @@ const _: () = {
                 request_overcapture: Some(None),
                 request_three_d_secure: Some(None),
                 require_cvc_recollection: Some(None),
+                setup_credential_usage: Some(None),
                 setup_future_usage: Some(None),
                 statement_descriptor_suffix_kana: Some(None),
                 statement_descriptor_suffix_kanji: Some(None),
+                stored_credential_usage: Some(None),
             }
         }
 
@@ -176,9 +188,11 @@ const _: () = {
                 Some(request_overcapture),
                 Some(request_three_d_secure),
                 Some(require_cvc_recollection),
+                Some(setup_credential_usage),
                 Some(setup_future_usage),
                 Some(statement_descriptor_suffix_kana),
                 Some(statement_descriptor_suffix_kanji),
+                Some(stored_credential_usage),
             ) = (
                 self.capture_method.take(),
                 self.installments.take(),
@@ -190,9 +204,11 @@ const _: () = {
                 self.request_overcapture.take(),
                 self.request_three_d_secure.take(),
                 self.require_cvc_recollection,
+                self.setup_credential_usage.take(),
                 self.setup_future_usage.take(),
                 self.statement_descriptor_suffix_kana.take(),
                 self.statement_descriptor_suffix_kanji.take(),
+                self.stored_credential_usage.take(),
             )
             else {
                 return None;
@@ -208,9 +224,11 @@ const _: () = {
                 request_overcapture,
                 request_three_d_secure,
                 require_cvc_recollection,
+                setup_credential_usage,
                 setup_future_usage,
                 statement_descriptor_suffix_kana,
                 statement_descriptor_suffix_kanji,
+                stored_credential_usage,
             })
         }
     }
@@ -256,12 +274,18 @@ const _: () = {
                     "require_cvc_recollection" => {
                         b.require_cvc_recollection = FromValueOpt::from_value(v)
                     }
+                    "setup_credential_usage" => {
+                        b.setup_credential_usage = FromValueOpt::from_value(v)
+                    }
                     "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
                     "statement_descriptor_suffix_kana" => {
                         b.statement_descriptor_suffix_kana = FromValueOpt::from_value(v)
                     }
                     "statement_descriptor_suffix_kanji" => {
                         b.statement_descriptor_suffix_kanji = FromValueOpt::from_value(v)
+                    }
+                    "stored_credential_usage" => {
+                        b.stored_credential_usage = FromValueOpt::from_value(v)
                     }
                     _ => {}
                 }
@@ -978,6 +1002,105 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardReque
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Set to indicate the future transaction type usage for the card being set up.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum PaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    Installment,
+    Recurring,
+    Unscheduled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl PaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    pub fn as_str(&self) -> &str {
+        use PaymentIntentPaymentMethodOptionsCardSetupCredentialUsage::*;
+        match self {
+            Installment => "installment",
+            Recurring => "recurring",
+            Unscheduled => "unscheduled",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentIntentPaymentMethodOptionsCardSetupCredentialUsage::*;
+        match s {
+            "installment" => Ok(Installment),
+            "recurring" => Ok(Recurring),
+            "unscheduled" => Ok(Unscheduled),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentIntentPaymentMethodOptionsCardSetupCredentialUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for PaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentIntentPaymentMethodOptionsCardSetupCredentialUsage))
+            .finish_non_exhaustive()
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for PaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for PaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor
+    for crate::Place<PaymentIntentPaymentMethodOptionsCardSetupCredentialUsage>
+{
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            PaymentIntentPaymentMethodOptionsCardSetupCredentialUsage::from_str(s)
+                .expect("infallible"),
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(
+    PaymentIntentPaymentMethodOptionsCardSetupCredentialUsage
+);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -1075,6 +1198,105 @@ impl miniserde::de::Visitor
 stripe_types::impl_from_val_with_from_str!(PaymentIntentPaymentMethodOptionsCardSetupFutureUsage);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Selected usage to indicate the transaction type of the off-session payment.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum PaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    Installment,
+    Recurring,
+    Unscheduled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl PaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    pub fn as_str(&self) -> &str {
+        use PaymentIntentPaymentMethodOptionsCardStoredCredentialUsage::*;
+        match self {
+            Installment => "installment",
+            Recurring => "recurring",
+            Unscheduled => "unscheduled",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentIntentPaymentMethodOptionsCardStoredCredentialUsage::*;
+        match s {
+            "installment" => Ok(Installment),
+            "recurring" => Ok(Recurring),
+            "unscheduled" => Ok(Unscheduled),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentIntentPaymentMethodOptionsCardStoredCredentialUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for PaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentIntentPaymentMethodOptionsCardStoredCredentialUsage))
+            .finish_non_exhaustive()
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for PaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for PaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor
+    for crate::Place<PaymentIntentPaymentMethodOptionsCardStoredCredentialUsage>
+{
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            PaymentIntentPaymentMethodOptionsCardStoredCredentialUsage::from_str(s)
+                .expect("infallible"),
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(
+    PaymentIntentPaymentMethodOptionsCardStoredCredentialUsage
+);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;

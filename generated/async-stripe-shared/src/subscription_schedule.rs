@@ -37,7 +37,7 @@ pub struct SubscriptionSchedule {
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The pause schedules for this subscription schedule.
-    pub pause_schedules: Option<Vec<stripe_shared::SubscriptionSchedulesResourcePauseSchedule>>,
+    pub pause_schedules: Vec<stripe_shared::SubscriptionSchedulesResourcePauseSchedule>,
     /// Configuration for the subscription schedule's phases.
     pub phases: Vec<stripe_shared::SubscriptionSchedulePhaseConfiguration>,
     /// Time at which the subscription schedule was released. Measured in seconds since the Unix epoch.
@@ -74,7 +74,7 @@ pub struct SubscriptionScheduleBuilder {
     id: Option<stripe_shared::SubscriptionScheduleId>,
     livemode: Option<bool>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
-    pause_schedules: Option<Option<Vec<stripe_shared::SubscriptionSchedulesResourcePauseSchedule>>>,
+    pause_schedules: Option<Vec<stripe_shared::SubscriptionSchedulesResourcePauseSchedule>>,
     phases: Option<Vec<stripe_shared::SubscriptionSchedulePhaseConfiguration>>,
     released_at: Option<Option<stripe_types::Timestamp>>,
     released_subscription: Option<Option<String>>,
@@ -162,7 +162,7 @@ const _: () = {
                 id: None,
                 livemode: None,
                 metadata: Some(None),
-                pause_schedules: Some(None),
+                pause_schedules: None,
                 phases: None,
                 released_at: Some(None),
                 released_subscription: Some(None),
