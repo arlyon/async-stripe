@@ -300,12 +300,24 @@
           "enabled": false,
           "features": {}
         },
+        "reporting_chart": {
+          "enabled": true,
+          "features": {}
+        },
         "tax_registrations": {
           "enabled": false,
           "features": {}
         },
         "tax_settings": {
           "enabled": false,
+          "features": {}
+        },
+        "terminal_hardware_orders": {
+          "enabled": true,
+          "features": {}
+        },
+        "terminal_hardware_shop": {
+          "enabled": true,
           "features": {}
         }
       },
@@ -779,6 +791,18 @@
           "mode": "at_period_end",
           "proration_behavior": "none"
         },
+        "subscription_pause": {
+          "duration": {
+            "interval_options": [
+              {
+                "interval": "month",
+                "interval_count": 797691627
+              }
+            ],
+            "type": "indefinite"
+          },
+          "enabled": true
+        },
         "subscription_update": {
           "billing_cycle_anchor": null,
           "default_allowed_updates": [],
@@ -829,6 +853,9 @@
             },
             "type": "coupon_offer"
           },
+          "subscription": "subscription"
+        },
+        "subscription_pause": {
           "subscription": "subscription"
         },
         "subscription_update": {
@@ -2246,9 +2273,11 @@
         "enhanced_eligibility": {},
         "has_evidence": false,
         "past_due": false,
-        "submission_count": 0
+        "submission_count": 0,
+        "submission_method": "not_submitted"
       },
       "id": "dp_1Pgc71B7WZ01zgkWMevJiAUx",
+      "intended_submission_method": null,
       "is_charge_refundable": true,
       "livemode": false,
       "metadata": {},
@@ -3995,6 +4024,10 @@
       "subscription_data": {
         "description": null,
         "invoice_settings": {
+          "account_tax_ids": null,
+          "custom_fields": null,
+          "description": null,
+          "footer": null,
           "issuer": {
             "type": "account"
           }
@@ -5760,6 +5793,40 @@
       "livemode": false,
       "metadata": {},
       "object": "subscription_schedule",
+      "pause_schedules": [
+        {
+          "key": "key",
+          "pause": {
+            "pause_at": 1273691932,
+            "settings": {
+              "bill_for": {
+                "outstanding_usage_through": {
+                  "type": "none"
+                },
+                "unused_time_from": {
+                  "type": "item_current_period_start"
+                }
+              },
+              "invoicing_behavior": "pending_invoice_item",
+              "type": "subscription"
+            },
+            "status": {
+              "type": "error"
+            }
+          },
+          "resume": {
+            "resume_at": 1819075195,
+            "settings": {
+              "billing_cycle_anchor": "resume_at",
+              "payment_behavior": "resume_on_payment_success",
+              "proration_behavior": "create_prorations"
+            },
+            "status": {
+              "type": "error"
+            }
+          }
+        }
+      ],
       "phases": [
         {
           "add_invoice_items": [],
@@ -6890,5 +6957,5 @@
       "url": "https://example.com/my/webhook/endpoint"
     }
   },
-  "version": "v2578"
+  "version": "v2596"
 }

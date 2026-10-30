@@ -4426,6 +4426,8 @@ struct UpdateIssuingCardBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    financial_account: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     personalization_design: Option<String>,
@@ -4449,6 +4451,7 @@ impl UpdateIssuingCardBuilder {
         Self {
             cancellation_reason: None,
             expand: None,
+            financial_account: None,
             metadata: None,
             personalization_design: None,
             pin: None,
@@ -8333,6 +8336,12 @@ impl UpdateIssuingCard {
     /// Specifies which fields in the response should be expanded.
     pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
         self.inner.expand = Some(expand.into());
+        self
+    }
+    /// The new financial account ID the card will be associated with.
+    /// This field allows a card to be reassigned to a different financial account.
+    pub fn financial_account(mut self, financial_account: impl Into<String>) -> Self {
+        self.inner.financial_account = Some(financial_account.into());
         self
     }
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.

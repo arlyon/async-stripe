@@ -31,7 +31,7 @@ pub struct ChargeOutcome {
     /// This field is only available with Radar for Fraud Teams.
     pub risk_score: Option<i64>,
     /// The ID of the Radar rule that matched the payment, if applicable.
-    pub rule: Option<stripe_types::Expandable<stripe_shared::Rule>>,
+    pub rule: Option<stripe_types::Expandable<stripe_shared::RadarRule>>,
     /// A human-readable description of the outcome type and reason, designed for you (the recipient of the payment), not your customer.
     pub seller_message: Option<String>,
     /// Possible values are `authorized`, `manual_review`, `issuer_declined`, `blocked`, and `invalid`.
@@ -54,7 +54,7 @@ pub struct ChargeOutcomeBuilder {
     reason: Option<Option<String>>,
     risk_level: Option<Option<String>>,
     risk_score: Option<Option<i64>>,
-    rule: Option<Option<stripe_types::Expandable<stripe_shared::Rule>>>,
+    rule: Option<Option<stripe_types::Expandable<stripe_shared::RadarRule>>>,
     seller_message: Option<Option<String>>,
     type_: Option<String>,
 }

@@ -125,6 +125,8 @@ pub enum CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionR
 {
     Ach,
     DomesticWireUs,
+    Fednow,
+    Rtp,
     Swift,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
@@ -135,6 +137,8 @@ impl CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResou
         match self {
 Ach => "ach",
 DomesticWireUs => "domestic_wire_us",
+Fednow => "fednow",
+Rtp => "rtp",
 Swift => "swift",
 Unknown(v) => v,
 
@@ -149,6 +153,8 @@ impl std::str::FromStr for CustomerBalanceResourceCashBalanceTransactionResource
         match s {
     "ach" => Ok(Ach),
 "domestic_wire_us" => Ok(DomesticWireUs),
+"fednow" => Ok(Fednow),
+"rtp" => Ok(Rtp),
 "swift" => Ok(Swift),
 v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork"); Ok(Unknown(v.to_owned())) }
 

@@ -499,6 +499,13 @@ pub enum CreateWebhookEndpointEnabledEvents {
     TestHelpersTestClockDeleted,
     TestHelpersTestClockInternalFailure,
     TestHelpersTestClockReady,
+    ThreeDSecureAuthenticationCanceled,
+    ThreeDSecureAuthenticationChallengeStarted,
+    ThreeDSecureAuthenticationErrored,
+    ThreeDSecureAuthenticationFailed,
+    ThreeDSecureAuthenticationRequiresChallenge,
+    ThreeDSecureAuthenticationRequiresSubmission,
+    ThreeDSecureAuthenticationSucceeded,
     TopupCanceled,
     TopupCreated,
     TopupFailed,
@@ -805,6 +812,19 @@ impl CreateWebhookEndpointEnabledEvents {
             TestHelpersTestClockDeleted => "test_helpers.test_clock.deleted",
             TestHelpersTestClockInternalFailure => "test_helpers.test_clock.internal_failure",
             TestHelpersTestClockReady => "test_helpers.test_clock.ready",
+            ThreeDSecureAuthenticationCanceled => "three_d_secure.authentication.canceled",
+            ThreeDSecureAuthenticationChallengeStarted => {
+                "three_d_secure.authentication.challenge_started"
+            }
+            ThreeDSecureAuthenticationErrored => "three_d_secure.authentication.errored",
+            ThreeDSecureAuthenticationFailed => "three_d_secure.authentication.failed",
+            ThreeDSecureAuthenticationRequiresChallenge => {
+                "three_d_secure.authentication.requires_challenge"
+            }
+            ThreeDSecureAuthenticationRequiresSubmission => {
+                "three_d_secure.authentication.requires_submission"
+            }
+            ThreeDSecureAuthenticationSucceeded => "three_d_secure.authentication.succeeded",
             TopupCanceled => "topup.canceled",
             TopupCreated => "topup.created",
             TopupFailed => "topup.failed",
@@ -1138,6 +1158,19 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             "test_helpers.test_clock.deleted" => Ok(TestHelpersTestClockDeleted),
             "test_helpers.test_clock.internal_failure" => Ok(TestHelpersTestClockInternalFailure),
             "test_helpers.test_clock.ready" => Ok(TestHelpersTestClockReady),
+            "three_d_secure.authentication.canceled" => Ok(ThreeDSecureAuthenticationCanceled),
+            "three_d_secure.authentication.challenge_started" => {
+                Ok(ThreeDSecureAuthenticationChallengeStarted)
+            }
+            "three_d_secure.authentication.errored" => Ok(ThreeDSecureAuthenticationErrored),
+            "three_d_secure.authentication.failed" => Ok(ThreeDSecureAuthenticationFailed),
+            "three_d_secure.authentication.requires_challenge" => {
+                Ok(ThreeDSecureAuthenticationRequiresChallenge)
+            }
+            "three_d_secure.authentication.requires_submission" => {
+                Ok(ThreeDSecureAuthenticationRequiresSubmission)
+            }
+            "three_d_secure.authentication.succeeded" => Ok(ThreeDSecureAuthenticationSucceeded),
             "topup.canceled" => Ok(TopupCanceled),
             "topup.created" => Ok(TopupCreated),
             "topup.failed" => Ok(TopupFailed),
@@ -1586,6 +1619,13 @@ pub enum UpdateWebhookEndpointEnabledEvents {
     TestHelpersTestClockDeleted,
     TestHelpersTestClockInternalFailure,
     TestHelpersTestClockReady,
+    ThreeDSecureAuthenticationCanceled,
+    ThreeDSecureAuthenticationChallengeStarted,
+    ThreeDSecureAuthenticationErrored,
+    ThreeDSecureAuthenticationFailed,
+    ThreeDSecureAuthenticationRequiresChallenge,
+    ThreeDSecureAuthenticationRequiresSubmission,
+    ThreeDSecureAuthenticationSucceeded,
     TopupCanceled,
     TopupCreated,
     TopupFailed,
@@ -1892,6 +1932,19 @@ impl UpdateWebhookEndpointEnabledEvents {
             TestHelpersTestClockDeleted => "test_helpers.test_clock.deleted",
             TestHelpersTestClockInternalFailure => "test_helpers.test_clock.internal_failure",
             TestHelpersTestClockReady => "test_helpers.test_clock.ready",
+            ThreeDSecureAuthenticationCanceled => "three_d_secure.authentication.canceled",
+            ThreeDSecureAuthenticationChallengeStarted => {
+                "three_d_secure.authentication.challenge_started"
+            }
+            ThreeDSecureAuthenticationErrored => "three_d_secure.authentication.errored",
+            ThreeDSecureAuthenticationFailed => "three_d_secure.authentication.failed",
+            ThreeDSecureAuthenticationRequiresChallenge => {
+                "three_d_secure.authentication.requires_challenge"
+            }
+            ThreeDSecureAuthenticationRequiresSubmission => {
+                "three_d_secure.authentication.requires_submission"
+            }
+            ThreeDSecureAuthenticationSucceeded => "three_d_secure.authentication.succeeded",
             TopupCanceled => "topup.canceled",
             TopupCreated => "topup.created",
             TopupFailed => "topup.failed",
@@ -2225,6 +2278,19 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             "test_helpers.test_clock.deleted" => Ok(TestHelpersTestClockDeleted),
             "test_helpers.test_clock.internal_failure" => Ok(TestHelpersTestClockInternalFailure),
             "test_helpers.test_clock.ready" => Ok(TestHelpersTestClockReady),
+            "three_d_secure.authentication.canceled" => Ok(ThreeDSecureAuthenticationCanceled),
+            "three_d_secure.authentication.challenge_started" => {
+                Ok(ThreeDSecureAuthenticationChallengeStarted)
+            }
+            "three_d_secure.authentication.errored" => Ok(ThreeDSecureAuthenticationErrored),
+            "three_d_secure.authentication.failed" => Ok(ThreeDSecureAuthenticationFailed),
+            "three_d_secure.authentication.requires_challenge" => {
+                Ok(ThreeDSecureAuthenticationRequiresChallenge)
+            }
+            "three_d_secure.authentication.requires_submission" => {
+                Ok(ThreeDSecureAuthenticationRequiresSubmission)
+            }
+            "three_d_secure.authentication.succeeded" => Ok(ThreeDSecureAuthenticationSucceeded),
             "topup.canceled" => Ok(TopupCanceled),
             "topup.created" => Ok(TopupCreated),
             "topup.failed" => Ok(TopupFailed),

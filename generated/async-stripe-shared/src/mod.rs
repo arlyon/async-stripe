@@ -789,6 +789,14 @@ pub mod dispute;
 #[doc(inline)]
 pub use dispute::*;
 #[doc(hidden)]
+pub mod dispute_appeal;
+#[doc(inline)]
+pub use dispute_appeal::*;
+#[doc(hidden)]
+pub mod dispute_appeal_card;
+#[doc(inline)]
+pub use dispute_appeal_card::*;
+#[doc(hidden)]
 pub mod dispute_enhanced_eligibility;
 #[doc(inline)]
 pub use dispute_enhanced_eligibility::*;
@@ -3561,6 +3569,10 @@ pub mod promotion_codes_resource_restrictions;
 #[doc(inline)]
 pub use promotion_codes_resource_restrictions::*;
 #[doc(hidden)]
+pub mod radar_rule;
+#[doc(inline)]
+pub use radar_rule::*;
+#[doc(hidden)]
 pub mod radar_radar_options;
 #[doc(inline)]
 pub use radar_radar_options::*;
@@ -3584,6 +3596,10 @@ pub use refund::*;
 pub mod refund_destination_details;
 #[doc(inline)]
 pub use refund_destination_details::*;
+#[doc(hidden)]
+pub mod refund_destination_details_afterpay_clearpay;
+#[doc(inline)]
+pub use refund_destination_details_afterpay_clearpay::*;
 #[doc(hidden)]
 pub mod refund_destination_details_blik;
 #[doc(inline)]
@@ -3612,6 +3628,10 @@ pub use refund_destination_details_gb_bank_transfer::*;
 pub mod refund_destination_details_jp_bank_transfer;
 #[doc(inline)]
 pub use refund_destination_details_jp_bank_transfer::*;
+#[doc(hidden)]
+pub mod refund_destination_details_klarna;
+#[doc(inline)]
+pub use refund_destination_details_klarna::*;
 #[doc(hidden)]
 pub mod refund_destination_details_mb_way;
 #[doc(inline)]
@@ -3664,10 +3684,6 @@ pub use review::*;
 pub mod revolut_pay_underlying_payment_method_funding_details;
 #[doc(inline)]
 pub use revolut_pay_underlying_payment_method_funding_details::*;
-#[doc(hidden)]
-pub mod rule;
-#[doc(inline)]
-pub use rule::*;
 #[doc(hidden)]
 pub mod schedules_phase_automatic_tax;
 #[doc(inline)]
@@ -4120,6 +4136,10 @@ pub use subscription_payment_method_options_mandate_options_pix::*;
 pub mod subscription_payment_method_options_pix;
 #[doc(inline)]
 pub use subscription_payment_method_options_pix::*;
+#[doc(hidden)]
+pub mod subscription_payment_method_options_sepa_debit;
+#[doc(inline)]
+pub use subscription_payment_method_options_sepa_debit::*;
 #[doc(hidden)]
 pub mod subscription_pending_invoice_item_interval;
 #[doc(inline)]

@@ -24,8 +24,11 @@ pub struct ConnectEmbeddedAccountSessionCreateComponents {
     pub payout_reconciliation_report: stripe_connect::ConnectEmbeddedBaseConfigClaim,
     pub payouts: stripe_connect::ConnectEmbeddedPayoutsConfig,
     pub payouts_list: stripe_connect::ConnectEmbeddedBaseConfigClaim,
+    pub reporting_chart: stripe_connect::ConnectEmbeddedBaseConfig,
     pub tax_registrations: stripe_connect::ConnectEmbeddedBaseConfigClaim,
     pub tax_settings: stripe_connect::ConnectEmbeddedBaseConfigClaim,
+    pub terminal_hardware_orders: stripe_connect::ConnectEmbeddedBaseConfig,
+    pub terminal_hardware_shop: stripe_connect::ConnectEmbeddedBaseConfig,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ConnectEmbeddedAccountSessionCreateComponents {
@@ -57,8 +60,11 @@ pub struct ConnectEmbeddedAccountSessionCreateComponentsBuilder {
     payout_reconciliation_report: Option<stripe_connect::ConnectEmbeddedBaseConfigClaim>,
     payouts: Option<stripe_connect::ConnectEmbeddedPayoutsConfig>,
     payouts_list: Option<stripe_connect::ConnectEmbeddedBaseConfigClaim>,
+    reporting_chart: Option<stripe_connect::ConnectEmbeddedBaseConfig>,
     tax_registrations: Option<stripe_connect::ConnectEmbeddedBaseConfigClaim>,
     tax_settings: Option<stripe_connect::ConnectEmbeddedBaseConfigClaim>,
+    terminal_hardware_orders: Option<stripe_connect::ConnectEmbeddedBaseConfig>,
+    terminal_hardware_shop: Option<stripe_connect::ConnectEmbeddedBaseConfig>,
 }
 
 #[allow(
@@ -127,8 +133,13 @@ const _: () = {
                 }
                 "payouts" => Deserialize::begin(&mut self.payouts),
                 "payouts_list" => Deserialize::begin(&mut self.payouts_list),
+                "reporting_chart" => Deserialize::begin(&mut self.reporting_chart),
                 "tax_registrations" => Deserialize::begin(&mut self.tax_registrations),
                 "tax_settings" => Deserialize::begin(&mut self.tax_settings),
+                "terminal_hardware_orders" => {
+                    Deserialize::begin(&mut self.terminal_hardware_orders)
+                }
+                "terminal_hardware_shop" => Deserialize::begin(&mut self.terminal_hardware_shop),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -155,8 +166,11 @@ const _: () = {
                 payout_reconciliation_report: None,
                 payouts: None,
                 payouts_list: None,
+                reporting_chart: None,
                 tax_registrations: None,
                 tax_settings: None,
+                terminal_hardware_orders: None,
+                terminal_hardware_shop: None,
             }
         }
 
@@ -182,8 +196,11 @@ const _: () = {
                 Some(payout_reconciliation_report),
                 Some(payouts),
                 Some(payouts_list),
+                Some(reporting_chart),
                 Some(tax_registrations),
                 Some(tax_settings),
+                Some(terminal_hardware_orders),
+                Some(terminal_hardware_shop),
             ) = (
                 self.account_management,
                 self.account_onboarding,
@@ -205,8 +222,11 @@ const _: () = {
                 self.payout_reconciliation_report,
                 self.payouts,
                 self.payouts_list,
+                self.reporting_chart,
                 self.tax_registrations,
                 self.tax_settings,
+                self.terminal_hardware_orders,
+                self.terminal_hardware_shop,
             )
             else {
                 return None;
@@ -232,8 +252,11 @@ const _: () = {
                 payout_reconciliation_report,
                 payouts,
                 payouts_list,
+                reporting_chart,
                 tax_registrations,
                 tax_settings,
+                terminal_hardware_orders,
+                terminal_hardware_shop,
             })
         }
     }
@@ -289,8 +312,15 @@ const _: () = {
                     }
                     "payouts" => b.payouts = FromValueOpt::from_value(v),
                     "payouts_list" => b.payouts_list = FromValueOpt::from_value(v),
+                    "reporting_chart" => b.reporting_chart = FromValueOpt::from_value(v),
                     "tax_registrations" => b.tax_registrations = FromValueOpt::from_value(v),
                     "tax_settings" => b.tax_settings = FromValueOpt::from_value(v),
+                    "terminal_hardware_orders" => {
+                        b.terminal_hardware_orders = FromValueOpt::from_value(v)
+                    }
+                    "terminal_hardware_shop" => {
+                        b.terminal_hardware_shop = FromValueOpt::from_value(v)
+                    }
                     _ => {}
                 }
             }

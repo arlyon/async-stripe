@@ -415,6 +415,10 @@ pub mod tax_product_registrations_resource_country_options_us_tourism_tax;
 #[doc(inline)]
 pub use tax_product_registrations_resource_country_options_us_tourism_tax::*;
 #[doc(hidden)]
+pub mod tax_product_registrations_resource_country_options_us_utility_users_tax;
+#[doc(inline)]
+pub use tax_product_registrations_resource_country_options_us_utility_users_tax::*;
+#[doc(hidden)]
 pub mod tax_product_resource_customer_details;
 #[doc(inline)]
 pub use tax_product_resource_customer_details::*;

@@ -4384,10 +4384,10 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Configures the subscription's pause behavior and, optionally, its resume behavior.
-/// Only one entry is supported.
-/// Include a key to update an existing entry.
-/// Omit to leave an existing pause schedule unchanged, or pass "" to clear it.
+/// The subscription's pause behavior and optional resume behavior.
+/// You can provide one entry.
+/// Include its `key` to update an existing pause schedule.
+/// Omit `pause_schedules` to leave the existing schedule unchanged, or pass an empty string (`""`) to clear it.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -7273,10 +7273,10 @@ impl UpdateSubscriptionSchedule {
         self.inner.metadata = Some(metadata.into());
         self
     }
-    /// Configures the subscription's pause behavior and, optionally, its resume behavior.
-    /// Only one entry is supported.
-    /// Include a key to update an existing entry.
-    /// Omit to leave an existing pause schedule unchanged, or pass "" to clear it.
+    /// The subscription's pause behavior and optional resume behavior.
+    /// You can provide one entry.
+    /// Include its `key` to update an existing pause schedule.
+    /// Omit `pause_schedules` to leave the existing schedule unchanged, or pass an empty string (`""`) to clear it.
     pub fn pause_schedules(
         mut self,
         pause_schedules: impl Into<Vec<UpdateSubscriptionSchedulePauseSchedules>>,

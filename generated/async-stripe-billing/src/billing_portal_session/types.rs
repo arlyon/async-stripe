@@ -16,6 +16,8 @@
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingPortalSession {
+    /// Behavior after the portal session expires.
+    pub after_expiration: Option<stripe_billing::PortalAfterExpiration>,
     /// The configuration used by this session, describing the features available.
     pub configuration: stripe_types::Expandable<stripe_billing::BillingPortalConfiguration>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -53,6 +55,7 @@ impl std::fmt::Debug for BillingPortalSession {
 }
 #[doc(hidden)]
 pub struct BillingPortalSessionBuilder {
+    after_expiration: Option<Option<stripe_billing::PortalAfterExpiration>>,
     configuration: Option<stripe_types::Expandable<stripe_billing::BillingPortalConfiguration>>,
     created: Option<stripe_types::Timestamp>,
     customer: Option<String>,
@@ -106,6 +109,7 @@ const _: () = {
         type Out = BillingPortalSession;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "after_expiration" => Deserialize::begin(&mut self.after_expiration),
                 "configuration" => Deserialize::begin(&mut self.configuration),
                 "created" => Deserialize::begin(&mut self.created),
                 "customer" => Deserialize::begin(&mut self.customer),
@@ -123,6 +127,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                after_expiration: Some(None),
                 configuration: None,
                 created: None,
                 customer: None,
@@ -139,6 +144,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
+                Some(after_expiration),
                 Some(configuration),
                 Some(created),
                 Some(customer),
@@ -151,6 +157,7 @@ const _: () = {
                 Some(return_url),
                 Some(url),
             ) = (
+                self.after_expiration.take(),
                 self.configuration.take(),
                 self.created,
                 self.customer.take(),
@@ -167,6 +174,7 @@ const _: () = {
                 return None;
             };
             Some(Self::Out {
+                after_expiration,
                 configuration,
                 created,
                 customer,
@@ -205,6 +213,7 @@ const _: () = {
             let mut b = BillingPortalSessionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "after_expiration" => b.after_expiration = FromValueOpt::from_value(v),
                     "configuration" => b.configuration = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
@@ -227,7 +236,8 @@ const _: () = {
 impl serde::Serialize for BillingPortalSession {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("BillingPortalSession", 12)?;
+        let mut s = s.serialize_struct("BillingPortalSession", 13)?;
+        s.serialize_field("after_expiration", &self.after_expiration)?;
         s.serialize_field("configuration", &self.configuration)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("customer", &self.customer)?;

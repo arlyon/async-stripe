@@ -21,11 +21,15 @@ pub struct TerminalConfiguration {
     /// String indicating the name of the Configuration object, set by the user
     pub name: Option<String>,
     pub offline: Option<stripe_terminal::TerminalConfigurationConfigurationResourceOfflineConfig>,
+    pub reader_security:
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceReaderSecurityConfig>,
     pub reboot_window:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceRebootWindow>,
     pub stripe_s700:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
     pub stripe_s710:
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
+    pub stripe_t600:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
     pub tipping: Option<stripe_terminal::TerminalConfigurationConfigurationResourceTipping>,
     pub verifone_m425:
@@ -62,12 +66,18 @@ pub struct TerminalConfigurationBuilder {
     name: Option<Option<String>>,
     offline:
         Option<Option<stripe_terminal::TerminalConfigurationConfigurationResourceOfflineConfig>>,
+    reader_security: Option<
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceReaderSecurityConfig>,
+    >,
     reboot_window:
         Option<Option<stripe_terminal::TerminalConfigurationConfigurationResourceRebootWindow>>,
     stripe_s700: Option<
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
     >,
     stripe_s710: Option<
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
+    >,
+    stripe_t600: Option<
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
     >,
     tipping: Option<Option<stripe_terminal::TerminalConfigurationConfigurationResourceTipping>>,
@@ -137,9 +147,11 @@ const _: () = {
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "name" => Deserialize::begin(&mut self.name),
                 "offline" => Deserialize::begin(&mut self.offline),
+                "reader_security" => Deserialize::begin(&mut self.reader_security),
                 "reboot_window" => Deserialize::begin(&mut self.reboot_window),
                 "stripe_s700" => Deserialize::begin(&mut self.stripe_s700),
                 "stripe_s710" => Deserialize::begin(&mut self.stripe_s710),
+                "stripe_t600" => Deserialize::begin(&mut self.stripe_t600),
                 "tipping" => Deserialize::begin(&mut self.tipping),
                 "verifone_m425" => Deserialize::begin(&mut self.verifone_m425),
                 "verifone_p400" => Deserialize::begin(&mut self.verifone_p400),
@@ -161,9 +173,11 @@ const _: () = {
                 livemode: None,
                 name: Some(None),
                 offline: Some(None),
+                reader_security: Some(None),
                 reboot_window: Some(None),
                 stripe_s700: Some(None),
                 stripe_s710: Some(None),
+                stripe_t600: Some(None),
                 tipping: Some(None),
                 verifone_m425: Some(None),
                 verifone_p400: Some(None),
@@ -184,9 +198,11 @@ const _: () = {
                 Some(livemode),
                 Some(name),
                 Some(offline),
+                Some(reader_security),
                 Some(reboot_window),
                 Some(stripe_s700),
                 Some(stripe_s710),
+                Some(stripe_t600),
                 Some(tipping),
                 Some(verifone_m425),
                 Some(verifone_p400),
@@ -203,9 +219,11 @@ const _: () = {
                 self.livemode,
                 self.name.take(),
                 self.offline,
+                self.reader_security.take(),
                 self.reboot_window,
                 self.stripe_s700.take(),
                 self.stripe_s710.take(),
+                self.stripe_t600.take(),
                 self.tipping.take(),
                 self.verifone_m425.take(),
                 self.verifone_p400.take(),
@@ -226,9 +244,11 @@ const _: () = {
                 livemode,
                 name,
                 offline,
+                reader_security,
                 reboot_window,
                 stripe_s700,
                 stripe_s710,
+                stripe_t600,
                 tipping,
                 verifone_m425,
                 verifone_p400,
@@ -271,9 +291,11 @@ const _: () = {
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "name" => b.name = FromValueOpt::from_value(v),
                     "offline" => b.offline = FromValueOpt::from_value(v),
+                    "reader_security" => b.reader_security = FromValueOpt::from_value(v),
                     "reboot_window" => b.reboot_window = FromValueOpt::from_value(v),
                     "stripe_s700" => b.stripe_s700 = FromValueOpt::from_value(v),
                     "stripe_s710" => b.stripe_s710 = FromValueOpt::from_value(v),
+                    "stripe_t600" => b.stripe_t600 = FromValueOpt::from_value(v),
                     "tipping" => b.tipping = FromValueOpt::from_value(v),
                     "verifone_m425" => b.verifone_m425 = FromValueOpt::from_value(v),
                     "verifone_p400" => b.verifone_p400 = FromValueOpt::from_value(v),
@@ -292,7 +314,7 @@ const _: () = {
 impl serde::Serialize for TerminalConfiguration {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("TerminalConfiguration", 19)?;
+        let mut s = s.serialize_struct("TerminalConfiguration", 21)?;
         s.serialize_field("bbpos_wisepad3", &self.bbpos_wisepad3)?;
         s.serialize_field("bbpos_wisepos_e", &self.bbpos_wisepos_e)?;
         s.serialize_field("cellular", &self.cellular)?;
@@ -301,9 +323,11 @@ impl serde::Serialize for TerminalConfiguration {
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("name", &self.name)?;
         s.serialize_field("offline", &self.offline)?;
+        s.serialize_field("reader_security", &self.reader_security)?;
         s.serialize_field("reboot_window", &self.reboot_window)?;
         s.serialize_field("stripe_s700", &self.stripe_s700)?;
         s.serialize_field("stripe_s710", &self.stripe_s710)?;
+        s.serialize_field("stripe_t600", &self.stripe_t600)?;
         s.serialize_field("tipping", &self.tipping)?;
         s.serialize_field("verifone_m425", &self.verifone_m425)?;
         s.serialize_field("verifone_p400", &self.verifone_p400)?;
