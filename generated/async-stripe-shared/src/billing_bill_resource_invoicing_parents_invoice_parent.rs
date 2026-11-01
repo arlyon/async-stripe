@@ -148,14 +148,7 @@ impl std::str::FromStr for BillingBillResourceInvoicingParentsInvoiceParentType 
         match s {
             "quote_details" => Ok(QuoteDetails),
             "subscription_details" => Ok(SubscriptionDetails),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BillingBillResourceInvoicingParentsInvoiceParentType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

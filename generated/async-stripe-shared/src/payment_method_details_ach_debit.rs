@@ -187,14 +187,7 @@ impl std::str::FromStr for PaymentMethodDetailsAchDebitAccountHolderType {
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodDetailsAchDebitAccountHolderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -177,14 +177,7 @@ impl std::str::FromStr for TerminalConfigurationConfigurationResourceWifiConfigT
             "enterprise_eap_peap" => Ok(EnterpriseEapPeap),
             "enterprise_eap_tls" => Ok(EnterpriseEapTls),
             "personal_psk" => Ok(PersonalPsk),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TerminalConfigurationConfigurationResourceWifiConfigType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

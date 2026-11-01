@@ -399,10 +399,7 @@ impl std::str::FromStr for ApiVersion {
             "2026-06-24.dahlia" => Ok(V2026_06_24_dahlia),
             "2026-07-29.dahlia" => Ok(V2026_07_29_dahlia),
             "2026-08-26.dahlia" => Ok(V2026_08_26_dahlia),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ApiVersion");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

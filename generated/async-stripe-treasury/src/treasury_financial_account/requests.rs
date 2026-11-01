@@ -713,14 +713,7 @@ impl std::str::FromStr for CreateTreasuryFinancialAccountPlatformRestrictionsInb
         match s {
             "restricted" => Ok(Restricted),
             "unrestricted" => Ok(Unrestricted),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -788,14 +781,7 @@ impl std::str::FromStr for CreateTreasuryFinancialAccountPlatformRestrictionsOut
         match s {
             "restricted" => Ok(Restricted),
             "unrestricted" => Ok(Unrestricted),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1349,14 +1335,7 @@ impl std::str::FromStr for UpdateTreasuryFinancialAccountForwardingSettingsType 
         match s {
             "financial_account" => Ok(FinancialAccount),
             "payment_method" => Ok(PaymentMethod),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateTreasuryFinancialAccountForwardingSettingsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1450,14 +1429,7 @@ impl std::str::FromStr for UpdateTreasuryFinancialAccountPlatformRestrictionsInb
         match s {
             "restricted" => Ok(Restricted),
             "unrestricted" => Ok(Unrestricted),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1525,14 +1497,7 @@ impl std::str::FromStr for UpdateTreasuryFinancialAccountPlatformRestrictionsOut
         match s {
             "restricted" => Ok(Restricted),
             "unrestricted" => Ok(Unrestricted),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1742,14 +1707,7 @@ impl std::str::FromStr for CloseTreasuryFinancialAccountForwardingSettingsType {
         match s {
             "financial_account" => Ok(FinancialAccount),
             "payment_method" => Ok(PaymentMethod),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CloseTreasuryFinancialAccountForwardingSettingsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

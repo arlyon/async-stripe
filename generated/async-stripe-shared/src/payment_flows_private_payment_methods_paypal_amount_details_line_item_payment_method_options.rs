@@ -172,14 +172,7 @@ impl std::str::FromStr
             "digital_goods" => Ok(DigitalGoods),
             "donation" => Ok(Donation),
             "physical_goods" => Ok(PhysicalGoods),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentFlowsPrivatePaymentMethodsPaypalAmountDetailsLineItemPaymentMethodOptionsCategory"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

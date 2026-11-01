@@ -225,14 +225,7 @@ impl std::str::FromStr for TaxProductRegistrationsResourceCountryOptionsUnitedSt
             "state_communications_tax" => Ok(StateCommunicationsTax),
             "state_retail_delivery_fee" => Ok(StateRetailDeliveryFee),
             "state_sales_tax" => Ok(StateSalesTax),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductRegistrationsResourceCountryOptionsUnitedStatesType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

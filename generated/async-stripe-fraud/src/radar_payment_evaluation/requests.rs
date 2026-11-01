@@ -233,14 +233,7 @@ impl std::str::FromStr
         match s {
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -326,14 +319,7 @@ impl std::str::FromStr
             "recurring" => Ok(Recurring),
             "setup_one_off" => Ok(SetupOneOff),
             "setup_recurring" => Ok(SetupRecurring),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -410,14 +396,7 @@ impl std::str::FromStr
         use CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType::*;
         match s {
             "card" => Ok(Card),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

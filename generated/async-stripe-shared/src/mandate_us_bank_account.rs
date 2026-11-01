@@ -129,14 +129,7 @@ impl std::str::FromStr for MandateUsBankAccountCollectionMethod {
         use MandateUsBankAccountCollectionMethod::*;
         match s {
             "paper" => Ok(Paper),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "MandateUsBankAccountCollectionMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

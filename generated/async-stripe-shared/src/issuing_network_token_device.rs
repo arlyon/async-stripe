@@ -184,14 +184,7 @@ impl std::str::FromStr for IssuingNetworkTokenDeviceType {
             "other" => Ok(Other),
             "phone" => Ok(Phone),
             "watch" => Ok(Watch),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingNetworkTokenDeviceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -139,14 +139,7 @@ impl std::str::FromStr for PaymentMethodNaverPayFunding {
         match s {
             "card" => Ok(Card),
             "points" => Ok(Points),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodNaverPayFunding"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

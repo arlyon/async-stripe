@@ -172,14 +172,7 @@ impl std::str::FromStr for IssuingDisputeOtherEvidenceProductType {
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingDisputeOtherEvidenceProductType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

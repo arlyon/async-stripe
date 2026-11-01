@@ -151,14 +151,7 @@ impl std::str::FromStr for SetupIntentPaymentMethodOptionsAcssDebitCurrency {
         match s {
             "cad" => Ok(Cad),
             "usd" => Ok(Usd),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentPaymentMethodOptionsAcssDebitCurrency"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -245,14 +238,7 @@ impl std::str::FromStr for SetupIntentPaymentMethodOptionsAcssDebitVerificationM
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

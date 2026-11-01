@@ -590,14 +590,7 @@ impl std::str::FromStr for CreateQuoteAutomaticTaxLiabilityType {
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateQuoteAutomaticTaxLiabilityType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -755,14 +748,7 @@ impl std::str::FromStr for CreateQuoteInvoiceSettingsIssuerType {
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateQuoteInvoiceSettingsIssuerType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -943,14 +929,7 @@ impl std::str::FromStr for CreateQuoteLineItemsPriceDataRecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateQuoteLineItemsPriceDataRecurringInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1022,14 +1001,7 @@ impl std::str::FromStr for CreateQuoteLineItemsPriceDataTaxBehavior {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateQuoteLineItemsPriceDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1195,14 +1167,7 @@ impl std::str::FromStr for CreateQuoteSubscriptionDataBillingModeFlexibleProrati
         match s {
             "included" => Ok(Included),
             "itemized" => Ok(Itemized),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateQuoteSubscriptionDataBillingModeFlexibleProrationDiscounts"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1271,14 +1236,7 @@ impl std::str::FromStr for CreateQuoteSubscriptionDataBillingModeType {
         match s {
             "classic" => Ok(Classic),
             "flexible" => Ok(Flexible),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateQuoteSubscriptionDataBillingModeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1674,14 +1632,7 @@ impl std::str::FromStr for UpdateQuoteAutomaticTaxLiabilityType {
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateQuoteAutomaticTaxLiabilityType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1815,14 +1766,7 @@ impl std::str::FromStr for UpdateQuoteInvoiceSettingsIssuerType {
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateQuoteInvoiceSettingsIssuerType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2013,14 +1957,7 @@ impl std::str::FromStr for UpdateQuoteLineItemsPriceDataRecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateQuoteLineItemsPriceDataRecurringInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2092,14 +2029,7 @@ impl std::str::FromStr for UpdateQuoteLineItemsPriceDataTaxBehavior {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateQuoteLineItemsPriceDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

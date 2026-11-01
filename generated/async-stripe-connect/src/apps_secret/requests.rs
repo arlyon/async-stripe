@@ -85,10 +85,7 @@ impl std::str::FromStr for ListAppsSecretScopeType {
         match s {
             "account" => Ok(Account),
             "user" => Ok(User),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListAppsSecretScopeType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -273,10 +270,7 @@ impl std::str::FromStr for FindAppsSecretScopeType {
         match s {
             "account" => Ok(Account),
             "user" => Ok(User),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "FindAppsSecretScopeType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -448,10 +442,7 @@ impl std::str::FromStr for CreateAppsSecretScopeType {
         match s {
             "account" => Ok(Account),
             "user" => Ok(User),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateAppsSecretScopeType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -619,14 +610,7 @@ impl std::str::FromStr for DeleteWhereAppsSecretScopeType {
         match s {
             "account" => Ok(Account),
             "user" => Ok(User),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "DeleteWhereAppsSecretScopeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -214,14 +214,7 @@ impl std::str::FromStr for FundingInstructionsBankTransferFinancialAddressSuppor
             "spei" => Ok(Spei),
             "swift" => Ok(Swift),
             "zengin" => Ok(Zengin),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FundingInstructionsBankTransferFinancialAddressSupportedNetworks"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -324,14 +317,7 @@ impl std::str::FromStr for FundingInstructionsBankTransferFinancialAddressType {
             "spei" => Ok(Spei),
             "swift" => Ok(Swift),
             "zengin" => Ok(Zengin),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FundingInstructionsBankTransferFinancialAddressType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

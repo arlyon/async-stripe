@@ -141,14 +141,7 @@ impl std::str::FromStr for PaymentFlowsAmountDetailsResourceErrorCode {
             "amount_details_tax_shipping_discount_greater_than_amount" => {
                 Ok(AmountDetailsTaxShippingDiscountGreaterThanAmount)
             }
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentFlowsAmountDetailsResourceErrorCode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

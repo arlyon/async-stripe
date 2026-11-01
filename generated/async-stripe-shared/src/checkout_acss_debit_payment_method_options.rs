@@ -185,14 +185,7 @@ impl std::str::FromStr for CheckoutAcssDebitPaymentMethodOptionsCurrency {
         match s {
             "cad" => Ok(Cad),
             "usd" => Ok(Usd),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutAcssDebitPaymentMethodOptionsCurrency"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -285,14 +278,7 @@ impl std::str::FromStr for CheckoutAcssDebitPaymentMethodOptionsSetupFutureUsage
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutAcssDebitPaymentMethodOptionsSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -381,14 +367,7 @@ impl std::str::FromStr for CheckoutAcssDebitPaymentMethodOptionsVerificationMeth
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutAcssDebitPaymentMethodOptionsVerificationMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

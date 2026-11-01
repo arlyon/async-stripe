@@ -143,14 +143,7 @@ impl std::str::FromStr for SubscriptionSchedulesResourceInvoiceItemPeriodResourc
             "min_item_period_end" => Ok(MinItemPeriodEnd),
             "phase_end" => Ok(PhaseEnd),
             "timestamp" => Ok(Timestamp),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEndType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

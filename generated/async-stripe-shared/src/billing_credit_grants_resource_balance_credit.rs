@@ -154,14 +154,7 @@ impl std::str::FromStr for BillingCreditGrantsResourceBalanceCreditType {
         match s {
             "credits_application_invoice_voided" => Ok(CreditsApplicationInvoiceVoided),
             "credits_granted" => Ok(CreditsGranted),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BillingCreditGrantsResourceBalanceCreditType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

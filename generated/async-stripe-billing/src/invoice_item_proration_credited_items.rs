@@ -150,14 +150,7 @@ impl std::str::FromStr for InvoiceItemProrationCreditedItemsType {
         match s {
             "invoice_item" => Ok(InvoiceItem),
             "invoice_line_items" => Ok(InvoiceLineItems),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InvoiceItemProrationCreditedItemsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

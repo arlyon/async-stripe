@@ -139,14 +139,7 @@ impl std::str::FromStr for IssuingAuthorizationAuthenticationExemptionClaimedBy 
         match s {
             "acquirer" => Ok(Acquirer),
             "issuer" => Ok(Issuer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationAuthenticationExemptionClaimedBy"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -234,14 +227,7 @@ impl std::str::FromStr for IssuingAuthorizationAuthenticationExemptionType {
             "low_value_transaction" => Ok(LowValueTransaction),
             "transaction_risk_analysis" => Ok(TransactionRiskAnalysis),
             "unknown" => Ok(Unknown),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationAuthenticationExemptionType"
-                );
-                Ok(_Unknown(v.to_owned()))
-            }
+            v => Ok(_Unknown(v.to_owned())),
         }
     }
 }

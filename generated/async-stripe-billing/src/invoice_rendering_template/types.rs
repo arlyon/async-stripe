@@ -218,14 +218,7 @@ impl std::str::FromStr for InvoiceRenderingTemplateStatus {
         match s {
             "active" => Ok(Active),
             "archived" => Ok(Archived),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InvoiceRenderingTemplateStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

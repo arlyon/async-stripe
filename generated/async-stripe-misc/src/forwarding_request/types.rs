@@ -280,14 +280,7 @@ impl std::str::FromStr for ForwardingRequestReplacements {
             "card_number" => Ok(CardNumber),
             "cardholder_name" => Ok(CardholderName),
             "request_signature" => Ok(RequestSignature),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ForwardingRequestReplacements"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

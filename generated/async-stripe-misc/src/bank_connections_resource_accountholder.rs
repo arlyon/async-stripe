@@ -159,14 +159,7 @@ impl std::str::FromStr for BankConnectionsResourceAccountholderType {
         match s {
             "account" => Ok(Account),
             "customer" => Ok(Customer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BankConnectionsResourceAccountholderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

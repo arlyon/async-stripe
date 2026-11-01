@@ -153,14 +153,7 @@ impl std::str::FromStr for TaxProductResourceTaxSettingsDefaultsProvider {
             "avalara" => Ok(Avalara),
             "sphere" => Ok(Sphere),
             "stripe" => Ok(Stripe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductResourceTaxSettingsDefaultsProvider"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -247,14 +240,7 @@ impl std::str::FromStr for TaxProductResourceTaxSettingsDefaultsTaxBehavior {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "inferred_by_currency" => Ok(InferredByCurrency),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductResourceTaxSettingsDefaultsTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

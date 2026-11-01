@@ -130,14 +130,7 @@ impl std::str::FromStr for PaymentMethodOptionsUsBankAccountMandateOptionsCollec
         use PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod::*;
         match s {
             "paper" => Ok(Paper),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

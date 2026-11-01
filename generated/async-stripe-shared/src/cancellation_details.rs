@@ -175,14 +175,7 @@ impl std::str::FromStr for CancellationDetailsFeedback {
             "too_complex" => Ok(TooComplex),
             "too_expensive" => Ok(TooExpensive),
             "unused" => Ok(Unused),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CancellationDetailsFeedback"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -269,10 +262,7 @@ impl std::str::FromStr for CancellationDetailsReason {
             "cancellation_requested" => Ok(CancellationRequested),
             "payment_disputed" => Ok(PaymentDisputed),
             "payment_failed" => Ok(PaymentFailed),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CancellationDetailsReason");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

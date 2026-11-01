@@ -145,14 +145,7 @@ impl std::str::FromStr for TerminalReaderReaderResourceChoiceStyle {
         match s {
             "primary" => Ok(Primary),
             "secondary" => Ok(Secondary),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TerminalReaderReaderResourceChoiceStyle"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

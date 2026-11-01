@@ -152,14 +152,7 @@ impl std::str::FromStr for DisputeEnhancedEligibilityVisaCompellingEvidence3Requ
                 Ok(MissingPriorUndisputedTransactionDescription)
             }
             "missing_prior_undisputed_transactions" => Ok(MissingPriorUndisputedTransactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -253,14 +246,7 @@ impl std::str::FromStr for DisputeEnhancedEligibilityVisaCompellingEvidence3Stat
             "not_qualified" => Ok(NotQualified),
             "qualified" => Ok(Qualified),
             "requires_action" => Ok(RequiresAction),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "DisputeEnhancedEligibilityVisaCompellingEvidence3Status"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

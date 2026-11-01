@@ -191,14 +191,7 @@ impl std::str::FromStr for TaxProductResourceTaxTransactionShippingCostTaxBehavi
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductResourceTaxTransactionShippingCostTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

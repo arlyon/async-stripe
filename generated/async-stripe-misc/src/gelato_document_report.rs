@@ -278,10 +278,7 @@ impl std::str::FromStr for GelatoDocumentReportSex {
             "female" => Ok(Female),
             "male" => Ok(Male),
             "unknown" => Ok(Unknown),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoDocumentReportSex");
-                Ok(_Unknown(v.to_owned()))
-            }
+            v => Ok(_Unknown(v.to_owned())),
         }
     }
 }
@@ -362,10 +359,7 @@ impl std::str::FromStr for GelatoDocumentReportStatus {
         match s {
             "unverified" => Ok(Unverified),
             "verified" => Ok(Verified),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoDocumentReportStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -449,10 +443,7 @@ impl std::str::FromStr for GelatoDocumentReportType {
             "driving_license" => Ok(DrivingLicense),
             "id_card" => Ok(IdCard),
             "passport" => Ok(Passport),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoDocumentReportType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

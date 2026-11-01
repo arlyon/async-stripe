@@ -191,14 +191,7 @@ impl std::str::FromStr for GelatoIdNumberReportIdNumberType {
             "br_cpf" => Ok(BrCpf),
             "sg_nric" => Ok(SgNric),
             "us_ssn" => Ok(UsSsn),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "GelatoIdNumberReportIdNumberType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -279,10 +272,7 @@ impl std::str::FromStr for GelatoIdNumberReportStatus {
         match s {
             "unverified" => Ok(Unverified),
             "verified" => Ok(Verified),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoIdNumberReportStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

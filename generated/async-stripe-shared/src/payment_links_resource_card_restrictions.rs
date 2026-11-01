@@ -140,14 +140,7 @@ impl std::str::FromStr for PaymentLinksResourceCardRestrictionsBrandsBlocked {
             "discover_global_network" => Ok(DiscoverGlobalNetwork),
             "mastercard" => Ok(Mastercard),
             "visa" => Ok(Visa),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentLinksResourceCardRestrictionsBrandsBlocked"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

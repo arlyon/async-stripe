@@ -1086,10 +1086,7 @@ impl std::str::FromStr for InvoiceBillingReason {
             "subscription_threshold" => Ok(SubscriptionThreshold),
             "subscription_update" => Ok(SubscriptionUpdate),
             "upcoming" => Ok(Upcoming),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "InvoiceBillingReason");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1175,10 +1172,7 @@ impl std::str::FromStr for InvoiceCustomerTaxExempt {
             "exempt" => Ok(Exempt),
             "none" => Ok(None),
             "reverse" => Ok(Reverse),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "InvoiceCustomerTaxExempt");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1269,10 +1263,7 @@ impl std::str::FromStr for InvoiceCollectionMethod {
         match s {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "InvoiceCollectionMethod");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1360,10 +1351,7 @@ impl std::str::FromStr for InvoiceStatus {
             "paid" => Ok(Paid),
             "uncollectible" => Ok(Uncollectible),
             "void" => Ok(Void),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "InvoiceStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

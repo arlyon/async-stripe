@@ -342,10 +342,7 @@ impl std::str::FromStr for TaxRateJurisdictionLevel {
             "district" => Ok(District),
             "multiple" => Ok(Multiple),
             "state" => Ok(State),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TaxRateJurisdictionLevel");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -428,10 +425,7 @@ impl std::str::FromStr for TaxRateRateType {
         match s {
             "flat_amount" => Ok(FlatAmount),
             "percentage" => Ok(Percentage),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TaxRateRateType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -564,10 +558,7 @@ impl std::str::FromStr for TaxRateTaxType {
             "sales_tax" => Ok(SalesTax),
             "service_tax" => Ok(ServiceTax),
             "vat" => Ok(Vat),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TaxRateTaxType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

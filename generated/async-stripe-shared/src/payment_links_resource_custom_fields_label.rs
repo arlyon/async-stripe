@@ -135,14 +135,7 @@ impl std::str::FromStr for PaymentLinksResourceCustomFieldsLabelType {
         use PaymentLinksResourceCustomFieldsLabelType::*;
         match s {
             "custom" => Ok(Custom),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentLinksResourceCustomFieldsLabelType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

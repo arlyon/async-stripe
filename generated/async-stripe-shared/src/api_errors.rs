@@ -949,10 +949,7 @@ impl std::str::FromStr for ApiErrorsCode {
             }
             "transfers_not_allowed" => Ok(TransfersNotAllowed),
             "url_invalid" => Ok(UrlInvalid),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ApiErrorsCode");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1040,10 +1037,7 @@ impl std::str::FromStr for ApiErrorsType {
             "card_error" => Ok(CardError),
             "idempotency_error" => Ok(IdempotencyError),
             "invalid_request_error" => Ok(InvalidRequestError),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ApiErrorsType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

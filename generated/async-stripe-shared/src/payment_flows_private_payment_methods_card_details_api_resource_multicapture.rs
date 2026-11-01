@@ -135,14 +135,7 @@ impl std::str::FromStr
         match s {
             "available" => Ok(Available),
             "unavailable" => Ok(Unavailable),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

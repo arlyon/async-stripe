@@ -143,14 +143,7 @@ impl std::str::FromStr for PaymentMethodOptionsGiropaySetupFutureUsage {
         use PaymentMethodOptionsGiropaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsGiropaySetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -186,14 +186,7 @@ impl std::str::FromStr for FinancialConnectionsAuthorizationStatus {
         match s {
             "active" => Ok(Active),
             "inactive" => Ok(Inactive),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FinancialConnectionsAuthorizationStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

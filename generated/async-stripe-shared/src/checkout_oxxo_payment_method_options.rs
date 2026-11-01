@@ -151,14 +151,7 @@ impl std::str::FromStr for CheckoutOxxoPaymentMethodOptionsSetupFutureUsage {
         use CheckoutOxxoPaymentMethodOptionsSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutOxxoPaymentMethodOptionsSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

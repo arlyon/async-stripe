@@ -339,14 +339,7 @@ impl std::str::FromStr for CreateShippingRateDeliveryEstimateMaximumUnit {
             "hour" => Ok(Hour),
             "month" => Ok(Month),
             "week" => Ok(Week),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateShippingRateDeliveryEstimateMaximumUnit"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -445,14 +438,7 @@ impl std::str::FromStr for CreateShippingRateDeliveryEstimateMinimumUnit {
             "hour" => Ok(Hour),
             "month" => Ok(Month),
             "week" => Ok(Week),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateShippingRateDeliveryEstimateMinimumUnit"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

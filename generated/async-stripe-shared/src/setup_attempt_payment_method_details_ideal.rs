@@ -247,14 +247,7 @@ impl std::str::FromStr for SetupAttemptPaymentMethodDetailsIdealBank {
             "triodos_bank" => Ok(TriodosBank),
             "van_lanschot" => Ok(VanLanschot),
             "yoursafe" => Ok(Yoursafe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupAttemptPaymentMethodDetailsIdealBank"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -394,14 +387,7 @@ impl std::str::FromStr for SetupAttemptPaymentMethodDetailsIdealBic {
             "REVOLT21" => Ok(Revolt21),
             "SNSBNL2A" => Ok(Snsbnl2a),
             "TRIONL2U" => Ok(Trionl2u),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupAttemptPaymentMethodDetailsIdealBic"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

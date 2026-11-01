@@ -382,14 +382,7 @@ impl std::str::FromStr for TreasuryOutboundTransferStatus {
             "posted" => Ok(Posted),
             "processing" => Ok(Processing),
             "returned" => Ok(Returned),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryOutboundTransferStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -154,14 +154,7 @@ impl std::str::FromStr for PaymentMethodOptionsKlarnaCaptureMethod {
         use PaymentMethodOptionsKlarnaCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsKlarnaCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -252,14 +245,7 @@ impl std::str::FromStr for PaymentMethodOptionsKlarnaSetupFutureUsage {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsKlarnaSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

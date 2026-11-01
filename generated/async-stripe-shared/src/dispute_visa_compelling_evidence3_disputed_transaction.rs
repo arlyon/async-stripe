@@ -217,14 +217,7 @@ impl std::str::FromStr for DisputeVisaCompellingEvidence3DisputedTransactionMerc
         match s {
             "merchandise" => Ok(Merchandise),
             "services" => Ok(Services),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

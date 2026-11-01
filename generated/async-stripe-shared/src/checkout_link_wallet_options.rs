@@ -132,14 +132,7 @@ impl std::str::FromStr for CheckoutLinkWalletOptionsDisplay {
         match s {
             "auto" => Ok(Auto),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutLinkWalletOptionsDisplay"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

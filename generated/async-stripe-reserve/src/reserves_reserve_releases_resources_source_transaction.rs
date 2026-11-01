@@ -145,14 +145,7 @@ impl std::str::FromStr for ReservesReserveReleasesResourcesSourceTransactionType
         match s {
             "dispute" => Ok(Dispute),
             "refund" => Ok(Refund),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ReservesReserveReleasesResourcesSourceTransactionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

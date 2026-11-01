@@ -232,10 +232,7 @@ impl std::str::FromStr for ListPaymentMethodType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListPaymentMethodType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -918,14 +915,7 @@ impl std::str::FromStr for CreatePaymentMethodCardDetailsParamsNetworksPreferred
             "cartes_bancaires" => Ok(CartesBancaires),
             "mastercard" => Ok(Mastercard),
             "visa" => Ok(Visa),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodCardDetailsParamsNetworksPreferred"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1137,10 +1127,7 @@ impl std::str::FromStr for CreatePaymentMethodEpsBank {
             "volksbank_gruppe" => Ok(VolksbankGruppe),
             "volkskreditbank_ag" => Ok(VolkskreditbankAg),
             "vr_bank_braunau" => Ok(VrBankBraunau),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreatePaymentMethodEpsBank");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1227,14 +1214,7 @@ impl std::str::FromStr for CreatePaymentMethodFpxAccountHolderType {
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodFpxAccountHolderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1368,10 +1348,7 @@ impl std::str::FromStr for CreatePaymentMethodFpxBank {
             "rhb" => Ok(Rhb),
             "standard_chartered" => Ok(StandardChartered),
             "uob" => Ok(Uob),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreatePaymentMethodFpxBank");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1519,14 +1496,7 @@ impl std::str::FromStr for CreatePaymentMethodIdealBank {
             "triodos_bank" => Ok(TriodosBank),
             "van_lanschot" => Ok(VanLanschot),
             "yoursafe" => Ok(Yoursafe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodIdealBank"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1666,14 +1636,7 @@ impl std::str::FromStr for CreatePaymentMethodNaverPayFunding {
         match s {
             "card" => Ok(Card),
             "points" => Ok(Points),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodNaverPayFunding"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1878,10 +1841,7 @@ impl std::str::FromStr for CreatePaymentMethodP24Bank {
             "toyota_bank" => Ok(ToyotaBank),
             "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreatePaymentMethodP24Bank");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2053,14 +2013,7 @@ impl std::str::FromStr for CreatePaymentMethodSofortCountry {
             "ES" => Ok(Es),
             "IT" => Ok(It),
             "NL" => Ok(Nl),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodSofortCountry"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2286,10 +2239,7 @@ impl std::str::FromStr for CreatePaymentMethodType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreatePaymentMethodType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2417,14 +2367,7 @@ impl std::str::FromStr for CreatePaymentMethodUpiMandateOptionsAmountType {
         match s {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodUpiMandateOptionsAmountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2533,14 +2476,7 @@ impl std::str::FromStr for CreatePaymentMethodUsBankAccountAccountHolderType {
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodUsBankAccountAccountHolderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2606,14 +2542,7 @@ impl std::str::FromStr for CreatePaymentMethodUsBankAccountAccountType {
         match s {
             "checking" => Ok(Checking),
             "savings" => Ok(Savings),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodUsBankAccountAccountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3187,14 +3116,7 @@ impl std::str::FromStr for UpdatePaymentMethodCardNetworksPreferred {
             "cartes_bancaires" => Ok(CartesBancaires),
             "mastercard" => Ok(Mastercard),
             "visa" => Ok(Visa),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodCardNetworksPreferred"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3318,14 +3240,7 @@ impl std::str::FromStr for UpdatePaymentMethodUsBankAccountAccountHolderType {
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodUsBankAccountAccountHolderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3391,14 +3306,7 @@ impl std::str::FromStr for UpdatePaymentMethodUsBankAccountAccountType {
         match s {
             "checking" => Ok(Checking),
             "savings" => Ok(Savings),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodUsBankAccountAccountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

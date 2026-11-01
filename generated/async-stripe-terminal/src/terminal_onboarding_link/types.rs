@@ -166,14 +166,7 @@ impl std::str::FromStr for TerminalOnboardingLinkLinkType {
         use TerminalOnboardingLinkLinkType::*;
         match s {
             "apple_terms_and_conditions" => Ok(AppleTermsAndConditions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TerminalOnboardingLinkLinkType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

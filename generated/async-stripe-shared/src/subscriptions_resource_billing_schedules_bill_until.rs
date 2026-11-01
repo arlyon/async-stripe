@@ -156,14 +156,7 @@ impl std::str::FromStr for SubscriptionsResourceBillingSchedulesBillUntilType {
         match s {
             "duration" => Ok(Duration),
             "timestamp" => Ok(Timestamp),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscriptionsResourceBillingSchedulesBillUntilType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -288,14 +288,7 @@ impl std::str::FromStr for UpdateTreasuryOutboundTransferTrackingDetailsType {
         match s {
             "ach" => Ok(Ach),
             "us_domestic_wire" => Ok(UsDomesticWire),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateTreasuryOutboundTransferTrackingDetailsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -680,14 +673,7 @@ impl std::str::FromStr for ReturnOutboundTransferTreasuryOutboundTransferReturne
             "invalid_currency" => Ok(InvalidCurrency),
             "no_account" => Ok(NoAccount),
             "other" => Ok(Other),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ReturnOutboundTransferTreasuryOutboundTransferReturnedDetailsCode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -898,14 +884,7 @@ impl std::str::FromStr for CreateTreasuryOutboundTransferDestinationPaymentMetho
         use CreateTreasuryOutboundTransferDestinationPaymentMethodDataType::*;
         match s {
             "financial_account" => Ok(FinancialAccount),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTreasuryOutboundTransferDestinationPaymentMethodDataType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1035,14 +1014,7 @@ impl std::str::FromStr
         match s {
             "ach" => Ok(Ach),
             "us_domestic_wire" => Ok(UsDomesticWire),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTreasuryOutboundTransferDestinationPaymentMethodOptionsUsBankAccountNetwork"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

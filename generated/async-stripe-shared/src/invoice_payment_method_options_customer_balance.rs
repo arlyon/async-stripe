@@ -139,14 +139,7 @@ impl std::str::FromStr for InvoicePaymentMethodOptionsCustomerBalanceFundingType
         use InvoicePaymentMethodOptionsCustomerBalanceFundingType::*;
         match s {
             "bank_transfer" => Ok(BankTransfer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InvoicePaymentMethodOptionsCustomerBalanceFundingType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

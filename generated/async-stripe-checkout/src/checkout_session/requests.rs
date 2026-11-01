@@ -700,14 +700,7 @@ impl std::str::FromStr for CreateCheckoutSessionAutomaticTaxLiabilityType {
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionAutomaticTaxLiabilityType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -829,14 +822,7 @@ impl std::str::FromStr for CreateCheckoutSessionBrandingSettingsBorderStyle {
             "pill" => Ok(Pill),
             "rectangular" => Ok(Rectangular),
             "rounded" => Ok(Rounded),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionBrandingSettingsBorderStyle"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -974,14 +960,7 @@ impl std::str::FromStr for CreateCheckoutSessionBrandingSettingsFontFamily {
             "titillium_web" => Ok(TitilliumWeb),
             "ubuntu_mono" => Ok(UbuntuMono),
             "zen_maru_gothic" => Ok(ZenMaruGothic),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionBrandingSettingsFontFamily"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1075,14 +1054,7 @@ impl std::str::FromStr for CreateCheckoutSessionBrandingSettingsIconType {
         match s {
             "file" => Ok(File),
             "url" => Ok(Url),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionBrandingSettingsIconType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1176,14 +1148,7 @@ impl std::str::FromStr for CreateCheckoutSessionBrandingSettingsLogoType {
         match s {
             "file" => Ok(File),
             "url" => Ok(Url),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionBrandingSettingsLogoType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1318,14 +1283,7 @@ impl std::str::FromStr
         match s {
             "auto" => Ok(Auto),
             "hidden" => Ok(Hidden),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1403,14 +1361,7 @@ impl std::str::FromStr for CreateCheckoutSessionConsentCollectionPromotions {
         match s {
             "auto" => Ok(Auto),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionConsentCollectionPromotions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1477,14 +1428,7 @@ impl std::str::FromStr for CreateCheckoutSessionConsentCollectionTermsOfService 
         match s {
             "none" => Ok(None),
             "required" => Ok(Required),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionConsentCollectionTermsOfService"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1669,14 +1613,7 @@ impl std::str::FromStr for CreateCheckoutSessionCustomFieldsLabelType {
         use CreateCheckoutSessionCustomFieldsLabelType::*;
         match s {
             "custom" => Ok(Custom),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionCustomFieldsLabelType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1807,14 +1744,7 @@ impl std::str::FromStr for CreateCheckoutSessionCustomFieldsType {
             "dropdown" => Ok(Dropdown),
             "numeric" => Ok(Numeric),
             "text" => Ok(Text),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionCustomFieldsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1928,14 +1858,7 @@ impl std::str::FromStr for CreateCheckoutSessionCustomerCreation {
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionCustomerCreation"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2035,14 +1958,7 @@ impl std::str::FromStr for CreateCheckoutSessionCustomerUpdateAddress {
         match s {
             "auto" => Ok(Auto),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionCustomerUpdateAddress"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2108,14 +2024,7 @@ impl std::str::FromStr for CreateCheckoutSessionCustomerUpdateName {
         match s {
             "auto" => Ok(Auto),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionCustomerUpdateName"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2181,14 +2090,7 @@ impl std::str::FromStr for CreateCheckoutSessionCustomerUpdateShipping {
         match s {
             "auto" => Ok(Auto),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionCustomerUpdateShipping"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2436,14 +2338,7 @@ impl std::str::FromStr for CreateCheckoutSessionExcludedPaymentMethodTypes {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionExcludedPaymentMethodTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2635,14 +2530,7 @@ impl std::str::FromStr for CreateCheckoutSessionInvoiceCreationInvoiceDataIssuer
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2746,14 +2634,7 @@ impl std::str::FromStr
         match s {
             "exclude_tax" => Ok(ExcludeTax),
             "include_inclusive_tax" => Ok(IncludeInclusiveTax),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3005,14 +2886,7 @@ impl std::str::FromStr for CreateCheckoutSessionLineItemsPriceDataRecurringInter
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionLineItemsPriceDataRecurringInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3084,14 +2958,7 @@ impl std::str::FromStr for CreateCheckoutSessionLineItemsPriceDataTaxBehavior {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionLineItemsPriceDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3425,14 +3292,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentIntentDataCaptureMethod {
             "automatic" => Ok(Automatic),
             "automatic_async" => Ok(AutomaticAsync),
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentIntentDataCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3509,14 +3369,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentIntentDataSetupFutureUsag
         match s {
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentIntentDataSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3696,14 +3549,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodCollection {
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodCollection"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3799,14 +3645,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodDataAllowRedisplay 
             "always" => Ok(Always),
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodDataAllowRedisplay"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4152,14 +3991,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsAcssDebitCur
         match s {
             "cad" => Ok(Cad),
             "usd" => Ok(Usd),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsAcssDebitCurrency"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4279,14 +4111,7 @@ impl std::str::FromStr
         match s {
             "invoice" => Ok(Invoice),
             "subscription" => Ok(Subscription),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4369,14 +4194,7 @@ impl std::str::FromStr
             "combined" => Ok(Combined),
             "interval" => Ok(Interval),
             "sporadic" => Ok(Sporadic),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4456,14 +4274,7 @@ impl std::str::FromStr
         match s {
             "business" => Ok(Business),
             "personal" => Ok(Personal),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4551,14 +4362,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsAcssDebitSet
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsAcssDebitSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4631,14 +4435,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsAcssDebitVer
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4740,14 +4537,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsAffirmCaptur
         use CreateCheckoutSessionPaymentMethodOptionsAffirmCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsAffirmCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4817,14 +4607,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsAffirmSetupF
         use CreateCheckoutSessionPaymentMethodOptionsAffirmSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsAffirmSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4927,14 +4710,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsAfterpayClea
         use CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpayCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpayCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5010,14 +4786,7 @@ impl std::str::FromStr
         use CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5127,14 +4896,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsAlipaySetupF
         use CreateCheckoutSessionPaymentMethodOptionsAlipaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsAlipaySetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5224,14 +4986,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsAlmaCaptureM
         use CreateCheckoutSessionPaymentMethodOptionsAlmaCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsAlmaCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5330,14 +5085,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsAmazonPayCap
         use CreateCheckoutSessionPaymentMethodOptionsAmazonPayCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsAmazonPayCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5412,14 +5160,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsAmazonPaySet
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsAmazonPaySetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5532,14 +5273,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsAuBecsDebitS
         use CreateCheckoutSessionPaymentMethodOptionsAuBecsDebitSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsAuBecsDebitSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5689,14 +5423,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsBacsDebitSet
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsBacsDebitSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5804,14 +5531,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsBancontactSe
         use CreateCheckoutSessionPaymentMethodOptionsBancontactSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsBancontactSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5903,14 +5623,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsBillieCaptur
         use CreateCheckoutSessionPaymentMethodOptionsBillieCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsBillieCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6022,14 +5735,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsBoletoSetupF
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsBoletoSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6184,14 +5890,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsCardCaptureM
         use CreateCheckoutSessionPaymentMethodOptionsCardCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsCardCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6286,14 +5985,7 @@ impl std::str::FromStr
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsCardRequestExtendedAuthorization"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6369,14 +6061,7 @@ impl std::str::FromStr
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsCardRequestIncrementalAuthorization"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6454,14 +6139,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsCardRequestM
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsCardRequestMulticapture"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6529,14 +6207,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsCardRequestO
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsCardRequestOvercapture"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6610,14 +6281,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsCardRequestT
             "any" => Ok(Any),
             "automatic" => Ok(Automatic),
             "challenge" => Ok(Challenge),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsCardRequestThreeDSecure"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6727,14 +6391,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsCardRestrict
             "discover_global_network" => Ok(DiscoverGlobalNetwork),
             "mastercard" => Ok(Mastercard),
             "visa" => Ok(Visa),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsBrandsBlocked"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6810,14 +6467,7 @@ impl std::str::FromStr
             "credit" => Ok(Credit),
             "debit" => Ok(Debit),
             "prepaid" => Ok(Prepaid),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsFundingTypesBlocked"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6902,14 +6552,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsCardSetupFut
         match s {
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsCardSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7010,14 +6653,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsCashappCaptu
         use CreateCheckoutSessionPaymentMethodOptionsCashappCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsCashappCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7095,14 +6731,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsCashappSetup
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsCashappSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7206,14 +6835,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsCryptoSetupF
         use CreateCheckoutSessionPaymentMethodOptionsCryptoSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsCryptoSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7400,14 +7022,7 @@ impl std::str::FromStr
             "spei" => Ok(Spei),
             "swift" => Ok(Swift),
             "zengin" => Ok(Zengin),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7493,14 +7108,7 @@ impl std::str::FromStr
             "jp_bank_transfer" => Ok(JpBankTransfer),
             "mx_bank_transfer" => Ok(MxBankTransfer),
             "us_bank_transfer" => Ok(UsBankTransfer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7570,14 +7178,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsCustomerBala
         use CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceFundingType::*;
         match s {
             "bank_transfer" => Ok(BankTransfer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceFundingType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7653,14 +7254,7 @@ impl std::str::FromStr
         use CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7772,14 +7366,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsDemoPaySetup
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsDemoPaySetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7883,14 +7470,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsEpsSetupFutu
         use CreateCheckoutSessionPaymentMethodOptionsEpsSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsEpsSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7992,14 +7572,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsFpxSetupFutu
         use CreateCheckoutSessionPaymentMethodOptionsFpxSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsFpxSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8102,14 +7675,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsGiropaySetup
         use CreateCheckoutSessionPaymentMethodOptionsGiropaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsGiropaySetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8214,14 +7780,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsGrabpaySetup
         use CreateCheckoutSessionPaymentMethodOptionsGrabpaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsGrabpaySetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8325,14 +7884,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsIdealSetupFu
         use CreateCheckoutSessionPaymentMethodOptionsIdealSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsIdealSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8433,14 +7985,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsKakaoPayCapt
         use CreateCheckoutSessionPaymentMethodOptionsKakaoPayCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsKakaoPayCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8515,14 +8060,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsKakaoPaySetu
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsKakaoPaySetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8627,14 +8165,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsKlarnaCaptur
         use CreateCheckoutSessionPaymentMethodOptionsKlarnaCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsKlarnaCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8704,14 +8235,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsKlarnaSetupF
         use CreateCheckoutSessionPaymentMethodOptionsKlarnaSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsKlarnaSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8827,14 +8351,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscr
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8968,14 +8485,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsKonbiniSetup
         use CreateCheckoutSessionPaymentMethodOptionsKonbiniSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsKonbiniSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9075,14 +8585,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsKrCardCaptur
         use CreateCheckoutSessionPaymentMethodOptionsKrCardCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsKrCardCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9155,14 +8658,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsKrCardSetupF
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsKrCardSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9262,14 +8758,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsLinkCaptureM
         use CreateCheckoutSessionPaymentMethodOptionsLinkCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsLinkCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9342,14 +8831,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsLinkSetupFut
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsLinkSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9450,14 +8932,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsMobilepayCap
         use CreateCheckoutSessionPaymentMethodOptionsMobilepayCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsMobilepayCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9529,14 +9004,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsMobilepaySet
         use CreateCheckoutSessionPaymentMethodOptionsMobilepaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsMobilepaySetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9644,14 +9112,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsMultibancoSe
         use CreateCheckoutSessionPaymentMethodOptionsMultibancoSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsMultibancoSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9754,14 +9215,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsNaverPayCapt
         use CreateCheckoutSessionPaymentMethodOptionsNaverPayCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsNaverPayCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9836,14 +9290,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsNaverPaySetu
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsNaverPaySetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9953,14 +9400,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsOxxoSetupFut
         use CreateCheckoutSessionPaymentMethodOptionsOxxoSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsOxxoSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10067,14 +9507,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsP24SetupFutu
         use CreateCheckoutSessionPaymentMethodOptionsP24SetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsP24SetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10172,14 +9605,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsPaycoCapture
         use CreateCheckoutSessionPaymentMethodOptionsPaycoCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsPaycoCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10249,14 +9675,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsPaycoSetupFu
         use CreateCheckoutSessionPaymentMethodOptionsPaycoSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsPaycoSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10360,14 +9779,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsPaynowSetupF
         use CreateCheckoutSessionPaymentMethodOptionsPaynowSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsPaynowSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10485,14 +9897,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsPaypalCaptur
         use CreateCheckoutSessionPaymentMethodOptionsPaypalCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsPaypalCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10615,14 +10020,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsPaypalPrefer
             "pt-PT" => Ok(PtMinusPt),
             "sk-SK" => Ok(SkMinusSk),
             "sv-SE" => Ok(SvMinusSe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10699,14 +10097,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsPaypalSetupF
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsPaypalSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10868,14 +10259,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsPaytoMandate
         match s {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsPaytoMandateOptionsAmountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10965,14 +10349,7 @@ impl std::str::FromStr
             "quarterly" => Ok(Quarterly),
             "semi_annual" => Ok(SemiAnnual),
             "weekly" => Ok(Weekly),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsPaytoMandateOptionsPaymentSchedule"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11077,14 +10454,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsPaytoMandate
             "salary" => Ok(Salary),
             "tax" => Ok(Tax),
             "utility" => Ok(Utility),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsPaytoMandateOptionsPurpose"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11161,14 +10531,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsPaytoSetupFu
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsPaytoSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11283,14 +10646,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsPixAmountInc
         match s {
             "always" => Ok(Always),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsPixAmountIncludesIof"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11425,14 +10781,7 @@ impl std::str::FromStr
         match s {
             "always" => Ok(Always),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountIncludesIof"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11510,14 +10859,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsPixMandateOp
         match s {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11598,14 +10940,7 @@ impl std::str::FromStr
             "quarterly" => Ok(Quarterly),
             "weekly" => Ok(Weekly),
             "yearly" => Ok(Yearly),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsPaymentSchedule"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11686,14 +11021,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsPixSetupFutu
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11793,14 +11121,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsRevolutPayCa
         use CreateCheckoutSessionPaymentMethodOptionsRevolutPayCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsRevolutPayCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11875,14 +11196,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsRevolutPaySe
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsRevolutPaySetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11986,14 +11300,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsSamsungPayCa
         use CreateCheckoutSessionPaymentMethodOptionsSamsungPayCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsSamsungPayCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12065,14 +11372,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsSamsungPaySe
         use CreateCheckoutSessionPaymentMethodOptionsSamsungPaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsSamsungPaySetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12164,14 +11464,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsSatispayCapt
         use CreateCheckoutSessionPaymentMethodOptionsSatispayCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsSatispayCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12261,14 +11554,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsScalapayCapt
         use CreateCheckoutSessionPaymentMethodOptionsScalapayCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsScalapayCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12416,14 +11702,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsSepaDebitSet
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsSepaDebitSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12529,14 +11808,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsSofortSetupF
         use CreateCheckoutSessionPaymentMethodOptionsSofortSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsSofortSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12636,14 +11908,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsSunbitCaptur
         use CreateCheckoutSessionPaymentMethodOptionsSunbitCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsSunbitCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12713,14 +11978,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsSunbitSetupF
         use CreateCheckoutSessionPaymentMethodOptionsSunbitSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsSunbitSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12853,14 +12111,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsTwintSetupFu
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12994,14 +12245,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsUpiMandateOp
         match s {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsUpiMandateOptionsAmountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13073,14 +12317,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsUpiSetupFutu
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsUpiSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13245,14 +12482,7 @@ impl std::str::FromStr
             "ownership" => Ok(Ownership),
             "payment_method" => Ok(PaymentMethod),
             "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13335,14 +12565,7 @@ impl std::str::FromStr
             "balances" => Ok(Balances),
             "ownership" => Ok(Ownership),
             "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13430,14 +12653,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsUsBankAccoun
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsUsBankAccountSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13509,14 +12725,7 @@ impl std::str::FromStr
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13626,14 +12835,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsWechatPayCli
             "android" => Ok(Android),
             "ios" => Ok(Ios),
             "web" => Ok(Web),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsWechatPayClient"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13703,14 +12905,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsWechatPaySet
         use CreateCheckoutSessionPaymentMethodOptionsWechatPaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodOptionsWechatPaySetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13946,14 +13141,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodTypes {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPaymentMethodTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14058,14 +13246,7 @@ impl std::str::FromStr for CreateCheckoutSessionPermissionsUpdateShippingDetails
         match s {
             "client_only" => Ok(ClientOnly),
             "server_only" => Ok(ServerOnly),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionPermissionsUpdateShippingDetails"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14201,14 +13382,7 @@ impl std::str::FromStr for CreateCheckoutSessionSavedPaymentMethodOptionsAllowRe
             "always" => Ok(Always),
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14278,14 +13452,7 @@ impl std::str::FromStr for CreateCheckoutSessionSavedPaymentMethodOptionsPayment
         match s {
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14356,14 +13523,7 @@ impl std::str::FromStr for CreateCheckoutSessionSavedPaymentMethodOptionsPayment
         match s {
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15198,14 +14358,7 @@ impl std::str::FromStr for CreateCheckoutSessionShippingAddressCollectionAllowed
             "ZM" => Ok(Zm),
             "ZW" => Ok(Zw),
             "ZZ" => Ok(Zz),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionShippingAddressCollectionAllowedCountries"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15428,14 +14581,7 @@ impl std::str::FromStr
             "hour" => Ok(Hour),
             "month" => Ok(Month),
             "week" => Ok(Week),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15553,14 +14699,7 @@ impl std::str::FromStr
             "hour" => Ok(Hour),
             "month" => Ok(Month),
             "week" => Ok(Week),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15707,14 +14846,7 @@ impl std::str::FromStr
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15793,14 +14925,7 @@ impl std::str::FromStr for CreateCheckoutSessionShippingOptionsShippingRateDataT
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15865,14 +14990,7 @@ impl std::str::FromStr for CreateCheckoutSessionShippingOptionsShippingRateDataT
         use CreateCheckoutSessionShippingOptionsShippingRateDataType::*;
         match s {
             "fixed_amount" => Ok(FixedAmount),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionShippingOptionsShippingRateDataType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16128,14 +15246,7 @@ impl std::str::FromStr
         match s {
             "included" => Ok(Included),
             "itemized" => Ok(Itemized),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionSubscriptionDataBillingModeFlexibleProrationDiscounts"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16214,14 +15325,7 @@ impl std::str::FromStr for CreateCheckoutSessionSubscriptionDataBillingModeType 
         match s {
             "classic" => Ok(Classic),
             "flexible" => Ok(Flexible),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionSubscriptionDataBillingModeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16341,14 +15445,7 @@ impl std::str::FromStr for CreateCheckoutSessionSubscriptionDataInvoiceSettingsI
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16450,14 +15547,7 @@ impl std::str::FromStr for CreateCheckoutSessionSubscriptionDataPendingInvoiceIt
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionSubscriptionDataPendingInvoiceItemIntervalInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16528,14 +15618,7 @@ impl std::str::FromStr for CreateCheckoutSessionSubscriptionDataProrationBehavio
         match s {
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionSubscriptionDataProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16676,14 +15759,7 @@ impl std::str::FromStr
             "cancel" => Ok(Cancel),
             "create_invoice" => Ok(CreateInvoice),
             "pause" => Ok(Pause),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16787,14 +15863,7 @@ impl std::str::FromStr for CreateCheckoutSessionTaxIdCollectionRequired {
         match s {
             "if_supported" => Ok(IfSupported),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionTaxIdCollectionRequired"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16914,14 +15983,7 @@ impl std::str::FromStr for CreateCheckoutSessionWalletOptionsLinkDisplay {
         match s {
             "auto" => Ok(Auto),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCheckoutSessionWalletOptionsLinkDisplay"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -17804,14 +16866,7 @@ impl std::str::FromStr for UpdateCheckoutSessionLineItemsPriceDataRecurringInter
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateCheckoutSessionLineItemsPriceDataRecurringInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -17883,14 +16938,7 @@ impl std::str::FromStr for UpdateCheckoutSessionLineItemsPriceDataTaxBehavior {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateCheckoutSessionLineItemsPriceDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -18111,14 +17159,7 @@ impl std::str::FromStr
             "hour" => Ok(Hour),
             "month" => Ok(Month),
             "week" => Ok(Week),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -18236,14 +17277,7 @@ impl std::str::FromStr
             "hour" => Ok(Hour),
             "month" => Ok(Month),
             "week" => Ok(Week),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -18390,14 +17424,7 @@ impl std::str::FromStr
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -18476,14 +17503,7 @@ impl std::str::FromStr for UpdateCheckoutSessionShippingOptionsShippingRateDataT
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -18548,14 +17568,7 @@ impl std::str::FromStr for UpdateCheckoutSessionShippingOptionsShippingRateDataT
         use UpdateCheckoutSessionShippingOptionsShippingRateDataType::*;
         match s {
             "fixed_amount" => Ok(FixedAmount),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateCheckoutSessionShippingOptionsShippingRateDataType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

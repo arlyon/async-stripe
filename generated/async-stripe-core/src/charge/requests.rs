@@ -732,14 +732,7 @@ impl std::str::FromStr for UpdateChargeFraudDetailsUserReport {
         match s {
             "fraudulent" => Ok(Fraudulent),
             "safe" => Ok(Safe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateChargeFraudDetailsUserReport"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

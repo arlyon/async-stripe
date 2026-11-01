@@ -436,10 +436,7 @@ impl std::str::FromStr for PayoutReconciliationStatus {
             "completed" => Ok(Completed),
             "in_progress" => Ok(InProgress),
             "not_applicable" => Ok(NotApplicable),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PayoutReconciliationStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -520,10 +517,7 @@ impl std::str::FromStr for PayoutType {
         match s {
             "bank_account" => Ok(BankAccount),
             "card" => Ok(Card),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PayoutType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

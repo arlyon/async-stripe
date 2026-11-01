@@ -154,14 +154,7 @@ impl std::str::FromStr for PaymentMethodOptionsWechatPayClient {
             "android" => Ok(Android),
             "ios" => Ok(Ios),
             "web" => Ok(Web),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsWechatPayClient"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -246,14 +239,7 @@ impl std::str::FromStr for PaymentMethodOptionsWechatPaySetupFutureUsage {
         use PaymentMethodOptionsWechatPaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsWechatPaySetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

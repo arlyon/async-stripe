@@ -298,10 +298,7 @@ impl std::str::FromStr for ReserveHoldCreatedBy {
         match s {
             "application" => Ok(Application),
             "stripe" => Ok(Stripe),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ReserveHoldCreatedBy");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -382,10 +379,7 @@ impl std::str::FromStr for ReserveHoldReason {
         match s {
             "charge" => Ok(Charge),
             "standalone" => Ok(Standalone),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ReserveHoldReason");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -470,10 +464,7 @@ impl std::str::FromStr for ReserveHoldSourceType {
             "bank_account" => Ok(BankAccount),
             "card" => Ok(Card),
             "fpx" => Ok(Fpx),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ReserveHoldSourceType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

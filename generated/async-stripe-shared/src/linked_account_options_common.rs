@@ -165,14 +165,7 @@ impl std::str::FromStr for LinkedAccountOptionsCommonPermissions {
             "ownership" => Ok(Ownership),
             "payment_method" => Ok(PaymentMethod),
             "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "LinkedAccountOptionsCommonPermissions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -256,14 +249,7 @@ impl std::str::FromStr for LinkedAccountOptionsCommonPrefetch {
             "balances" => Ok(Balances),
             "ownership" => Ok(Ownership),
             "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "LinkedAccountOptionsCommonPrefetch"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

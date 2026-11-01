@@ -236,14 +236,7 @@ impl std::str::FromStr for GelatoVerifiedOutputsIdNumberType {
             "br_cpf" => Ok(BrCpf),
             "sg_nric" => Ok(SgNric),
             "us_ssn" => Ok(UsSsn),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "GelatoVerifiedOutputsIdNumberType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -331,10 +324,7 @@ impl std::str::FromStr for GelatoVerifiedOutputsSex {
             "female" => Ok(Female),
             "male" => Ok(Male),
             "unknown" => Ok(Unknown),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoVerifiedOutputsSex");
-                Ok(_Unknown(v.to_owned()))
-            }
+            v => Ok(_Unknown(v.to_owned())),
         }
     }
 }

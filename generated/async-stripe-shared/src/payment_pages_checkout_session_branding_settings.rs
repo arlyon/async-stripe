@@ -199,14 +199,7 @@ impl std::str::FromStr for PaymentPagesCheckoutSessionBrandingSettingsBorderStyl
             "pill" => Ok(Pill),
             "rectangular" => Ok(Rectangular),
             "rounded" => Ok(Rounded),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentPagesCheckoutSessionBrandingSettingsBorderStyle"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

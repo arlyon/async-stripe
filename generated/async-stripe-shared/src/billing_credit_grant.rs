@@ -315,10 +315,7 @@ impl std::str::FromStr for BillingCreditGrantCategory {
         match s {
             "paid" => Ok(Paid),
             "promotional" => Ok(Promotional),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "BillingCreditGrantCategory");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

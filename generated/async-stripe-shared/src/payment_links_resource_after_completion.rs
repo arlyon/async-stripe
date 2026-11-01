@@ -145,14 +145,7 @@ impl std::str::FromStr for PaymentLinksResourceAfterCompletionType {
         match s {
             "hosted_confirmation" => Ok(HostedConfirmation),
             "redirect" => Ok(Redirect),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentLinksResourceAfterCompletionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

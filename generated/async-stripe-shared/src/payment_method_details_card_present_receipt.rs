@@ -248,14 +248,7 @@ impl std::str::FromStr for PaymentMethodDetailsCardPresentReceiptAccountType {
             "credit" => Ok(Credit),
             "prepaid" => Ok(Prepaid),
             "unknown" => Ok(Unknown),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodDetailsCardPresentReceiptAccountType"
-                );
-                Ok(_Unknown(v.to_owned()))
-            }
+            v => Ok(_Unknown(v.to_owned())),
         }
     }
 }

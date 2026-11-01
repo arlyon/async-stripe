@@ -160,10 +160,7 @@ impl std::str::FromStr for CreditNoteRefundType {
         match s {
             "payment_record_refund" => Ok(PaymentRecordRefund),
             "refund" => Ok(Refund),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreditNoteRefundType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

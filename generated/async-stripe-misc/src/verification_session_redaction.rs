@@ -135,14 +135,7 @@ impl std::str::FromStr for VerificationSessionRedactionStatus {
             "processing" => Ok(Processing),
             "redacted" => Ok(Redacted),
             "validated" => Ok(Validated),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "VerificationSessionRedactionStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

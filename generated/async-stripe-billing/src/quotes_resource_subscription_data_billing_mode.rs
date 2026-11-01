@@ -138,14 +138,7 @@ impl std::str::FromStr for QuotesResourceSubscriptionDataBillingModeType {
         match s {
             "classic" => Ok(Classic),
             "flexible" => Ok(Flexible),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "QuotesResourceSubscriptionDataBillingModeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

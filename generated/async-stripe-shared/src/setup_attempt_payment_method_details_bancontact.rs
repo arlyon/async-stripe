@@ -217,14 +217,7 @@ impl std::str::FromStr for SetupAttemptPaymentMethodDetailsBancontactPreferredLa
             "en" => Ok(En),
             "fr" => Ok(Fr),
             "nl" => Ok(Nl),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupAttemptPaymentMethodDetailsBancontactPreferredLanguage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

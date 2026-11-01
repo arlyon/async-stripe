@@ -179,10 +179,7 @@ impl std::str::FromStr for RecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "RecurringInterval");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -267,10 +264,7 @@ impl std::str::FromStr for RecurringUsageType {
         match s {
             "licensed" => Ok(Licensed),
             "metered" => Ok(Metered),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "RecurringUsageType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

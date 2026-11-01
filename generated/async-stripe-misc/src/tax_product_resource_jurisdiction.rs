@@ -162,14 +162,7 @@ impl std::str::FromStr for TaxProductResourceJurisdictionLevel {
             "county" => Ok(County),
             "district" => Ok(District),
             "state" => Ok(State),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductResourceJurisdictionLevel"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

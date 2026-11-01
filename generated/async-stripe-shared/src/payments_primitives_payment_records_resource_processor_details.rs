@@ -140,14 +140,7 @@ impl std::str::FromStr for PaymentsPrimitivesPaymentRecordsResourceProcessorDeta
         use PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType::*;
         match s {
             "custom" => Ok(Custom),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -161,14 +161,7 @@ impl std::str::FromStr for RefundDestinationDetailsCardType {
             "pending" => Ok(Pending),
             "refund" => Ok(Refund),
             "reversal" => Ok(Reversal),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "RefundDestinationDetailsCardType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

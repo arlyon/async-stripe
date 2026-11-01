@@ -190,7 +190,7 @@ impl std::str::FromStr for CustomerBalanceResourceCashBalanceTransactionResource
 "jp_bank_transfer" => Ok(JpBankTransfer),
 "mx_bank_transfer" => Ok(MxBankTransfer),
 "us_bank_transfer" => Ok(UsBankTransfer),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType"); Ok(Unknown(v.to_owned())) }
+v => Ok(Unknown(v.to_owned())),
 
         }
     }

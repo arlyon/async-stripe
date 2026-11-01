@@ -155,14 +155,7 @@ impl std::str::FromStr for PaymentIntentNextActionVerifyWithMicrodepositsMicrode
         match s {
             "amounts" => Ok(Amounts),
             "descriptor_code" => Ok(DescriptorCode),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

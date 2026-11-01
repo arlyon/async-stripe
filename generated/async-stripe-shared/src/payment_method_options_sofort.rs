@@ -161,14 +161,7 @@ impl std::str::FromStr for PaymentMethodOptionsSofortPreferredLanguage {
             "it" => Ok(It),
             "nl" => Ok(Nl),
             "pl" => Ok(Pl),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsSofortPreferredLanguage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -258,14 +251,7 @@ impl std::str::FromStr for PaymentMethodOptionsSofortSetupFutureUsage {
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsSofortSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

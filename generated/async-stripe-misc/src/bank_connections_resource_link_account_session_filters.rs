@@ -189,14 +189,7 @@ impl std::str::FromStr for BankConnectionsResourceLinkAccountSessionFiltersAccou
             "line_of_credit" => Ok(LineOfCredit),
             "mortgage" => Ok(Mortgage),
             "savings" => Ok(Savings),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -296,14 +289,7 @@ impl std::str::FromStr
             "all" => Ok(All),
             "at_least_one" => Ok(AtLeastOne),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BankConnectionsResourceLinkAccountSessionFiltersRequirePaymentMethodSupport"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

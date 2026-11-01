@@ -150,10 +150,7 @@ impl std::str::FromStr for TaxIdVerificationStatus {
             "unavailable" => Ok(Unavailable),
             "unverified" => Ok(Unverified),
             "verified" => Ok(Verified),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TaxIdVerificationStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

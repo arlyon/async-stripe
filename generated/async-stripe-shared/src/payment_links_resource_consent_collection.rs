@@ -157,14 +157,7 @@ impl std::str::FromStr for PaymentLinksResourceConsentCollectionPromotions {
         match s {
             "auto" => Ok(Auto),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentLinksResourceConsentCollectionPromotions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -248,14 +241,7 @@ impl std::str::FromStr for PaymentLinksResourceConsentCollectionTermsOfService {
         match s {
             "none" => Ok(None),
             "required" => Ok(Required),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentLinksResourceConsentCollectionTermsOfService"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -149,14 +149,7 @@ impl std::str::FromStr for AccountInvoicesSettingsHostedPaymentMethodSave {
             "always" => Ok(Always),
             "never" => Ok(Never),
             "offer" => Ok(Offer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "AccountInvoicesSettingsHostedPaymentMethodSave"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

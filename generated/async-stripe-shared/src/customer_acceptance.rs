@@ -148,10 +148,7 @@ impl std::str::FromStr for CustomerAcceptanceType {
         match s {
             "offline" => Ok(Offline),
             "online" => Ok(Online),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerAcceptanceType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

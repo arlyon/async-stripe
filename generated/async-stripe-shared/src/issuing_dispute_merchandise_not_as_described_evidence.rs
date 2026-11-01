@@ -190,14 +190,7 @@ impl std::str::FromStr for IssuingDisputeMerchandiseNotAsDescribedEvidenceReturn
         match s {
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -409,14 +409,7 @@ impl std::str::FromStr for PaymentMethodDetailsCardPresentReadMethod {
             "contactless_magstripe_mode" => Ok(ContactlessMagstripeMode),
             "magnetic_stripe_fallback" => Ok(MagneticStripeFallback),
             "magnetic_stripe_track2" => Ok(MagneticStripeTrack2),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodDetailsCardPresentReadMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

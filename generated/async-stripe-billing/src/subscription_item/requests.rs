@@ -64,14 +64,7 @@ impl std::str::FromStr for DeleteSubscriptionItemPaymentBehavior {
             "default_incomplete" => Ok(DefaultIncomplete),
             "error_if_incomplete" => Ok(ErrorIfIncomplete),
             "pending_if_incomplete" => Ok(PendingIfIncomplete),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "DeleteSubscriptionItemPaymentBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -140,14 +133,7 @@ impl std::str::FromStr for DeleteSubscriptionItemProrationBehavior {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "DeleteSubscriptionItemProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -527,14 +513,7 @@ impl std::str::FromStr for CreateSubscriptionItemPaymentBehavior {
             "default_incomplete" => Ok(DefaultIncomplete),
             "error_if_incomplete" => Ok(ErrorIfIncomplete),
             "pending_if_incomplete" => Ok(PendingIfIncomplete),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionItemPaymentBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -677,14 +656,7 @@ impl std::str::FromStr for CreateSubscriptionItemPriceDataRecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionItemPriceDataRecurringInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -756,14 +728,7 @@ impl std::str::FromStr for CreateSubscriptionItemPriceDataTaxBehavior {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionItemPriceDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -833,14 +798,7 @@ impl std::str::FromStr for CreateSubscriptionItemProrationBehavior {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionItemProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1091,14 +1049,7 @@ impl std::str::FromStr for UpdateSubscriptionItemPaymentBehavior {
             "default_incomplete" => Ok(DefaultIncomplete),
             "error_if_incomplete" => Ok(ErrorIfIncomplete),
             "pending_if_incomplete" => Ok(PendingIfIncomplete),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionItemPaymentBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1242,14 +1193,7 @@ impl std::str::FromStr for UpdateSubscriptionItemPriceDataRecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionItemPriceDataRecurringInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1321,14 +1265,7 @@ impl std::str::FromStr for UpdateSubscriptionItemPriceDataTaxBehavior {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionItemPriceDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1398,14 +1335,7 @@ impl std::str::FromStr for UpdateSubscriptionItemProrationBehavior {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionItemProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

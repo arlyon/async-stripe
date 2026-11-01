@@ -133,10 +133,7 @@ fn build_inner(ident: &RustIdent, builder_name: &RustIdent, objects: &EnumOfObje
             fn construct(key: &str, o: miniserde::json::Object) -> Option<Self> {{
                 Some(match key {{
                     {cons_inner}
-                    _ => {{
-                        tracing::warn!("Unknown object type '{{}}' for enum '{{}}'", key, "{ident}");
-                        return None;
-                    }}
+                    _ => return None,
                 }})
             }}
         }}

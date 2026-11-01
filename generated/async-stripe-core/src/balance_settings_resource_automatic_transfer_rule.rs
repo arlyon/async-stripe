@@ -148,14 +148,7 @@ impl std::str::FromStr for BalanceSettingsResourceAutomaticTransferRuleType {
         match s {
             "transfer_all" => Ok(TransferAll),
             "transfer_up_to_amount" => Ok(TransferUpToAmount),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BalanceSettingsResourceAutomaticTransferRuleType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

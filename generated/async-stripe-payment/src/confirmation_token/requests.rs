@@ -476,14 +476,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataAllowRedispla
             "always" => Ok(Always),
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateConfirmationTokenPaymentMethodDataAllowRedisplay"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -801,14 +794,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataEpsBank {
             "volksbank_gruppe" => Ok(VolksbankGruppe),
             "volkskreditbank_ag" => Ok(VolkskreditbankAg),
             "vr_bank_braunau" => Ok(VrBankBraunau),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateConfirmationTokenPaymentMethodDataEpsBank"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -896,14 +882,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataFpxAccountHol
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateConfirmationTokenPaymentMethodDataFpxAccountHolderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1038,14 +1017,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataFpxBank {
             "rhb" => Ok(Rhb),
             "standard_chartered" => Ok(StandardChartered),
             "uob" => Ok(Uob),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateConfirmationTokenPaymentMethodDataFpxBank"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1194,14 +1166,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataIdealBank {
             "triodos_bank" => Ok(TriodosBank),
             "van_lanschot" => Ok(VanLanschot),
             "yoursafe" => Ok(Yoursafe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateConfirmationTokenPaymentMethodDataIdealBank"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1342,14 +1307,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataNaverPayFundi
         match s {
             "card" => Ok(Card),
             "points" => Ok(Points),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateConfirmationTokenPaymentMethodDataNaverPayFunding"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1556,14 +1514,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataP24Bank {
             "toyota_bank" => Ok(ToyotaBank),
             "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateConfirmationTokenPaymentMethodDataP24Bank"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1737,14 +1688,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataSofortCountry
             "ES" => Ok(Es),
             "IT" => Ok(It),
             "NL" => Ok(Nl),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateConfirmationTokenPaymentMethodDataSofortCountry"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1965,14 +1909,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateConfirmationTokenPaymentMethodDataType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2102,14 +2039,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataUpiMandateOpt
         match s {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateConfirmationTokenPaymentMethodDataUpiMandateOptionsAmountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2224,14 +2154,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataUsBankAccount
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateConfirmationTokenPaymentMethodDataUsBankAccountAccountHolderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2301,14 +2224,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataUsBankAccount
         match s {
             "checking" => Ok(Checking),
             "savings" => Ok(Savings),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateConfirmationTokenPaymentMethodDataUsBankAccountAccountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2481,14 +2397,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodOptionsCardInstal
         use CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval::*;
         match s {
             "month" => Ok(Month),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2561,14 +2470,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodOptionsCardInstal
             "bonus" => Ok(Bonus),
             "fixed_count" => Ok(FixedCount),
             "revolving" => Ok(Revolving),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -197,10 +197,7 @@ impl std::str::FromStr for PaymentMethodKrCardBrand {
             "suhyup" => Ok(Suhyup),
             "tossbank" => Ok(Tossbank),
             "woori" => Ok(Woori),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PaymentMethodKrCardBrand");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

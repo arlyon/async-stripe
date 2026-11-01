@@ -169,10 +169,7 @@ impl std::str::FromStr for MandateAcssDebitDefaultFor {
         match s {
             "invoice" => Ok(Invoice),
             "subscription" => Ok(Subscription),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "MandateAcssDebitDefaultFor");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -256,14 +253,7 @@ impl std::str::FromStr for MandateAcssDebitPaymentSchedule {
             "combined" => Ok(Combined),
             "interval" => Ok(Interval),
             "sporadic" => Ok(Sporadic),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "MandateAcssDebitPaymentSchedule"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -344,14 +334,7 @@ impl std::str::FromStr for MandateAcssDebitTransactionType {
         match s {
             "business" => Ok(Business),
             "personal" => Ok(Personal),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "MandateAcssDebitTransactionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

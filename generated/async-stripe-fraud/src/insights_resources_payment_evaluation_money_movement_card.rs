@@ -144,14 +144,7 @@ impl std::str::FromStr for InsightsResourcesPaymentEvaluationMoneyMovementCardCu
         match s {
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -252,14 +245,7 @@ impl std::str::FromStr for InsightsResourcesPaymentEvaluationMoneyMovementCardPa
             "recurring" => Ok(Recurring),
             "setup_one_off" => Ok(SetupOneOff),
             "setup_recurring" => Ok(SetupRecurring),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

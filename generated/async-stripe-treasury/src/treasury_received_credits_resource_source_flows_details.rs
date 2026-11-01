@@ -177,14 +177,7 @@ impl std::str::FromStr for TreasuryReceivedCreditsResourceSourceFlowsDetailsType
             "outbound_payment" => Ok(OutboundPayment),
             "outbound_transfer" => Ok(OutboundTransfer),
             "payout" => Ok(Payout),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryReceivedCreditsResourceSourceFlowsDetailsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

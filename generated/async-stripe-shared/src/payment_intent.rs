@@ -704,14 +704,7 @@ impl std::str::FromStr for PaymentIntentCancellationReason {
             "fraudulent" => Ok(Fraudulent),
             "requested_by_customer" => Ok(RequestedByCustomer),
             "void_invoice" => Ok(VoidInvoice),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentIntentCancellationReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -808,10 +801,7 @@ impl std::str::FromStr for PaymentIntentStatus {
             "requires_confirmation" => Ok(RequiresConfirmation),
             "requires_payment_method" => Ok(RequiresPaymentMethod),
             "succeeded" => Ok(Succeeded),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PaymentIntentStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1187,14 +1177,7 @@ impl std::str::FromStr for PaymentIntentAllowedPaymentMethodTypes {
             "wechat_pay" => Ok(WechatPay),
             "wero" => Ok(Wero),
             "zip" => Ok(Zip),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentIntentAllowedPaymentMethodTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1276,10 +1259,7 @@ impl std::str::FromStr for PaymentIntentCaptureMethod {
             "automatic" => Ok(Automatic),
             "automatic_async" => Ok(AutomaticAsync),
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PaymentIntentCaptureMethod");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1358,14 +1338,7 @@ impl std::str::FromStr for PaymentIntentConfirmationMethod {
         match s {
             "automatic" => Ok(Automatic),
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentIntentConfirmationMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1597,14 +1570,7 @@ impl std::str::FromStr for PaymentIntentExcludedPaymentMethodTypes {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentIntentExcludedPaymentMethodTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1683,14 +1649,7 @@ impl std::str::FromStr for PaymentIntentSetupFutureUsage {
         match s {
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentIntentSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

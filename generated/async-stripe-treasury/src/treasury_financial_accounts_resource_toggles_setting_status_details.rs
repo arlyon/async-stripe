@@ -172,14 +172,7 @@ impl std::str::FromStr for TreasuryFinancialAccountsResourceTogglesSettingStatus
             "requirements_pending_verification" => Ok(RequirementsPendingVerification),
             "restricted_by_platform" => Ok(RestrictedByPlatform),
             "restricted_other" => Ok(RestrictedOther),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -273,14 +266,7 @@ impl std::str::FromStr for TreasuryFinancialAccountsResourceTogglesSettingStatus
             "contact_stripe" => Ok(ContactStripe),
             "provide_information" => Ok(ProvideInformation),
             "remove_restriction" => Ok(RemoveRestriction),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -375,14 +361,7 @@ impl std::str::FromStr for TreasuryFinancialAccountsResourceTogglesSettingStatus
         match s {
             "inbound_flows" => Ok(InboundFlows),
             "outbound_flows" => Ok(OutboundFlows),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

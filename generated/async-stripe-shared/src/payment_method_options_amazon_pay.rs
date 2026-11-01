@@ -143,14 +143,7 @@ impl std::str::FromStr for PaymentMethodOptionsAmazonPayCaptureMethod {
         use PaymentMethodOptionsAmazonPayCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsAmazonPayCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -240,14 +233,7 @@ impl std::str::FromStr for PaymentMethodOptionsAmazonPaySetupFutureUsage {
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsAmazonPaySetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

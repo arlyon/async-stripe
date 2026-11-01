@@ -191,14 +191,7 @@ impl std::str::FromStr for SubscriptionPaymentMethodOptionsCardNetwork {
             "unionpay" => Ok(Unionpay),
             "unknown" => Ok(Unknown),
             "visa" => Ok(Visa),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscriptionPaymentMethodOptionsCardNetwork"
-                );
-                Ok(_Unknown(v.to_owned()))
-            }
+            v => Ok(_Unknown(v.to_owned())),
         }
     }
 }
@@ -286,14 +279,7 @@ impl std::str::FromStr for SubscriptionPaymentMethodOptionsCardRequestThreeDSecu
             "any" => Ok(Any),
             "automatic" => Ok(Automatic),
             "challenge" => Ok(Challenge),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscriptionPaymentMethodOptionsCardRequestThreeDSecure"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

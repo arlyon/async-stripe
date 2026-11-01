@@ -158,10 +158,7 @@ impl std::str::FromStr for MandateUpiAmountType {
         match s {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "MandateUpiAmountType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

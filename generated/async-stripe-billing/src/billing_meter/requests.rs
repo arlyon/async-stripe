@@ -270,14 +270,7 @@ impl std::str::FromStr for CreateBillingMeterCustomerMappingType {
         use CreateBillingMeterCustomerMappingType::*;
         match s {
             "by_id" => Ok(ById),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingMeterCustomerMappingType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -364,14 +357,7 @@ impl std::str::FromStr for CreateBillingMeterDefaultAggregationFormula {
             "count" => Ok(Count),
             "last" => Ok(Last),
             "sum" => Ok(Sum),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingMeterDefaultAggregationFormula"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -168,7 +168,7 @@ impl std::str::FromStr for CustomerSessionResourceComponentsResourceCustomerShee
     "always" => Ok(Always),
 "limited" => Ok(Limited),
 "unspecified" => Ok(Unspecified),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters"); Ok(Unknown(v.to_owned())) }
+v => Ok(Unknown(v.to_owned())),
 
         }
     }
@@ -252,14 +252,7 @@ impl std::str::FromStr
         match s {
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

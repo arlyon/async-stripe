@@ -283,10 +283,7 @@ impl std::str::FromStr for CreateRefundOrigin {
         use CreateRefundOrigin::*;
         match s {
             "customer_balance" => Ok(CustomerBalance),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateRefundOrigin");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -356,10 +353,7 @@ impl std::str::FromStr for CreateRefundReason {
             "duplicate" => Ok(Duplicate),
             "fraudulent" => Ok(Fraudulent),
             "requested_by_customer" => Ok(RequestedByCustomer),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateRefundReason");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

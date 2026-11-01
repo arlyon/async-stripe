@@ -135,14 +135,7 @@ impl std::str::FromStr for PaymentPagesCheckoutSessionCustomFieldsLabelType {
         use PaymentPagesCheckoutSessionCustomFieldsLabelType::*;
         match s {
             "custom" => Ok(Custom),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentPagesCheckoutSessionCustomFieldsLabelType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

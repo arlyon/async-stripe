@@ -397,14 +397,7 @@ impl std::str::FromStr for CreateReportingReportRunParametersReportingCategory {
             "transfer" => Ok(Transfer),
             "transfer_reversal" => Ok(TransferReversal),
             "unreconciled_customer_funds" => Ok(UnreconciledCustomerFunds),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateReportingReportRunParametersReportingCategory"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2264,14 +2257,7 @@ impl std::str::FromStr for CreateReportingReportRunParametersTimezone {
             "W-SU" => Ok(WMinusSu),
             "WET" => Ok(Wet),
             "Zulu" => Ok(Zulu),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateReportingReportRunParametersTimezone"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

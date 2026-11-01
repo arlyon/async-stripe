@@ -586,14 +586,7 @@ impl std::str::FromStr for ListPaymentMethodsCustomerAllowRedisplay {
             "always" => Ok(Always),
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListPaymentMethodsCustomerAllowRedisplay"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -819,14 +812,7 @@ impl std::str::FromStr for ListPaymentMethodsCustomerType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListPaymentMethodsCustomerType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1313,14 +1299,7 @@ impl std::str::FromStr for CreateCustomerCashBalanceSettingsReconciliationMode {
             "automatic" => Ok(Automatic),
             "manual" => Ok(Manual),
             "merchant_default" => Ok(MerchantDefault),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCustomerCashBalanceSettingsReconciliationMode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1460,14 +1439,7 @@ impl std::str::FromStr for CreateCustomerInvoiceSettingsRenderingOptionsAmountTa
         match s {
             "exclude_tax" => Ok(ExcludeTax),
             "include_inclusive_tax" => Ok(IncludeInclusiveTax),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1567,14 +1539,7 @@ impl std::str::FromStr for CreateCustomerTaxValidateLocation {
         match s {
             "deferred" => Ok(Deferred),
             "immediately" => Ok(Immediately),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCustomerTaxValidateLocation"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2006,14 +1971,7 @@ impl std::str::FromStr for CreateCustomerTaxIdDataType {
             "za_vat" => Ok(ZaVat),
             "zm_tin" => Ok(ZmTin),
             "zw_tin" => Ok(ZwTin),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCustomerTaxIdDataType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2393,14 +2351,7 @@ impl std::str::FromStr for UpdateCustomerCashBalanceSettingsReconciliationMode {
             "automatic" => Ok(Automatic),
             "manual" => Ok(Manual),
             "merchant_default" => Ok(MerchantDefault),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateCustomerCashBalanceSettingsReconciliationMode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2540,14 +2491,7 @@ impl std::str::FromStr for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTa
         match s {
             "exclude_tax" => Ok(ExcludeTax),
             "include_inclusive_tax" => Ok(IncludeInclusiveTax),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2648,14 +2592,7 @@ impl std::str::FromStr for UpdateCustomerTaxValidateLocation {
             "auto" => Ok(Auto),
             "deferred" => Ok(Deferred),
             "immediately" => Ok(Immediately),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateCustomerTaxValidateLocation"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2985,14 +2922,7 @@ impl std::str::FromStr for CreateFundingInstructionsCustomerBankTransferRequeste
             "sort_code" => Ok(SortCode),
             "spei" => Ok(Spei),
             "zengin" => Ok(Zengin),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3071,14 +3001,7 @@ impl std::str::FromStr for CreateFundingInstructionsCustomerBankTransferType {
             "jp_bank_transfer" => Ok(JpBankTransfer),
             "mx_bank_transfer" => Ok(MxBankTransfer),
             "us_bank_transfer" => Ok(UsBankTransfer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateFundingInstructionsCustomerBankTransferType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3141,14 +3064,7 @@ impl std::str::FromStr for CreateFundingInstructionsCustomerFundingType {
         use CreateFundingInstructionsCustomerFundingType::*;
         match s {
             "bank_transfer" => Ok(BankTransfer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateFundingInstructionsCustomerFundingType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

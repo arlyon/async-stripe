@@ -148,14 +148,7 @@ impl std::str::FromStr for ThresholdsResourceUsageThresholdConfigRecurrence {
         use ThresholdsResourceUsageThresholdConfigRecurrence::*;
         match s {
             "one_time" => Ok(OneTime),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ThresholdsResourceUsageThresholdConfigRecurrence"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

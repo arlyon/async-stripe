@@ -274,14 +274,7 @@ impl std::str::FromStr for BillingMeterEventTimeWindow {
         match s {
             "day" => Ok(Day),
             "hour" => Ok(Hour),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BillingMeterEventTimeWindow"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -360,10 +353,7 @@ impl std::str::FromStr for BillingMeterStatus {
         match s {
             "active" => Ok(Active),
             "inactive" => Ok(Inactive),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "BillingMeterStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

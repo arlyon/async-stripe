@@ -147,14 +147,7 @@ impl std::str::FromStr for IssuingPhysicalBundleFeaturesCardLogo {
             "optional" => Ok(Optional),
             "required" => Ok(Required),
             "unsupported" => Ok(Unsupported),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingPhysicalBundleFeaturesCardLogo"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -238,14 +231,7 @@ impl std::str::FromStr for IssuingPhysicalBundleFeaturesCarrierText {
             "optional" => Ok(Optional),
             "required" => Ok(Required),
             "unsupported" => Ok(Unsupported),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingPhysicalBundleFeaturesCarrierText"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -329,14 +315,7 @@ impl std::str::FromStr for IssuingPhysicalBundleFeaturesSecondLine {
             "optional" => Ok(Optional),
             "required" => Ok(Required),
             "unsupported" => Ok(Unsupported),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingPhysicalBundleFeaturesSecondLine"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

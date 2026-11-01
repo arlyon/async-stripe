@@ -289,10 +289,7 @@ impl std::str::FromStr for CreatePayoutMethod {
         match s {
             "instant" => Ok(Instant),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreatePayoutMethod");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -363,10 +360,7 @@ impl std::str::FromStr for CreatePayoutSourceType {
             "bank_account" => Ok(BankAccount),
             "card" => Ok(Card),
             "fpx" => Ok(Fpx),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreatePayoutSourceType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -148,14 +148,7 @@ impl std::str::FromStr
             "currency_mismatch" => Ok(CurrencyMismatch),
             "original_transaction_voided" => Ok(OriginalTransactionVoided),
             "unique_reference_violation" => Ok(UniqueReferenceViolation),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductResourceTaxAssociationTransactionAttemptsResourceErroredReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

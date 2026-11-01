@@ -281,14 +281,7 @@ impl std::str::FromStr for CreateTreasuryReceivedDebitInitiatingPaymentMethodDet
         use CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType::*;
         match s {
             "us_bank_account" => Ok(UsBankAccount),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -387,14 +380,7 @@ impl std::str::FromStr for CreateTreasuryReceivedDebitNetwork {
         use CreateTreasuryReceivedDebitNetwork::*;
         match s {
             "ach" => Ok(Ach),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTreasuryReceivedDebitNetwork"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

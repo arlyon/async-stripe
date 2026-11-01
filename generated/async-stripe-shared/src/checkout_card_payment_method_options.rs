@@ -267,14 +267,7 @@ impl std::str::FromStr for CheckoutCardPaymentMethodOptionsCaptureMethod {
         use CheckoutCardPaymentMethodOptionsCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutCardPaymentMethodOptionsCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -357,14 +350,7 @@ impl std::str::FromStr for CheckoutCardPaymentMethodOptionsRequestExtendedAuthor
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutCardPaymentMethodOptionsRequestExtendedAuthorization"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -453,14 +439,7 @@ impl std::str::FromStr for CheckoutCardPaymentMethodOptionsRequestIncrementalAut
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutCardPaymentMethodOptionsRequestIncrementalAuthorization"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -551,14 +530,7 @@ impl std::str::FromStr for CheckoutCardPaymentMethodOptionsRequestMulticapture {
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutCardPaymentMethodOptionsRequestMulticapture"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -642,14 +614,7 @@ impl std::str::FromStr for CheckoutCardPaymentMethodOptionsRequestOvercapture {
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutCardPaymentMethodOptionsRequestOvercapture"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -739,14 +704,7 @@ impl std::str::FromStr for CheckoutCardPaymentMethodOptionsRequestThreeDSecure {
             "any" => Ok(Any),
             "automatic" => Ok(Automatic),
             "challenge" => Ok(Challenge),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutCardPaymentMethodOptionsRequestThreeDSecure"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -840,14 +798,7 @@ impl std::str::FromStr for CheckoutCardPaymentMethodOptionsSetupFutureUsage {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutCardPaymentMethodOptionsSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -275,10 +275,7 @@ impl std::str::FromStr for ShippingRateTaxBehavior {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ShippingRateTaxBehavior");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -354,10 +351,7 @@ impl std::str::FromStr for ShippingRateType {
         use ShippingRateType::*;
         match s {
             "fixed_amount" => Ok(FixedAmount),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ShippingRateType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

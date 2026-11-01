@@ -189,14 +189,7 @@ impl std::str::FromStr for IssuingAuthorizationFuelDataType {
             "unleaded_plus" => Ok(UnleadedPlus),
             "unleaded_regular" => Ok(UnleadedRegular),
             "unleaded_super" => Ok(UnleadedSuper),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationFuelDataType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -295,14 +288,7 @@ impl std::str::FromStr for IssuingAuthorizationFuelDataUnit {
             "other" => Ok(Other),
             "pound" => Ok(Pound),
             "us_gallon" => Ok(UsGallon),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationFuelDataUnit"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -96,14 +96,7 @@ impl std::str::FromStr for ListTreasuryReceivedCreditLinkedFlowsSourceFlowType {
             "outbound_payment" => Ok(OutboundPayment),
             "outbound_transfer" => Ok(OutboundTransfer),
             "payout" => Ok(Payout),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListTreasuryReceivedCreditLinkedFlowsSourceFlowType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -396,14 +389,7 @@ impl std::str::FromStr for CreateTreasuryReceivedCreditInitiatingPaymentMethodDe
         use CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsType::*;
         match s {
             "us_bank_account" => Ok(UsBankAccount),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -505,14 +491,7 @@ impl std::str::FromStr for CreateTreasuryReceivedCreditNetwork {
         match s {
             "ach" => Ok(Ach),
             "us_domestic_wire" => Ok(UsDomesticWire),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTreasuryReceivedCreditNetwork"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

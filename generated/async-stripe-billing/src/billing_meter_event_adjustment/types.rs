@@ -177,14 +177,7 @@ impl std::str::FromStr for BillingMeterEventAdjustmentStatus {
         match s {
             "complete" => Ok(Complete),
             "pending" => Ok(Pending),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BillingMeterEventAdjustmentStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -261,14 +254,7 @@ impl std::str::FromStr for BillingMeterEventAdjustmentType {
         use BillingMeterEventAdjustmentType::*;
         match s {
             "cancel" => Ok(Cancel),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BillingMeterEventAdjustmentType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -169,10 +169,7 @@ impl ObjectWriter<'_> {
 
         let from_str_err = if self.provide_unknown_variant {
             let unknown_variant = if self.use_underscore_unknown { "_Unknown" } else { "Unknown" };
-            let _ = writeln!(
-                from_str_body,
-                r#"v => {{ tracing::warn!("Unknown value '{{}}' for enum '{{}}'", v, "{enum_name}"); Ok({unknown_variant}(v.to_owned())) }}"#
-            );
+            let _ = writeln!(from_str_body, r#"v => Ok({unknown_variant}(v.to_owned())),"#);
             "std::convert::Infallible"
         } else {
             let _ = writeln!(from_str_body, "_ => Err(stripe_types::StripeParseError)");

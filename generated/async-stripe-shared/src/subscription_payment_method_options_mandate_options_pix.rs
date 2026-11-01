@@ -160,14 +160,7 @@ impl std::str::FromStr for SubscriptionPaymentMethodOptionsMandateOptionsPixAmou
         match s {
             "always" => Ok(Always),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscriptionPaymentMethodOptionsMandateOptionsPixAmountIncludesIof"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -269,14 +262,7 @@ impl std::str::FromStr for SubscriptionPaymentMethodOptionsMandateOptionsPixPaym
             "quarterly" => Ok(Quarterly),
             "weekly" => Ok(Weekly),
             "yearly" => Ok(Yearly),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscriptionPaymentMethodOptionsMandateOptionsPixPaymentSchedule"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

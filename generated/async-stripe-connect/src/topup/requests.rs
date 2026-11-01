@@ -74,10 +74,7 @@ impl std::str::FromStr for ListTopupStatus {
             "failed" => Ok(Failed),
             "pending" => Ok(Pending),
             "succeeded" => Ok(Succeeded),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListTopupStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -391,14 +388,7 @@ impl std::str::FromStr for CreateTopupPaymentMethodOptionsUsBankAccountNetwork {
         use CreateTopupPaymentMethodOptionsUsBankAccountNetwork::*;
         match s {
             "ach" => Ok(Ach),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTopupPaymentMethodOptionsUsBankAccountNetwork"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -263,14 +263,7 @@ impl std::str::FromStr for AccountBusinessProfileMinorityOwnedBusinessDesignatio
             "none_of_these_apply" => Ok(NoneOfTheseApply),
             "prefer_not_to_answer" => Ok(PreferNotToAnswer),
             "women_owned_business" => Ok(WomenOwnedBusiness),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "AccountBusinessProfileMinorityOwnedBusinessDesignation"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

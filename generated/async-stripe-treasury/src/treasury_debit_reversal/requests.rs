@@ -69,14 +69,7 @@ impl std::str::FromStr for ListTreasuryDebitReversalResolution {
         match s {
             "lost" => Ok(Lost),
             "won" => Ok(Won),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListTreasuryDebitReversalResolution"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -144,14 +137,7 @@ impl std::str::FromStr for ListTreasuryDebitReversalStatus {
             "canceled" => Ok(Canceled),
             "completed" => Ok(Completed),
             "processing" => Ok(Processing),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListTreasuryDebitReversalStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

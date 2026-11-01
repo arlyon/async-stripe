@@ -506,10 +506,7 @@ impl std::str::FromStr for CardAllowRedisplay {
             "always" => Ok(Always),
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CardAllowRedisplay");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -591,10 +588,7 @@ impl std::str::FromStr for CardAvailablePayoutMethods {
         match s {
             "instant" => Ok(Instant),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CardAvailablePayoutMethods");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -675,10 +669,7 @@ impl std::str::FromStr for CardRegulatedStatus {
         match s {
             "regulated" => Ok(Regulated),
             "unregulated" => Ok(Unregulated),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CardRegulatedStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

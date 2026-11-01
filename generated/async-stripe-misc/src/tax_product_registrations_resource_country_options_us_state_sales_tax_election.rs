@@ -145,14 +145,7 @@ impl std::str::FromStr
             "local_use_tax" => Ok(LocalUseTax),
             "simplified_sellers_use_tax" => Ok(SimplifiedSellersUseTax),
             "single_local_use_tax" => Ok(SingleLocalUseTax),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElectionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

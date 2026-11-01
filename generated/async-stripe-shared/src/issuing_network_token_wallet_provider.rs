@@ -236,14 +236,7 @@ impl std::str::FromStr for IssuingNetworkTokenWalletProviderCardNumberSource {
             "manual" => Ok(Manual),
             "on_file" => Ok(OnFile),
             "other" => Ok(Other),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingNetworkTokenWalletProviderCardNumberSource"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -413,14 +406,7 @@ impl std::str::FromStr for IssuingNetworkTokenWalletProviderReasonCodes {
             "too_many_different_cardholders" => Ok(TooManyDifferentCardholders),
             "too_many_recent_attempts" => Ok(TooManyRecentAttempts),
             "too_many_recent_tokens" => Ok(TooManyRecentTokens),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingNetworkTokenWalletProviderReasonCodes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -506,14 +492,7 @@ impl std::str::FromStr for IssuingNetworkTokenWalletProviderSuggestedDecision {
             "approve" => Ok(Approve),
             "decline" => Ok(Decline),
             "require_auth" => Ok(RequireAuth),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingNetworkTokenWalletProviderSuggestedDecision"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -201,10 +201,7 @@ impl std::str::FromStr for MandatePaytoAmountType {
         match s {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "MandatePaytoAmountType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -303,14 +300,7 @@ impl std::str::FromStr for MandatePaytoPaymentSchedule {
             "quarterly" => Ok(Quarterly),
             "semi_annual" => Ok(SemiAnnual),
             "weekly" => Ok(Weekly),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "MandatePaytoPaymentSchedule"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -418,10 +408,7 @@ impl std::str::FromStr for MandatePaytoPurpose {
             "salary" => Ok(Salary),
             "tax" => Ok(Tax),
             "utility" => Ok(Utility),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "MandatePaytoPurpose");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

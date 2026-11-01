@@ -208,14 +208,7 @@ impl std::str::FromStr for InboundTransfersPaymentMethodDetailsUsBankAccountAcco
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -308,14 +301,7 @@ impl std::str::FromStr for InboundTransfersPaymentMethodDetailsUsBankAccountAcco
         match s {
             "checking" => Ok(Checking),
             "savings" => Ok(Savings),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InboundTransfersPaymentMethodDetailsUsBankAccountAccountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -402,14 +388,7 @@ impl std::str::FromStr for InboundTransfersPaymentMethodDetailsUsBankAccountNetw
         use InboundTransfersPaymentMethodDetailsUsBankAccountNetwork::*;
         match s {
             "ach" => Ok(Ach),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InboundTransfersPaymentMethodDetailsUsBankAccountNetwork"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

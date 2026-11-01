@@ -82,14 +82,7 @@ const _: () = {
                 }
                 "card" => Self::DeletedCard(FromValueOpt::from_value(Value::Object(o))?),
 
-                _ => {
-                    tracing::warn!(
-                        "Unknown object type '{}' for enum '{}'",
-                        key,
-                        "DeletedExternalAccount"
-                    );
-                    return None;
-                }
+                _ => return None,
             })
         }
     }

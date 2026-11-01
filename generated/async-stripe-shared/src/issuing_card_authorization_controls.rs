@@ -246,14 +246,7 @@ impl std::str::FromStr for IssuingCardAuthorizationControlsAllowedCardPresences 
         match s {
             "not_present" => Ok(NotPresent),
             "present" => Ok(Present),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingCardAuthorizationControlsAllowedCardPresences"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1310,14 +1303,7 @@ impl std::str::FromStr for IssuingCardAuthorizationControlsAllowedCategories {
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingCardAuthorizationControlsAllowedCategories"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1404,14 +1390,7 @@ impl std::str::FromStr for IssuingCardAuthorizationControlsBlockedCardPresences 
         match s {
             "not_present" => Ok(NotPresent),
             "present" => Ok(Present),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingCardAuthorizationControlsBlockedCardPresences"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2468,14 +2447,7 @@ impl std::str::FromStr for IssuingCardAuthorizationControlsBlockedCategories {
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingCardAuthorizationControlsBlockedCategories"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

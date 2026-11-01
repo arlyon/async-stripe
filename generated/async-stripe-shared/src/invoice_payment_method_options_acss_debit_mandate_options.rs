@@ -133,14 +133,7 @@ impl std::str::FromStr for InvoicePaymentMethodOptionsAcssDebitMandateOptionsTra
         match s {
             "business" => Ok(Business),
             "personal" => Ok(Personal),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -141,14 +141,7 @@ impl std::str::FromStr for InsightsResourcesPaymentEvaluationEarlyFraudWarningRe
             "made_with_stolen_card" => Ok(MadeWithStolenCard),
             "other" => Ok(Other),
             "unauthorized_use_of_card" => Ok(UnauthorizedUseOfCard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationEarlyFraudWarningReceivedFraudType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

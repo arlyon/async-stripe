@@ -229,10 +229,7 @@ impl std::str::FromStr for TestHelpersTestClockStatus {
             "advancing" => Ok(Advancing),
             "internal_failure" => Ok(InternalFailure),
             "ready" => Ok(Ready),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TestHelpersTestClockStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

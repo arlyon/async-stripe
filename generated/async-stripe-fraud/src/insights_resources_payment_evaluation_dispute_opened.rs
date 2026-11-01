@@ -174,14 +174,7 @@ impl std::str::FromStr for InsightsResourcesPaymentEvaluationDisputeOpenedReason
             "product_unacceptable" => Ok(ProductUnacceptable),
             "subscription_canceled" => Ok(SubscriptionCanceled),
             "unrecognized" => Ok(Unrecognized),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationDisputeOpenedReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

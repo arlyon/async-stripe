@@ -297,10 +297,7 @@ impl std::str::FromStr for ReviewClosedReason {
             "redacted" => Ok(Redacted),
             "refunded" => Ok(Refunded),
             "refunded_as_fraud" => Ok(RefundedAsFraud),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ReviewClosedReason");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -381,10 +378,7 @@ impl std::str::FromStr for ReviewOpenedReason {
         match s {
             "manual" => Ok(Manual),
             "rule" => Ok(Rule),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ReviewOpenedReason");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

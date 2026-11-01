@@ -1471,14 +1471,7 @@ impl std::str::FromStr for CreateForceCaptureIssuingTransactionMerchantDataCateg
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateForceCaptureIssuingTransactionMerchantDataCategory"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1638,14 +1631,7 @@ impl std::str::FromStr for CreateForceCaptureIssuingTransactionPurchaseDetailsFl
             "fuel_and_non_fuel_purchase" => Ok(FuelAndNonFuelPurchase),
             "fuel_purchase" => Ok(FuelPurchase),
             "non_fuel_purchase" => Ok(NonFuelPurchase),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1718,14 +1704,7 @@ impl std::str::FromStr for CreateForceCaptureIssuingTransactionPurchaseDetailsFl
             "full_service" => Ok(FullService),
             "non_fuel_transaction" => Ok(NonFuelTransaction),
             "self_service" => Ok(SelfService),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1852,14 +1831,7 @@ impl std::str::FromStr for CreateForceCaptureIssuingTransactionPurchaseDetailsFu
             "unleaded_plus" => Ok(UnleadedPlus),
             "unleaded_regular" => Ok(UnleadedRegular),
             "unleaded_super" => Ok(UnleadedSuper),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1944,14 +1916,7 @@ impl std::str::FromStr for CreateForceCaptureIssuingTransactionPurchaseDetailsFu
             "other" => Ok(Other),
             "pound" => Ok(Pound),
             "us_gallon" => Ok(UsGallon),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3157,14 +3122,7 @@ impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionMerchantDataCat
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateUnlinkedRefundIssuingTransactionMerchantDataCategory"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3325,14 +3283,7 @@ impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionPurchaseDetails
             "fuel_and_non_fuel_purchase" => Ok(FuelAndNonFuelPurchase),
             "fuel_purchase" => Ok(FuelPurchase),
             "non_fuel_purchase" => Ok(NonFuelPurchase),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3405,14 +3356,7 @@ impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionPurchaseDetails
             "full_service" => Ok(FullService),
             "non_fuel_transaction" => Ok(NonFuelTransaction),
             "self_service" => Ok(SelfService),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3539,14 +3483,7 @@ impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionPurchaseDetails
             "unleaded_plus" => Ok(UnleadedPlus),
             "unleaded_regular" => Ok(UnleadedRegular),
             "unleaded_super" => Ok(UnleadedSuper),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3633,14 +3570,7 @@ impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionPurchaseDetails
             "other" => Ok(Other),
             "pound" => Ok(Pound),
             "us_gallon" => Ok(UsGallon),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -316,14 +316,7 @@ impl std::str::FromStr for TreasuryReceivedCreditFailureCode {
             "account_frozen" => Ok(AccountFrozen),
             "international_transaction" => Ok(InternationalTransaction),
             "other" => Ok(Other),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryReceivedCreditFailureCode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -410,14 +403,7 @@ impl std::str::FromStr for TreasuryReceivedCreditNetwork {
             "card" => Ok(Card),
             "stripe" => Ok(Stripe),
             "us_domestic_wire" => Ok(UsDomesticWire),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryReceivedCreditNetwork"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -508,14 +494,7 @@ impl std::str::FromStr for TreasuryReceivedCreditStatus {
         match s {
             "failed" => Ok(Failed),
             "succeeded" => Ok(Succeeded),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryReceivedCreditStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

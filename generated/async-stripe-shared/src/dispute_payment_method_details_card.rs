@@ -164,14 +164,7 @@ impl std::str::FromStr for DisputePaymentMethodDetailsCardCaseType {
             "compliance" => Ok(Compliance),
             "inquiry" => Ok(Inquiry),
             "resolution" => Ok(Resolution),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "DisputePaymentMethodDetailsCardCaseType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

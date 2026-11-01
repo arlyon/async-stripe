@@ -154,14 +154,7 @@ impl std::str::FromStr for PaymentMethodOptionsAfterpayClearpayCaptureMethod {
         use PaymentMethodOptionsAfterpayClearpayCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsAfterpayClearpayCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -249,14 +242,7 @@ impl std::str::FromStr for PaymentMethodOptionsAfterpayClearpaySetupFutureUsage 
         use PaymentMethodOptionsAfterpayClearpaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsAfterpayClearpaySetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -145,10 +145,7 @@ impl std::str::FromStr for GelatoEmailReportStatus {
         match s {
             "unverified" => Ok(Unverified),
             "verified" => Ok(Verified),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoEmailReportStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

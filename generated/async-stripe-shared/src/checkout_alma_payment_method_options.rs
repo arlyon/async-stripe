@@ -129,14 +129,7 @@ impl std::str::FromStr for CheckoutAlmaPaymentMethodOptionsCaptureMethod {
         use CheckoutAlmaPaymentMethodOptionsCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutAlmaPaymentMethodOptionsCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

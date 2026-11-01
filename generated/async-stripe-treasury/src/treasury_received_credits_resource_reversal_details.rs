@@ -149,14 +149,7 @@ impl std::str::FromStr for TreasuryReceivedCreditsResourceReversalDetailsRestric
             "network_restricted" => Ok(NetworkRestricted),
             "other" => Ok(Other),
             "source_flow_restricted" => Ok(SourceFlowRestricted),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

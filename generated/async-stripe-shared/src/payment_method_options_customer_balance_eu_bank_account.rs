@@ -146,14 +146,7 @@ impl std::str::FromStr for PaymentMethodOptionsCustomerBalanceEuBankAccountCount
             "FR" => Ok(Fr),
             "IE" => Ok(Ie),
             "NL" => Ok(Nl),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsCustomerBalanceEuBankAccountCountry"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

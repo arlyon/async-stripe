@@ -140,14 +140,7 @@ impl std::str::FromStr for AccountUnificationAccountControllerFeesPayer {
             "application" => Ok(Application),
             "application_custom" => Ok(ApplicationCustom),
             "application_express" => Ok(ApplicationExpress),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "AccountUnificationAccountControllerFeesPayer"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

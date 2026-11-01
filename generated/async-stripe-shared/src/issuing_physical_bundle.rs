@@ -194,14 +194,7 @@ impl std::str::FromStr for IssuingPhysicalBundleStatus {
             "active" => Ok(Active),
             "inactive" => Ok(Inactive),
             "review" => Ok(Review),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingPhysicalBundleStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -280,10 +273,7 @@ impl std::str::FromStr for IssuingPhysicalBundleType {
         match s {
             "custom" => Ok(Custom),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingPhysicalBundleType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

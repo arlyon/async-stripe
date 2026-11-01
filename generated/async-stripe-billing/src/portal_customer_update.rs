@@ -151,14 +151,7 @@ impl std::str::FromStr for PortalCustomerUpdateAllowedUpdates {
             "phone" => Ok(Phone),
             "shipping" => Ok(Shipping),
             "tax_id" => Ok(TaxId),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PortalCustomerUpdateAllowedUpdates"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

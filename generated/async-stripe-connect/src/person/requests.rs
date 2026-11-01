@@ -678,14 +678,7 @@ impl std::str::FromStr for CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicit
             "other_hispanic_or_latino" => Ok(OtherHispanicOrLatino),
             "prefer_not_to_answer" => Ok(PreferNotToAnswer),
             "puerto_rican" => Ok(PuertoRican),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -845,14 +838,7 @@ impl std::str::FromStr for CreateAccountPersonUsCfpbDataRaceDetailsRace {
             "somali" => Ok(Somali),
             "vietnamese" => Ok(Vietnamese),
             "white" => Ok(White),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountPersonUsCfpbDataRaceDetailsRace"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1499,14 +1485,7 @@ impl std::str::FromStr for UpdatePersonUsCfpbDataEthnicityDetailsEthnicity {
             "other_hispanic_or_latino" => Ok(OtherHispanicOrLatino),
             "prefer_not_to_answer" => Ok(PreferNotToAnswer),
             "puerto_rican" => Ok(PuertoRican),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePersonUsCfpbDataEthnicityDetailsEthnicity"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1666,14 +1645,7 @@ impl std::str::FromStr for UpdatePersonUsCfpbDataRaceDetailsRace {
             "somali" => Ok(Somali),
             "vietnamese" => Ok(Vietnamese),
             "white" => Ok(White),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePersonUsCfpbDataRaceDetailsRace"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

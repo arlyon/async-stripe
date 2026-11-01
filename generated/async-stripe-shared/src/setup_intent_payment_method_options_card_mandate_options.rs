@@ -234,14 +234,7 @@ impl std::str::FromStr for SetupIntentPaymentMethodOptionsCardMandateOptionsAmou
         match s {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentPaymentMethodOptionsCardMandateOptionsAmountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -339,14 +332,7 @@ impl std::str::FromStr for SetupIntentPaymentMethodOptionsCardMandateOptionsInte
             "sporadic" => Ok(Sporadic),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentPaymentMethodOptionsCardMandateOptionsInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -432,14 +418,7 @@ impl std::str::FromStr for SetupIntentPaymentMethodOptionsCardMandateOptionsSupp
         use SetupIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes::*;
         match s {
             "india" => Ok(India),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

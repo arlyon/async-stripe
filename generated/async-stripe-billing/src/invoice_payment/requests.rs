@@ -96,14 +96,7 @@ impl std::str::FromStr for ListInvoicePaymentPaymentType {
         match s {
             "payment_intent" => Ok(PaymentIntent),
             "payment_record" => Ok(PaymentRecord),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListInvoicePaymentPaymentType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -171,10 +164,7 @@ impl std::str::FromStr for ListInvoicePaymentStatus {
             "canceled" => Ok(Canceled),
             "open" => Ok(Open),
             "paid" => Ok(Paid),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListInvoicePaymentStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

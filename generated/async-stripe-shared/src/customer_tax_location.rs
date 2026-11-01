@@ -150,10 +150,7 @@ impl std::str::FromStr for CustomerTaxLocationSource {
             "ip_address" => Ok(IpAddress),
             "payment_method" => Ok(PaymentMethod),
             "shipping_destination" => Ok(ShippingDestination),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerTaxLocationSource");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -352,10 +352,7 @@ impl std::str::FromStr for PaymentRecordReportedBy {
         match s {
             "self" => Ok(Self_),
             "stripe" => Ok(Stripe),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PaymentRecordReportedBy");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -446,14 +443,7 @@ impl std::str::FromStr for PaymentRecordCustomerPresence {
         match s {
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentRecordCustomerPresence"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -239,14 +239,7 @@ impl std::str::FromStr for TerminalReaderReaderResourceInputType {
             "selection" => Ok(Selection),
             "signature" => Ok(Signature),
             "text" => Ok(Text),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TerminalReaderReaderResourceInputType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

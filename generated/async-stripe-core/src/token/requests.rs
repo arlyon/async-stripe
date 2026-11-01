@@ -180,14 +180,7 @@ impl std::str::FromStr for CreateTokenAccountBusinessType {
             "government_entity" => Ok(GovernmentEntity),
             "individual" => Ok(Individual),
             "non_profit" => Ok(NonProfit),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenAccountBusinessType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -639,14 +632,7 @@ impl std::str::FromStr for CreateTokenAccountCompanyOwnershipExemptionReason {
                 Ok(QualifiedEntityExceedsOwnershipThreshold)
             }
             "qualifies_as_financial_institution" => Ok(QualifiesAsFinancialInstitution),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenAccountCompanyOwnershipExemptionReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -871,14 +857,7 @@ impl std::str::FromStr for CreateTokenAccountCompanyStructure {
             "unincorporated_association" => Ok(UnincorporatedAssociation),
             "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
             "unincorporated_partnership" => Ok(UnincorporatedPartnership),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenAccountCompanyStructure"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1262,14 +1241,7 @@ impl std::str::FromStr for CreateTokenAccountIndividualPoliticalExposure {
         match s {
             "existing" => Ok(Existing),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenAccountIndividualPoliticalExposure"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1476,14 +1448,7 @@ impl std::str::FromStr for CreateTokenBankAccountAccountHolderType {
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenBankAccountAccountHolderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1556,14 +1521,7 @@ impl std::str::FromStr for CreateTokenBankAccountAccountType {
             "futsu" => Ok(Futsu),
             "savings" => Ok(Savings),
             "toza" => Ok(Toza),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenBankAccountAccountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1753,14 +1711,7 @@ impl std::str::FromStr for CreateTokenCreditCardSpecsNetworksPreferred {
             "cartes_bancaires" => Ok(CartesBancaires),
             "mastercard" => Ok(Mastercard),
             "visa" => Ok(Visa),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenCreditCardSpecsNetworksPreferred"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2219,14 +2170,7 @@ impl std::str::FromStr for CreateTokenPersonPoliticalExposure {
         match s {
             "existing" => Ok(Existing),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenPersonPoliticalExposure"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2464,14 +2408,7 @@ impl std::str::FromStr for CreateTokenPersonUsCfpbDataEthnicityDetailsEthnicity 
             "other_hispanic_or_latino" => Ok(OtherHispanicOrLatino),
             "prefer_not_to_answer" => Ok(PreferNotToAnswer),
             "puerto_rican" => Ok(PuertoRican),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenPersonUsCfpbDataEthnicityDetailsEthnicity"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2631,14 +2568,7 @@ impl std::str::FromStr for CreateTokenPersonUsCfpbDataRaceDetailsRace {
             "somali" => Ok(Somali),
             "vietnamese" => Ok(Vietnamese),
             "white" => Ok(White),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTokenPersonUsCfpbDataRaceDetailsRace"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

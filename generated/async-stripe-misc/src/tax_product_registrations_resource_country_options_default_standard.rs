@@ -141,14 +141,7 @@ impl std::str::FromStr
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductRegistrationsResourceCountryOptionsDefaultStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

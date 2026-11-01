@@ -369,10 +369,7 @@ impl std::str::FromStr for IssuingTransactionWallet {
             "apple_pay" => Ok(ApplePay),
             "google_pay" => Ok(GooglePay),
             "samsung_pay" => Ok(SamsungPay),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingTransactionWallet");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -463,10 +460,7 @@ impl std::str::FromStr for IssuingTransactionType {
         match s {
             "capture" => Ok(Capture),
             "refund" => Ok(Refund),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingTransactionType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

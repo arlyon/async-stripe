@@ -308,14 +308,7 @@ impl std::str::FromStr for CreateBillingAlertUsageThresholdFiltersType {
         use CreateBillingAlertUsageThresholdFiltersType::*;
         match s {
             "customer" => Ok(Customer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingAlertUsageThresholdFiltersType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -378,14 +371,7 @@ impl std::str::FromStr for CreateBillingAlertUsageThresholdRecurrence {
         use CreateBillingAlertUsageThresholdRecurrence::*;
         match s {
             "one_time" => Ok(OneTime),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingAlertUsageThresholdRecurrence"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

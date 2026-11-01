@@ -143,14 +143,7 @@ impl std::str::FromStr for BillingBillResourceInvoicingPricingPricingType {
         use BillingBillResourceInvoicingPricingPricingType::*;
         match s {
             "price_details" => Ok(PriceDetails),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BillingBillResourceInvoicingPricingPricingType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

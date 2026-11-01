@@ -138,10 +138,7 @@ impl std::str::FromStr for GelatoPhoneReportErrorCode {
         match s {
             "phone_unverified_other" => Ok(PhoneUnverifiedOther),
             "phone_verification_declined" => Ok(PhoneVerificationDeclined),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoPhoneReportErrorCode");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

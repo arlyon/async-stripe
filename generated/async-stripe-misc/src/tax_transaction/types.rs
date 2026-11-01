@@ -302,10 +302,7 @@ impl std::str::FromStr for TaxTransactionType {
         match s {
             "reversal" => Ok(Reversal),
             "transaction" => Ok(Transaction),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TaxTransactionType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

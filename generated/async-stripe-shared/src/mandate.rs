@@ -244,10 +244,7 @@ impl std::str::FromStr for MandateStatus {
             "active" => Ok(Active),
             "inactive" => Ok(Inactive),
             "pending" => Ok(Pending),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "MandateStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -328,10 +325,7 @@ impl std::str::FromStr for MandateType {
         match s {
             "multi_use" => Ok(MultiUse),
             "single_use" => Ok(SingleUse),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "MandateType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

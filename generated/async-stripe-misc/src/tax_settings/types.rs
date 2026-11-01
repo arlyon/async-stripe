@@ -189,10 +189,7 @@ impl std::str::FromStr for TaxSettingsStatus {
         match s {
             "active" => Ok(Active),
             "pending" => Ok(Pending),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TaxSettingsStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

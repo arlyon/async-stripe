@@ -176,14 +176,7 @@ impl std::str::FromStr for PaymentMethodOptionsCardPresentCaptureMethod {
         match s {
             "manual" => Ok(Manual),
             "manual_preferred" => Ok(ManualPreferred),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsCardPresentCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

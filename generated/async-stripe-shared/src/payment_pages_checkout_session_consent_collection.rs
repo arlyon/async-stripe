@@ -164,14 +164,7 @@ impl std::str::FromStr for PaymentPagesCheckoutSessionConsentCollectionPromotion
         match s {
             "auto" => Ok(Auto),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentPagesCheckoutSessionConsentCollectionPromotions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -258,14 +251,7 @@ impl std::str::FromStr for PaymentPagesCheckoutSessionConsentCollectionTermsOfSe
         match s {
             "none" => Ok(None),
             "required" => Ok(Required),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentPagesCheckoutSessionConsentCollectionTermsOfService"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

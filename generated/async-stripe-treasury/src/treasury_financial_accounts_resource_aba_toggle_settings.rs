@@ -150,14 +150,7 @@ impl std::str::FromStr for TreasuryFinancialAccountsResourceAbaToggleSettingsSta
             "active" => Ok(Active),
             "pending" => Ok(Pending),
             "restricted" => Ok(Restricted),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryFinancialAccountsResourceAbaToggleSettingsStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

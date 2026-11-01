@@ -341,14 +341,7 @@ impl std::str::FromStr for CreateTaxCalculationCustomerDetailsAddressSource {
         match s {
             "billing" => Ok(Billing),
             "shipping" => Ok(Shipping),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxCalculationCustomerDetailsAddressSource"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -786,14 +779,7 @@ impl std::str::FromStr for CreateTaxCalculationCustomerDetailsTaxIdsType {
             "za_vat" => Ok(ZaVat),
             "zm_tin" => Ok(ZmTin),
             "zw_tin" => Ok(ZwTin),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxCalculationCustomerDetailsTaxIdsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -864,14 +850,7 @@ impl std::str::FromStr for CreateTaxCalculationCustomerDetailsTaxabilityOverride
             "customer_exempt" => Ok(CustomerExempt),
             "none" => Ok(None),
             "reverse_charge" => Ok(ReverseCharge),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxCalculationCustomerDetailsTaxabilityOverride"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -991,14 +970,7 @@ impl std::str::FromStr for CreateTaxCalculationLineItemsTaxBehavior {
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxCalculationLineItemsTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1165,14 +1137,7 @@ impl std::str::FromStr for CreateTaxCalculationShippingCostTaxBehavior {
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxCalculationShippingCostTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

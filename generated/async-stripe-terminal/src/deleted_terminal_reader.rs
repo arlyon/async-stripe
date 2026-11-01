@@ -213,14 +213,7 @@ impl std::str::FromStr for DeletedTerminalReaderDeviceType {
             "verifone_p630" => Ok(VerifoneP630),
             "verifone_ux700" => Ok(VerifoneUx700),
             "verifone_v660p" => Ok(VerifoneV660p),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "DeletedTerminalReaderDeviceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

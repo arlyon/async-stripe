@@ -301,10 +301,7 @@ impl std::str::FromStr for CreditNoteLineItemType {
         match s {
             "custom_line_item" => Ok(CustomLineItem),
             "invoice_line_item" => Ok(InvoiceLineItem),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreditNoteLineItemType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

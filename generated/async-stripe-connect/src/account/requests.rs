@@ -740,14 +740,7 @@ impl std::str::FromStr for CreateAccountBusinessProfileMinorityOwnedBusinessDesi
             "none_of_these_apply" => Ok(NoneOfTheseApply),
             "prefer_not_to_answer" => Ok(PreferNotToAnswer),
             "women_owned_business" => Ok(WomenOwnedBusiness),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountBusinessProfileMinorityOwnedBusinessDesignation"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3255,14 +3248,7 @@ impl std::str::FromStr for CreateAccountCompanyOwnershipExemptionReason {
                 Ok(QualifiedEntityExceedsOwnershipThreshold)
             }
             "qualifies_as_financial_institution" => Ok(QualifiesAsFinancialInstitution),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountCompanyOwnershipExemptionReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3433,14 +3419,7 @@ impl std::str::FromStr for CreateAccountCompanyStructure {
             "unincorporated_association" => Ok(UnincorporatedAssociation),
             "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
             "unincorporated_partnership" => Ok(UnincorporatedPartnership),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountCompanyStructure"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3569,14 +3548,7 @@ impl std::str::FromStr for CreateAccountControllerFeesPayer {
         match s {
             "account" => Ok(Account),
             "application" => Ok(Application),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountControllerFeesPayer"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3668,14 +3640,7 @@ impl std::str::FromStr for CreateAccountControllerLossesPayments {
         match s {
             "application" => Ok(Application),
             "stripe" => Ok(Stripe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountControllerLossesPayments"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3741,14 +3706,7 @@ impl std::str::FromStr for CreateAccountControllerRequirementCollection {
         match s {
             "application" => Ok(Application),
             "stripe" => Ok(Stripe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountControllerRequirementCollection"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3845,14 +3803,7 @@ impl std::str::FromStr for CreateAccountControllerStripeDashboardType {
             "express" => Ok(Express),
             "full" => Ok(Full),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountControllerStripeDashboardType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4240,14 +4191,7 @@ impl std::str::FromStr for CreateAccountIndividualPoliticalExposure {
         match s {
             "existing" => Ok(Existing),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountIndividualPoliticalExposure"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4435,14 +4379,7 @@ impl std::str::FromStr for CreateAccountSettingsInvoicesHostedPaymentMethodSave 
             "always" => Ok(Always),
             "never" => Ok(Never),
             "offer" => Ok(Offer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountSettingsInvoicesHostedPaymentMethodSave"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4630,14 +4567,7 @@ impl std::str::FromStr for CreateAccountSettingsPayoutsScheduleInterval {
             "manual" => Ok(Manual),
             "monthly" => Ok(Monthly),
             "weekly" => Ok(Weekly),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountSettingsPayoutsScheduleInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4719,14 +4649,7 @@ impl std::str::FromStr for CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
             "thursday" => Ok(Thursday),
             "tuesday" => Ok(Tuesday),
             "wednesday" => Ok(Wednesday),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountSettingsPayoutsScheduleWeeklyAnchor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4802,14 +4725,7 @@ impl std::str::FromStr for CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays 
             "thursday" => Ok(Thursday),
             "tuesday" => Ok(Tuesday),
             "wednesday" => Ok(Wednesday),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountSettingsPayoutsScheduleWeeklyPayoutDays"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4879,10 +4795,7 @@ impl std::str::FromStr for CreateAccountType {
             "custom" => Ok(Custom),
             "express" => Ok(Express),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateAccountType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5277,14 +5190,7 @@ impl std::str::FromStr for UpdateAccountBusinessProfileMinorityOwnedBusinessDesi
             "none_of_these_apply" => Ok(NoneOfTheseApply),
             "prefer_not_to_answer" => Ok(PreferNotToAnswer),
             "women_owned_business" => Ok(WomenOwnedBusiness),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountBusinessProfileMinorityOwnedBusinessDesignation"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7791,14 +7697,7 @@ impl std::str::FromStr for UpdateAccountCompanyOwnershipExemptionReason {
                 Ok(QualifiedEntityExceedsOwnershipThreshold)
             }
             "qualifies_as_financial_institution" => Ok(QualifiesAsFinancialInstitution),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountCompanyOwnershipExemptionReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7969,14 +7868,7 @@ impl std::str::FromStr for UpdateAccountCompanyStructure {
             "unincorporated_association" => Ok(UnincorporatedAssociation),
             "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
             "unincorporated_partnership" => Ok(UnincorporatedPartnership),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountCompanyStructure"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8367,14 +8259,7 @@ impl std::str::FromStr for UpdateAccountIndividualPoliticalExposure {
         match s {
             "existing" => Ok(Existing),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountIndividualPoliticalExposure"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8570,14 +8455,7 @@ impl std::str::FromStr for UpdateAccountSettingsInvoicesHostedPaymentMethodSave 
             "always" => Ok(Always),
             "never" => Ok(Never),
             "offer" => Ok(Offer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountSettingsInvoicesHostedPaymentMethodSave"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8765,14 +8643,7 @@ impl std::str::FromStr for UpdateAccountSettingsPayoutsScheduleInterval {
             "manual" => Ok(Manual),
             "monthly" => Ok(Monthly),
             "weekly" => Ok(Weekly),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountSettingsPayoutsScheduleInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8854,14 +8725,7 @@ impl std::str::FromStr for UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
             "thursday" => Ok(Thursday),
             "tuesday" => Ok(Tuesday),
             "wednesday" => Ok(Wednesday),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountSettingsPayoutsScheduleWeeklyAnchor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8937,14 +8801,7 @@ impl std::str::FromStr for UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays 
             "thursday" => Ok(Thursday),
             "tuesday" => Ok(Tuesday),
             "wednesday" => Ok(Wednesday),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountSettingsPayoutsScheduleWeeklyPayoutDays"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9228,10 +9085,7 @@ impl std::str::FromStr for RejectAccountPayoutsAction {
         match s {
             "none" => Ok(None),
             "pause" => Ok(Pause),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "RejectAccountPayoutsAction");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

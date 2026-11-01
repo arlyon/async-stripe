@@ -138,14 +138,7 @@ impl std::str::FromStr for TreasuryFinancialAccountsResourceClosedStatusDetailsR
             "account_rejected" => Ok(AccountRejected),
             "closed_by_platform" => Ok(ClosedByPlatform),
             "other" => Ok(Other),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryFinancialAccountsResourceClosedStatusDetailsReasons"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

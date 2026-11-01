@@ -143,14 +143,7 @@ impl std::str::FromStr for SubscriptionAutomaticTaxDisabledReason {
         use SubscriptionAutomaticTaxDisabledReason::*;
         match s {
             "requires_location_inputs" => Ok(RequiresLocationInputs),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscriptionAutomaticTaxDisabledReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -329,14 +329,7 @@ impl std::str::FromStr for DisputeEnhancedEligibilityTypes {
             "mastercard_compliance" => Ok(MastercardCompliance),
             "visa_compelling_evidence_3" => Ok(VisaCompellingEvidence3),
             "visa_compliance" => Ok(VisaCompliance),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "DisputeEnhancedEligibilityTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -436,10 +429,7 @@ impl std::str::FromStr for DisputeStatus {
             "warning_needs_response" => Ok(WarningNeedsResponse),
             "warning_under_review" => Ok(WarningUnderReview),
             "won" => Ok(Won),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "DisputeStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

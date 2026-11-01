@@ -184,7 +184,7 @@ impl std::str::FromStr for PaymentsPrimitivesPaymentRecordsResourcePaymentMethod
 "pass" => Ok(Pass),
 "unavailable" => Ok(Unavailable),
 "unchecked" => Ok(Unchecked),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksAddressLine1Check"); Ok(Unknown(v.to_owned())) }
+v => Ok(Unknown(v.to_owned())),
 
         }
     }
@@ -273,7 +273,7 @@ impl std::str::FromStr for PaymentsPrimitivesPaymentRecordsResourcePaymentMethod
 "pass" => Ok(Pass),
 "unavailable" => Ok(Unavailable),
 "unchecked" => Ok(Unchecked),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksAddressPostalCodeCheck"); Ok(Unknown(v.to_owned())) }
+v => Ok(Unknown(v.to_owned())),
 
         }
     }
@@ -360,14 +360,7 @@ impl std::str::FromStr
             "pass" => Ok(Pass),
             "unavailable" => Ok(Unavailable),
             "unchecked" => Ok(Unchecked),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksCvcCheck"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

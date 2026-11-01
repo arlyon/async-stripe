@@ -143,14 +143,7 @@ impl std::str::FromStr for CheckoutKakaoPayPaymentMethodOptionsCaptureMethod {
         use CheckoutKakaoPayPaymentMethodOptionsCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutKakaoPayPaymentMethodOptionsCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -241,14 +234,7 @@ impl std::str::FromStr for CheckoutKakaoPayPaymentMethodOptionsSetupFutureUsage 
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutKakaoPayPaymentMethodOptionsSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

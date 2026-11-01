@@ -308,14 +308,7 @@ impl std::str::FromStr for IssuingAuthorizationRequestReason {
             "webhook_declined" => Ok(WebhookDeclined),
             "webhook_error" => Ok(WebhookError),
             "webhook_timeout" => Ok(WebhookTimeout),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationRequestReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

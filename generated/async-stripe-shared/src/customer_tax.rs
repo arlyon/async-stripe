@@ -164,10 +164,7 @@ impl std::str::FromStr for CustomerTaxAutomaticTax {
             "not_collecting" => Ok(NotCollecting),
             "supported" => Ok(Supported),
             "unrecognized_location" => Ok(UnrecognizedLocation),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerTaxAutomaticTax");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -255,10 +252,7 @@ impl std::str::FromStr for CustomerTaxProvider {
             "avalara" => Ok(Avalara),
             "sphere" => Ok(Sphere),
             "stripe" => Ok(Stripe),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerTaxProvider");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

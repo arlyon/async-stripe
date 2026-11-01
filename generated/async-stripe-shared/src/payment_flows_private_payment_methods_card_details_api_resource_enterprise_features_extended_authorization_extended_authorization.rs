@@ -139,7 +139,7 @@ impl std::str::FromStr for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResour
         match s {
     "disabled" => Ok(Disabled),
 "enabled" => Ok(Enabled),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesExtendedAuthorizationExtendedAuthorizationStatus"); Ok(Unknown(v.to_owned())) }
+v => Ok(Unknown(v.to_owned())),
 
         }
     }

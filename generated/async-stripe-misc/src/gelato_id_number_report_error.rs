@@ -141,14 +141,7 @@ impl std::str::FromStr for GelatoIdNumberReportErrorCode {
             "id_number_insufficient_document_data" => Ok(IdNumberInsufficientDocumentData),
             "id_number_mismatch" => Ok(IdNumberMismatch),
             "id_number_unverified_other" => Ok(IdNumberUnverifiedOther),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "GelatoIdNumberReportErrorCode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -238,14 +238,7 @@ impl std::str::FromStr for IssuingDisputeEvidenceReason {
             "not_received" => Ok(NotReceived),
             "other" => Ok(Other),
             "service_not_as_described" => Ok(ServiceNotAsDescribed),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingDisputeEvidenceReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -148,14 +148,7 @@ impl std::str::FromStr for PaymentMethodConfigResourceDisplayPreferencePreferenc
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodConfigResourceDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -242,14 +235,7 @@ impl std::str::FromStr for PaymentMethodConfigResourceDisplayPreferenceValue {
         match s {
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodConfigResourceDisplayPreferenceValue"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

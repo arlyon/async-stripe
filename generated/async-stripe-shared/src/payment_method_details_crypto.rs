@@ -169,14 +169,7 @@ impl std::str::FromStr for PaymentMethodDetailsCryptoNetwork {
             "solana" => Ok(Solana),
             "sui" => Ok(Sui),
             "tempo" => Ok(Tempo),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodDetailsCryptoNetwork"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -269,14 +262,7 @@ impl std::str::FromStr for PaymentMethodDetailsCryptoTokenCurrency {
             "usdp" => Ok(Usdp),
             "usdsui" => Ok(Usdsui),
             "usdt" => Ok(Usdt),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodDetailsCryptoTokenCurrency"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

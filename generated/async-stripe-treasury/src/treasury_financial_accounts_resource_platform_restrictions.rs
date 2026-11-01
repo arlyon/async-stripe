@@ -145,14 +145,7 @@ impl std::str::FromStr for TreasuryFinancialAccountsResourcePlatformRestrictions
         match s {
             "restricted" => Ok(Restricted),
             "unrestricted" => Ok(Unrestricted),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -245,14 +238,7 @@ impl std::str::FromStr for TreasuryFinancialAccountsResourcePlatformRestrictions
         match s {
             "restricted" => Ok(Restricted),
             "unrestricted" => Ok(Unrestricted),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

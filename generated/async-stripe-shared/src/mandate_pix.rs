@@ -186,14 +186,7 @@ impl std::str::FromStr for MandatePixAmountIncludesIof {
         match s {
             "always" => Ok(Always),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "MandatePixAmountIncludesIof"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -274,10 +267,7 @@ impl std::str::FromStr for MandatePixAmountType {
         match s {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "MandatePixAmountType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -367,10 +357,7 @@ impl std::str::FromStr for MandatePixPaymentSchedule {
             "quarterly" => Ok(Quarterly),
             "weekly" => Ok(Weekly),
             "yearly" => Ok(Yearly),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "MandatePixPaymentSchedule");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -151,14 +151,7 @@ impl std::str::FromStr for TaxProductRegistrationsResourceCountryOptionsEuropeTy
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductRegistrationsResourceCountryOptionsEuropeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

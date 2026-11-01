@@ -266,10 +266,7 @@ impl std::str::FromStr for ReservePlanCreatedBy {
         match s {
             "application" => Ok(Application),
             "stripe" => Ok(Stripe),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ReservePlanCreatedBy");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -353,10 +350,7 @@ impl std::str::FromStr for ReservePlanStatus {
             "active" => Ok(Active),
             "disabled" => Ok(Disabled),
             "expired" => Ok(Expired),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ReservePlanStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -437,10 +431,7 @@ impl std::str::FromStr for ReservePlanType {
         match s {
             "fixed_release" => Ok(FixedRelease),
             "rolling_release" => Ok(RollingRelease),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ReservePlanType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

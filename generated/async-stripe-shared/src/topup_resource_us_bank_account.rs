@@ -129,14 +129,7 @@ impl std::str::FromStr for TopupResourceUsBankAccountNetwork {
         use TopupResourceUsBankAccountNetwork::*;
         match s {
             "ach" => Ok(Ach),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TopupResourceUsBankAccountNetwork"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

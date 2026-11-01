@@ -167,14 +167,7 @@ impl std::str::FromStr for DisputePaymentMethodDetailsType {
             "card" => Ok(Card),
             "klarna" => Ok(Klarna),
             "paypal" => Ok(Paypal),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "DisputePaymentMethodDetailsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

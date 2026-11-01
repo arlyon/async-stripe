@@ -141,14 +141,7 @@ impl std::str::FromStr for PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResour
             "lawson" => Ok(Lawson),
             "ministop" => Ok(Ministop),
             "seicomart" => Ok(Seicomart),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentFlowsPrivatePaymentMethodsKonbiniDetailsResourceStoreChain"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

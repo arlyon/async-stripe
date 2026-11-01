@@ -266,14 +266,7 @@ impl std::str::FromStr for ReportPaymentAttemptPaymentRecordOutcome {
         match s {
             "failed" => Ok(Failed),
             "guaranteed" => Ok(Guaranteed),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ReportPaymentAttemptPaymentRecordOutcome"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -375,14 +368,7 @@ impl std::str::FromStr for ReportPaymentAttemptPaymentRecordPaymentMethodDetails
         use ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType::*;
         match s {
             "custom" => Ok(Custom),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -986,14 +972,7 @@ impl std::str::FromStr for ReportRefundPaymentRecordOutcome {
         use ReportRefundPaymentRecordOutcome::*;
         match s {
             "refunded" => Ok(Refunded),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ReportRefundPaymentRecordOutcome"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1101,14 +1080,7 @@ impl std::str::FromStr for ReportRefundPaymentRecordProcessorDetailsType {
         use ReportRefundPaymentRecordProcessorDetailsType::*;
         match s {
             "custom" => Ok(Custom),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ReportRefundPaymentRecordProcessorDetailsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1337,14 +1309,7 @@ impl std::str::FromStr for ReportPaymentPaymentRecordOutcome {
         match s {
             "failed" => Ok(Failed),
             "guaranteed" => Ok(Guaranteed),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ReportPaymentPaymentRecordOutcome"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1445,14 +1410,7 @@ impl std::str::FromStr for ReportPaymentPaymentRecordPaymentMethodDetailsType {
         use ReportPaymentPaymentRecordPaymentMethodDetailsType::*;
         match s {
             "custom" => Ok(Custom),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ReportPaymentPaymentRecordPaymentMethodDetailsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1561,14 +1519,7 @@ impl std::str::FromStr for ReportPaymentPaymentRecordProcessorDetailsType {
         use ReportPaymentPaymentRecordProcessorDetailsType::*;
         match s {
             "custom" => Ok(Custom),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ReportPaymentPaymentRecordProcessorDetailsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

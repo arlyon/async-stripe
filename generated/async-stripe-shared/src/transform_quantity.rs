@@ -137,10 +137,7 @@ impl std::str::FromStr for TransformQuantityRound {
         match s {
             "down" => Ok(Down),
             "up" => Ok(Up),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TransformQuantityRound");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

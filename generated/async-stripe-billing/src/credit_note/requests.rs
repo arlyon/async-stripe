@@ -297,10 +297,7 @@ impl std::str::FromStr for PreviewCreditNoteEmailType {
         match s {
             "credit_note" => Ok(CreditNote),
             "none" => Ok(None),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PreviewCreditNoteEmailType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -436,10 +433,7 @@ impl std::str::FromStr for PreviewCreditNoteLinesType {
         match s {
             "custom_line_item" => Ok(CustomLineItem),
             "invoice_line_item" => Ok(InvoiceLineItem),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PreviewCreditNoteLinesType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -541,14 +535,7 @@ impl std::str::FromStr for PreviewCreditNoteRefundsType {
         match s {
             "payment_record_refund" => Ok(PaymentRecordRefund),
             "refund" => Ok(Refund),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PreviewCreditNoteRefundsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -801,14 +788,7 @@ impl std::str::FromStr for PreviewLinesCreditNoteEmailType {
         match s {
             "credit_note" => Ok(CreditNote),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PreviewLinesCreditNoteEmailType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -944,14 +924,7 @@ impl std::str::FromStr for PreviewLinesCreditNoteLinesType {
         match s {
             "custom_line_item" => Ok(CustomLineItem),
             "invoice_line_item" => Ok(InvoiceLineItem),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PreviewLinesCreditNoteLinesType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1053,14 +1026,7 @@ impl std::str::FromStr for PreviewLinesCreditNoteRefundsType {
         match s {
             "payment_record_refund" => Ok(PaymentRecordRefund),
             "refund" => Ok(Refund),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PreviewLinesCreditNoteRefundsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1332,10 +1298,7 @@ impl std::str::FromStr for CreateCreditNoteEmailType {
         match s {
             "credit_note" => Ok(CreditNote),
             "none" => Ok(None),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateCreditNoteEmailType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1471,10 +1434,7 @@ impl std::str::FromStr for CreateCreditNoteLinesType {
         match s {
             "custom_line_item" => Ok(CustomLineItem),
             "invoice_line_item" => Ok(InvoiceLineItem),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateCreditNoteLinesType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1576,14 +1536,7 @@ impl std::str::FromStr for CreateCreditNoteRefundsType {
         match s {
             "payment_record_refund" => Ok(PaymentRecordRefund),
             "refund" => Ok(Refund),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateCreditNoteRefundsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

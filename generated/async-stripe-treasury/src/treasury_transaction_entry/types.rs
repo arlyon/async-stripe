@@ -285,14 +285,7 @@ impl std::str::FromStr for TreasuryTransactionEntryFlowType {
             "outbound_transfer" => Ok(OutboundTransfer),
             "received_credit" => Ok(ReceivedCredit),
             "received_debit" => Ok(ReceivedDebit),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryTransactionEntryFlowType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -427,14 +420,7 @@ impl std::str::FromStr for TreasuryTransactionEntryType {
             "outbound_transfer_return" => Ok(OutboundTransferReturn),
             "received_credit" => Ok(ReceivedCredit),
             "received_debit" => Ok(ReceivedDebit),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryTransactionEntryType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

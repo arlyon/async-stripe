@@ -272,10 +272,7 @@ impl std::str::FromStr for IssuingCardShippingCarrier {
             "fedex" => Ok(Fedex),
             "royal_mail" => Ok(RoyalMail),
             "usps" => Ok(Usps),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingCardShippingCarrier");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -359,10 +356,7 @@ impl std::str::FromStr for IssuingCardShippingService {
             "express" => Ok(Express),
             "priority" => Ok(Priority),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingCardShippingService");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -458,10 +452,7 @@ impl std::str::FromStr for IssuingCardShippingStatus {
             "returned" => Ok(Returned),
             "shipped" => Ok(Shipped),
             "submitted" => Ok(Submitted),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingCardShippingStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -542,10 +533,7 @@ impl std::str::FromStr for IssuingCardShippingType {
         match s {
             "bulk" => Ok(Bulk),
             "individual" => Ok(Individual),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingCardShippingType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

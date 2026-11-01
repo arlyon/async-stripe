@@ -220,10 +220,7 @@ impl std::str::FromStr for CapabilityStatus {
             "inactive" => Ok(Inactive),
             "pending" => Ok(Pending),
             "unrequested" => Ok(Unrequested),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CapabilityStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -332,10 +332,7 @@ impl std::str::FromStr for TerminalReaderDeviceType {
             "verifone_p630" => Ok(VerifoneP630),
             "verifone_ux700" => Ok(VerifoneUx700),
             "verifone_v660p" => Ok(VerifoneV660p),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TerminalReaderDeviceType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -414,10 +411,7 @@ impl std::str::FromStr for TerminalReaderStatus {
         match s {
             "offline" => Ok(Offline),
             "online" => Ok(Online),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TerminalReaderStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

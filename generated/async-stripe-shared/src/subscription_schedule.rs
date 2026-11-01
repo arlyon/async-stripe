@@ -354,10 +354,7 @@ impl std::str::FromStr for SubscriptionScheduleStatus {
             "completed" => Ok(Completed),
             "not_started" => Ok(NotStarted),
             "released" => Ok(Released),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SubscriptionScheduleStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -454,14 +451,7 @@ impl std::str::FromStr for SubscriptionScheduleEndBehavior {
             "none" => Ok(None),
             "release" => Ok(Release),
             "renew" => Ok(Renew),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscriptionScheduleEndBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

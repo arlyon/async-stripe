@@ -666,14 +666,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationFleetPurchaseType {
             "fuel_and_non_fuel_purchase" => Ok(FuelAndNonFuelPurchase),
             "fuel_purchase" => Ok(FuelPurchase),
             "non_fuel_purchase" => Ok(NonFuelPurchase),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationFleetPurchaseType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -742,14 +735,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationFleetServiceType {
             "full_service" => Ok(FullService),
             "non_fuel_transaction" => Ok(NonFuelTransaction),
             "self_service" => Ok(SelfService),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationFleetServiceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -823,14 +809,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationFraudDisputabilityLikelihoo
             "unknown" => Ok(Unknown),
             "very_likely" => Ok(VeryLikely),
             "very_unlikely" => Ok(VeryUnlikely),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationFraudDisputabilityLikelihood"
-                );
-                Ok(_Unknown(v.to_owned()))
-            }
+            v => Ok(_Unknown(v.to_owned())),
         }
     }
 }
@@ -952,14 +931,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationFuelType {
             "unleaded_plus" => Ok(UnleadedPlus),
             "unleaded_regular" => Ok(UnleadedRegular),
             "unleaded_super" => Ok(UnleadedSuper),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationFuelType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1043,14 +1015,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationFuelUnit {
             "other" => Ok(Other),
             "pound" => Ok(Pound),
             "us_gallon" => Ok(UsGallon),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationFuelUnit"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2145,14 +2110,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationMerchantDataCategory {
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationMerchantDataCategory"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2325,14 +2283,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentCardTestingRi
             "normal" => Ok(Normal),
             "not_assessed" => Ok(NotAssessed),
             "unknown" => Ok(Unknown),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel"
-                );
-                Ok(_Unknown(v.to_owned()))
-            }
+            v => Ok(_Unknown(v.to_owned())),
         }
     }
 }
@@ -2434,14 +2385,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentFraudRiskLeve
             "normal" => Ok(Normal),
             "not_assessed" => Ok(NotAssessed),
             "unknown" => Ok(Unknown),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationRiskAssessmentFraudRiskLevel"
-                );
-                Ok(_Unknown(v.to_owned()))
-            }
+            v => Ok(_Unknown(v.to_owned())),
         }
     }
 }
@@ -2548,14 +2492,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentMerchantDispu
             "normal" => Ok(Normal),
             "not_assessed" => Ok(NotAssessed),
             "unknown" => Ok(Unknown),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel"
-                );
-                Ok(_Unknown(v.to_owned()))
-            }
+            v => Ok(_Unknown(v.to_owned())),
         }
     }
 }
@@ -2675,14 +2612,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataAddressLine
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationVerificationDataAddressLine1Check"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2751,14 +2681,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataAddressPost
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationVerificationDataAddressPostalCodeCheck"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2856,14 +2779,7 @@ impl std::str::FromStr
         match s {
             "acquirer" => Ok(Acquirer),
             "issuer" => Ok(Issuer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationVerificationDataAuthenticationExemptionClaimedBy"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2945,14 +2861,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataAuthenticat
             "low_value_transaction" => Ok(LowValueTransaction),
             "transaction_risk_analysis" => Ok(TransactionRiskAnalysis),
             "unknown" => Ok(Unknown),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType"
-                );
-                Ok(_Unknown(v.to_owned()))
-            }
+            v => Ok(_Unknown(v.to_owned())),
         }
     }
 }
@@ -3025,14 +2934,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataCvcCheck {
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationVerificationDataCvcCheck"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3101,14 +3003,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataExpiryCheck
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationVerificationDataExpiryCheck"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3202,14 +3097,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataThreeDSecur
             "authenticated" => Ok(Authenticated),
             "failed" => Ok(Failed),
             "required" => Ok(Required),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationVerificationDataThreeDSecureResult"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3280,14 +3168,7 @@ impl std::str::FromStr for CreateIssuingAuthorizationWallet {
             "apple_pay" => Ok(ApplePay),
             "google_pay" => Ok(GooglePay),
             "samsung_pay" => Ok(SamsungPay),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingAuthorizationWallet"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3636,14 +3517,7 @@ impl std::str::FromStr for CaptureIssuingAuthorizationPurchaseDetailsFleetPurcha
             "fuel_and_non_fuel_purchase" => Ok(FuelAndNonFuelPurchase),
             "fuel_purchase" => Ok(FuelPurchase),
             "non_fuel_purchase" => Ok(NonFuelPurchase),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CaptureIssuingAuthorizationPurchaseDetailsFleetPurchaseType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3712,14 +3586,7 @@ impl std::str::FromStr for CaptureIssuingAuthorizationPurchaseDetailsFleetServic
             "full_service" => Ok(FullService),
             "non_fuel_transaction" => Ok(NonFuelTransaction),
             "self_service" => Ok(SelfService),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CaptureIssuingAuthorizationPurchaseDetailsFleetServiceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3932,14 +3799,7 @@ impl std::str::FromStr for CaptureIssuingAuthorizationPurchaseDetailsFuelType {
             "unleaded_plus" => Ok(UnleadedPlus),
             "unleaded_regular" => Ok(UnleadedRegular),
             "unleaded_super" => Ok(UnleadedSuper),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CaptureIssuingAuthorizationPurchaseDetailsFuelType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4024,14 +3884,7 @@ impl std::str::FromStr for CaptureIssuingAuthorizationPurchaseDetailsFuelUnit {
             "other" => Ok(Other),
             "pound" => Ok(Pound),
             "us_gallon" => Ok(UsGallon),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CaptureIssuingAuthorizationPurchaseDetailsFuelUnit"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4379,14 +4232,7 @@ impl std::str::FromStr for FinalizeAmountIssuingAuthorizationFleetPurchaseType {
             "fuel_and_non_fuel_purchase" => Ok(FuelAndNonFuelPurchase),
             "fuel_purchase" => Ok(FuelPurchase),
             "non_fuel_purchase" => Ok(NonFuelPurchase),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FinalizeAmountIssuingAuthorizationFleetPurchaseType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4455,14 +4301,7 @@ impl std::str::FromStr for FinalizeAmountIssuingAuthorizationFleetServiceType {
             "full_service" => Ok(FullService),
             "non_fuel_transaction" => Ok(NonFuelTransaction),
             "self_service" => Ok(SelfService),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FinalizeAmountIssuingAuthorizationFleetServiceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4584,14 +4423,7 @@ impl std::str::FromStr for FinalizeAmountIssuingAuthorizationFuelType {
             "unleaded_plus" => Ok(UnleadedPlus),
             "unleaded_regular" => Ok(UnleadedRegular),
             "unleaded_super" => Ok(UnleadedSuper),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FinalizeAmountIssuingAuthorizationFuelType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4676,14 +4508,7 @@ impl std::str::FromStr for FinalizeAmountIssuingAuthorizationFuelUnit {
             "other" => Ok(Other),
             "pound" => Ok(Pound),
             "us_gallon" => Ok(UsGallon),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FinalizeAmountIssuingAuthorizationFuelUnit"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

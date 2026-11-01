@@ -347,10 +347,7 @@ impl std::str::FromStr for ProductType {
         match s {
             "good" => Ok(Good),
             "service" => Ok(Service),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ProductType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -211,14 +211,7 @@ impl std::str::FromStr for PortalSubscriptionUpdateBillingCycleAnchor {
         match s {
             "now" => Ok(Now),
             "unchanged" => Ok(Unchanged),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PortalSubscriptionUpdateBillingCycleAnchor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -305,14 +298,7 @@ impl std::str::FromStr for PortalSubscriptionUpdateDefaultAllowedUpdates {
             "price" => Ok(Price),
             "promotion_code" => Ok(PromotionCode),
             "quantity" => Ok(Quantity),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PortalSubscriptionUpdateDefaultAllowedUpdates"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -400,14 +386,7 @@ impl std::str::FromStr for PortalSubscriptionUpdateProrationBehavior {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PortalSubscriptionUpdateProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -492,14 +471,7 @@ impl std::str::FromStr for PortalSubscriptionUpdateTrialUpdateBehavior {
         match s {
             "continue_trial" => Ok(ContinueTrial),
             "end_trial" => Ok(EndTrial),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PortalSubscriptionUpdateTrialUpdateBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

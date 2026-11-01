@@ -143,14 +143,7 @@ impl std::str::FromStr for PaymentMethodOptionsPaynowSetupFutureUsage {
         use PaymentMethodOptionsPaynowSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsPaynowSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

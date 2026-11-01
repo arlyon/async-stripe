@@ -332,14 +332,7 @@ impl std::str::FromStr for CustomerBalanceTransactionType {
             "migration" => Ok(Migration),
             "unapplied_from_invoice" => Ok(UnappliedFromInvoice),
             "unspent_receiver_credit" => Ok(UnspentReceiverCredit),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CustomerBalanceTransactionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

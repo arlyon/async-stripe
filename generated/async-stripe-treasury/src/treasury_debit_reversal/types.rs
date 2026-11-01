@@ -291,14 +291,7 @@ impl std::str::FromStr for TreasuryDebitReversalNetwork {
         match s {
             "ach" => Ok(Ach),
             "card" => Ok(Card),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryDebitReversalNetwork"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -382,14 +375,7 @@ impl std::str::FromStr for TreasuryDebitReversalStatus {
             "failed" => Ok(Failed),
             "processing" => Ok(Processing),
             "succeeded" => Ok(Succeeded),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryDebitReversalStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

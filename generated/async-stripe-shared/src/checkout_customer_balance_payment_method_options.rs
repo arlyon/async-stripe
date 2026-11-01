@@ -157,14 +157,7 @@ impl std::str::FromStr for CheckoutCustomerBalancePaymentMethodOptionsFundingTyp
         use CheckoutCustomerBalancePaymentMethodOptionsFundingType::*;
         match s {
             "bank_transfer" => Ok(BankTransfer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutCustomerBalancePaymentMethodOptionsFundingType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -255,14 +248,7 @@ impl std::str::FromStr for CheckoutCustomerBalancePaymentMethodOptionsSetupFutur
         use CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -152,14 +152,7 @@ impl std::str::FromStr for PortalSubscriptionCancelMode {
         match s {
             "at_period_end" => Ok(AtPeriodEnd),
             "immediately" => Ok(Immediately),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PortalSubscriptionCancelMode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -244,14 +237,7 @@ impl std::str::FromStr for PortalSubscriptionCancelProrationBehavior {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PortalSubscriptionCancelProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

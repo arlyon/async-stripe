@@ -461,14 +461,7 @@ impl std::str::FromStr for IssuingAuthorizationCardPresence {
         match s {
             "not_present" => Ok(NotPresent),
             "present" => Ok(Present),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationCardPresence"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -568,14 +561,7 @@ impl std::str::FromStr for IssuingAuthorizationAuthorizationMethod {
             "keyed_in" => Ok(KeyedIn),
             "online" => Ok(Online),
             "swipe" => Ok(Swipe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationAuthorizationMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -660,10 +646,7 @@ impl std::str::FromStr for IssuingAuthorizationStatus {
             "expired" => Ok(Expired),
             "pending" => Ok(Pending),
             "reversed" => Ok(Reversed),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingAuthorizationStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

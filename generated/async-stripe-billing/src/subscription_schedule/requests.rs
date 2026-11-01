@@ -364,14 +364,7 @@ impl std::str::FromStr for CreateSubscriptionScheduleBillingModeFlexibleProratio
         match s {
             "included" => Ok(Included),
             "itemized" => Ok(Itemized),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -440,14 +433,7 @@ impl std::str::FromStr for CreateSubscriptionScheduleBillingModeType {
         match s {
             "classic" => Ok(Classic),
             "flexible" => Ok(Flexible),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionScheduleBillingModeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -641,14 +627,7 @@ impl std::str::FromStr for CreateSubscriptionScheduleDefaultSettingsAutomaticTax
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -720,14 +699,7 @@ impl std::str::FromStr for CreateSubscriptionScheduleDefaultSettingsBillingCycle
         match s {
             "automatic" => Ok(Automatic),
             "phase_start" => Ok(PhaseStart),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -796,14 +768,7 @@ impl std::str::FromStr for CreateSubscriptionScheduleDefaultSettingsCollectionMe
         match s {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionScheduleDefaultSettingsCollectionMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -944,14 +909,7 @@ impl std::str::FromStr for CreateSubscriptionScheduleDefaultSettingsInvoiceSetti
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1295,14 +1253,7 @@ impl std::str::FromStr for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod
             "min_item_period_end" => Ok(MinItemPeriodEnd),
             "phase_end" => Ok(PhaseEnd),
             "timestamp" => Ok(Timestamp),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1398,14 +1349,7 @@ impl std::str::FromStr for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod
             "max_item_period_start" => Ok(MaxItemPeriodStart),
             "phase_start" => Ok(PhaseStart),
             "timestamp" => Ok(Timestamp),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1522,14 +1466,7 @@ impl std::str::FromStr for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceD
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1651,14 +1588,7 @@ impl std::str::FromStr for CreateSubscriptionSchedulePhasesAutomaticTaxLiability
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1726,14 +1656,7 @@ impl std::str::FromStr for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
         match s {
             "automatic" => Ok(Automatic),
             "phase_start" => Ok(PhaseStart),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesBillingCycleAnchor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1802,14 +1725,7 @@ impl std::str::FromStr for CreateSubscriptionSchedulePhasesCollectionMethod {
         match s {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesCollectionMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1936,14 +1852,7 @@ impl std::str::FromStr for CreateSubscriptionSchedulePhasesDurationInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesDurationInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2086,14 +1995,7 @@ impl std::str::FromStr for CreateSubscriptionSchedulePhasesInvoiceSettingsIssuer
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2333,14 +2235,7 @@ impl std::str::FromStr for CreateSubscriptionSchedulePhasesItemsPriceDataRecurri
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2414,14 +2309,7 @@ impl std::str::FromStr for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBeha
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2491,14 +2379,7 @@ impl std::str::FromStr for CreateSubscriptionSchedulePhasesProrationBehavior {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSubscriptionSchedulePhasesProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2873,14 +2754,7 @@ impl std::str::FromStr for UpdateSubscriptionScheduleDefaultSettingsAutomaticTax
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2952,14 +2826,7 @@ impl std::str::FromStr for UpdateSubscriptionScheduleDefaultSettingsBillingCycle
         match s {
             "automatic" => Ok(Automatic),
             "phase_start" => Ok(PhaseStart),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3028,14 +2895,7 @@ impl std::str::FromStr for UpdateSubscriptionScheduleDefaultSettingsCollectionMe
         match s {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionScheduleDefaultSettingsCollectionMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3176,14 +3036,7 @@ impl std::str::FromStr for UpdateSubscriptionScheduleDefaultSettingsInvoiceSetti
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3535,14 +3388,7 @@ impl std::str::FromStr for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod
             "min_item_period_end" => Ok(MinItemPeriodEnd),
             "phase_end" => Ok(PhaseEnd),
             "timestamp" => Ok(Timestamp),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3638,14 +3484,7 @@ impl std::str::FromStr for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod
             "max_item_period_start" => Ok(MaxItemPeriodStart),
             "phase_start" => Ok(PhaseStart),
             "timestamp" => Ok(Timestamp),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3762,14 +3601,7 @@ impl std::str::FromStr for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceD
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3891,14 +3723,7 @@ impl std::str::FromStr for UpdateSubscriptionSchedulePhasesAutomaticTaxLiability
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3966,14 +3791,7 @@ impl std::str::FromStr for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
         match s {
             "automatic" => Ok(Automatic),
             "phase_start" => Ok(PhaseStart),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesBillingCycleAnchor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4042,14 +3860,7 @@ impl std::str::FromStr for UpdateSubscriptionSchedulePhasesCollectionMethod {
         match s {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesCollectionMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4176,14 +3987,7 @@ impl std::str::FromStr for UpdateSubscriptionSchedulePhasesDurationInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesDurationInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4342,14 +4146,7 @@ impl std::str::FromStr for UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuer
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4589,14 +4386,7 @@ impl std::str::FromStr for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurri
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4670,14 +4460,7 @@ impl std::str::FromStr for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBeha
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4747,14 +4530,7 @@ impl std::str::FromStr for UpdateSubscriptionSchedulePhasesProrationBehavior {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionSchedulePhasesProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4860,14 +4636,7 @@ impl std::str::FromStr for UpdateSubscriptionScheduleProrationBehavior {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSubscriptionScheduleProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

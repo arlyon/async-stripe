@@ -173,14 +173,7 @@ impl std::str::FromStr for CreateFinancialConnectionsSessionAccountHolderType {
         match s {
             "account" => Ok(Account),
             "customer" => Ok(Customer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateFinancialConnectionsSessionAccountHolderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -290,14 +283,7 @@ impl std::str::FromStr for CreateFinancialConnectionsSessionFiltersAccountSubcat
             "line_of_credit" => Ok(LineOfCredit),
             "mortgage" => Ok(Mortgage),
             "savings" => Ok(Savings),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateFinancialConnectionsSessionFiltersAccountSubcategories"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -366,14 +352,7 @@ impl std::str::FromStr for CreateFinancialConnectionsSessionFiltersRequirePaymen
             "all" => Ok(All),
             "at_least_one" => Ok(AtLeastOne),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateFinancialConnectionsSessionFiltersRequirePaymentMethodSupport"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -488,14 +467,7 @@ impl std::str::FromStr for CreateFinancialConnectionsSessionManualEntryMode {
         match s {
             "automatic" => Ok(Automatic),
             "disabled" => Ok(Disabled),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateFinancialConnectionsSessionManualEntryMode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

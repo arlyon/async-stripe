@@ -317,14 +317,7 @@ impl std::str::FromStr for CreateBillingCreditGrantAmountType {
         use CreateBillingCreditGrantAmountType::*;
         match s {
             "monetary" => Ok(Monetary),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingCreditGrantAmountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -441,14 +434,7 @@ impl std::str::FromStr for CreateBillingCreditGrantApplicabilityConfigScopePrice
         use CreateBillingCreditGrantApplicabilityConfigScopePriceType::*;
         match s {
             "metered" => Ok(Metered),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingCreditGrantApplicabilityConfigScopePriceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

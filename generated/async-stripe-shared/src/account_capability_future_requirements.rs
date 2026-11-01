@@ -238,14 +238,7 @@ impl std::str::FromStr for AccountCapabilityFutureRequirementsDisabledReason {
             "rejected.other" => Ok(RejectedOther),
             "rejected.unsupported_business" => Ok(RejectedUnsupportedBusiness),
             "requirements.fields_needed" => Ok(RequirementsFieldsNeeded),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "AccountCapabilityFutureRequirementsDisabledReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

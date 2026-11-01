@@ -310,10 +310,7 @@ impl std::str::FromStr for SetupAttemptFlowDirections {
         match s {
             "inbound" => Ok(Inbound),
             "outbound" => Ok(Outbound),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SetupAttemptFlowDirections");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

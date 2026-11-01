@@ -168,14 +168,7 @@ impl std::str::FromStr for PaymentMethodUsBankAccountBlockedNetworkCode {
             "R20" => Ok(R20),
             "R29" => Ok(R29),
             "R31" => Ok(R31),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodUsBankAccountBlockedNetworkCode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -273,14 +266,7 @@ impl std::str::FromStr for PaymentMethodUsBankAccountBlockedReason {
             "bank_account_unusable" => Ok(BankAccountUnusable),
             "debit_not_authorized" => Ok(DebitNotAuthorized),
             "tokenized_account_number_deactivated" => Ok(TokenizedAccountNumberDeactivated),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodUsBankAccountBlockedReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

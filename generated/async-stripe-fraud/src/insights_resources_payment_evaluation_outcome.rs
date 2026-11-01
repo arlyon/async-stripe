@@ -177,14 +177,7 @@ impl std::str::FromStr for InsightsResourcesPaymentEvaluationOutcomeType {
             "merchant_blocked" => Ok(MerchantBlocked),
             "rejected" => Ok(Rejected),
             "succeeded" => Ok(Succeeded),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationOutcomeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

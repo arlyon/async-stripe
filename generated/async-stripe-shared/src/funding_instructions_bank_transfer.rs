@@ -146,14 +146,7 @@ impl std::str::FromStr for FundingInstructionsBankTransferType {
         match s {
             "eu_bank_transfer" => Ok(EuBankTransfer),
             "jp_bank_transfer" => Ok(JpBankTransfer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FundingInstructionsBankTransferType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -243,10 +243,7 @@ impl std::str::FromStr for UpdateIssuingTokenStatus {
             "active" => Ok(Active),
             "deleted" => Ok(Deleted),
             "suspended" => Ok(Suspended),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "UpdateIssuingTokenStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

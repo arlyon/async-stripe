@@ -186,14 +186,7 @@ impl std::str::FromStr for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebi
         match s {
             "invoice" => Ok(Invoice),
             "subscription" => Ok(Subscription),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -287,14 +280,7 @@ impl std::str::FromStr for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebi
             "combined" => Ok(Combined),
             "interval" => Ok(Interval),
             "sporadic" => Ok(Sporadic),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -389,14 +375,7 @@ impl std::str::FromStr for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebi
         match s {
             "business" => Ok(Business),
             "personal" => Ok(Personal),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

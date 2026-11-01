@@ -380,10 +380,7 @@ impl std::str::FromStr for AccountType {
             "express" => Ok(Express),
             "none" => Ok(None),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "AccountType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -480,10 +477,7 @@ impl std::str::FromStr for AccountBusinessType {
             "government_entity" => Ok(GovernmentEntity),
             "individual" => Ok(Individual),
             "non_profit" => Ok(NonProfit),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "AccountBusinessType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

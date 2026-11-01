@@ -141,14 +141,7 @@ impl std::str::FromStr for PaymentMethodDomainResourcePaymentMethodStatusStatus 
         match s {
             "active" => Ok(Active),
             "inactive" => Ok(Inactive),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodDomainResourcePaymentMethodStatusStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

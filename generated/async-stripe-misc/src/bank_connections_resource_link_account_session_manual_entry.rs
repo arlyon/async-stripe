@@ -135,14 +135,7 @@ impl std::str::FromStr for BankConnectionsResourceLinkAccountSessionManualEntryM
         match s {
             "automatic" => Ok(Automatic),
             "disabled" => Ok(Disabled),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BankConnectionsResourceLinkAccountSessionManualEntryMode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

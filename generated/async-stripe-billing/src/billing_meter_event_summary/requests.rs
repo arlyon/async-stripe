@@ -74,14 +74,7 @@ impl std::str::FromStr for ListIdBillingMeterEventSummaryValueGroupingWindow {
         match s {
             "day" => Ok(Day),
             "hour" => Ok(Hour),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListIdBillingMeterEventSummaryValueGroupingWindow"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

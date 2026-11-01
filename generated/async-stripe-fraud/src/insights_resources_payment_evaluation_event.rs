@@ -219,14 +219,7 @@ impl std::str::FromStr for InsightsResourcesPaymentEvaluationEventType {
             "refunded" => Ok(Refunded),
             "user_intervention_raised" => Ok(UserInterventionRaised),
             "user_intervention_resolved" => Ok(UserInterventionResolved),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationEventType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

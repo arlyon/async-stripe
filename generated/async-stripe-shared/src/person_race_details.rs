@@ -203,10 +203,7 @@ impl std::str::FromStr for PersonRaceDetailsRace {
             "somali" => Ok(Somali),
             "vietnamese" => Ok(Vietnamese),
             "white" => Ok(White),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PersonRaceDetailsRace");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -143,14 +143,7 @@ impl std::str::FromStr for CheckoutMultibancoPaymentMethodOptionsSetupFutureUsag
         use CheckoutMultibancoPaymentMethodOptionsSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutMultibancoPaymentMethodOptionsSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

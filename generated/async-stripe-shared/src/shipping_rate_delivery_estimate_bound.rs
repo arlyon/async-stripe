@@ -146,14 +146,7 @@ impl std::str::FromStr for ShippingRateDeliveryEstimateBoundUnit {
             "hour" => Ok(Hour),
             "month" => Ok(Month),
             "week" => Ok(Week),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ShippingRateDeliveryEstimateBoundUnit"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

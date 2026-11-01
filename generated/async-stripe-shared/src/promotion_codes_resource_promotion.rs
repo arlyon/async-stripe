@@ -135,14 +135,7 @@ impl std::str::FromStr for PromotionCodesResourcePromotionType {
         use PromotionCodesResourcePromotionType::*;
         match s {
             "coupon" => Ok(Coupon),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PromotionCodesResourcePromotionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

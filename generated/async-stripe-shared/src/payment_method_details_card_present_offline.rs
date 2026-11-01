@@ -135,14 +135,7 @@ impl std::str::FromStr for PaymentMethodDetailsCardPresentOfflineType {
         use PaymentMethodDetailsCardPresentOfflineType::*;
         match s {
             "deferred" => Ok(Deferred),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodDetailsCardPresentOfflineType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -163,14 +163,7 @@ impl std::str::FromStr for IssuingNetworkTokenNetworkDataType {
         match s {
             "mastercard" => Ok(Mastercard),
             "visa" => Ok(Visa),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingNetworkTokenNetworkDataType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

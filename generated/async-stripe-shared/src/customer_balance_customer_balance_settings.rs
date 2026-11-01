@@ -141,14 +141,7 @@ impl std::str::FromStr for CustomerBalanceCustomerBalanceSettingsReconciliationM
         match s {
             "automatic" => Ok(Automatic),
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CustomerBalanceCustomerBalanceSettingsReconciliationMode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

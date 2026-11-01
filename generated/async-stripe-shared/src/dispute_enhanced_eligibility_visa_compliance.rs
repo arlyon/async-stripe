@@ -132,14 +132,7 @@ impl std::str::FromStr for DisputeEnhancedEligibilityVisaComplianceStatus {
         match s {
             "fee_acknowledged" => Ok(FeeAcknowledged),
             "requires_fee_acknowledgement" => Ok(RequiresFeeAcknowledgement),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "DisputeEnhancedEligibilityVisaComplianceStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

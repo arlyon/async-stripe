@@ -145,14 +145,7 @@ impl std::str::FromStr for IssuingCardholderRequirementsDisabledReason {
             "rejected.listed" => Ok(RejectedListed),
             "requirements.past_due" => Ok(RequirementsPastDue),
             "under_review" => Ok(UnderReview),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingCardholderRequirementsDisabledReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -264,14 +257,7 @@ impl std::str::FromStr for IssuingCardholderRequirementsPastDue {
             "individual.first_name" => Ok(IndividualFirstName),
             "individual.last_name" => Ok(IndividualLastName),
             "individual.verification.document" => Ok(IndividualVerificationDocument),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingCardholderRequirementsPastDue"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

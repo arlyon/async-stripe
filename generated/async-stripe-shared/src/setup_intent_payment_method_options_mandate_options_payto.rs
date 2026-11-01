@@ -202,14 +202,7 @@ impl std::str::FromStr for SetupIntentPaymentMethodOptionsMandateOptionsPaytoAmo
         match s {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentPaymentMethodOptionsMandateOptionsPaytoAmountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -316,14 +309,7 @@ impl std::str::FromStr for SetupIntentPaymentMethodOptionsMandateOptionsPaytoPay
             "quarterly" => Ok(Quarterly),
             "semi_annual" => Ok(SemiAnnual),
             "weekly" => Ok(Weekly),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentPaymentMethodOptionsMandateOptionsPaytoPaymentSchedule"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -443,14 +429,7 @@ impl std::str::FromStr for SetupIntentPaymentMethodOptionsMandateOptionsPaytoPur
             "salary" => Ok(Salary),
             "tax" => Ok(Tax),
             "utility" => Ok(Utility),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentPaymentMethodOptionsMandateOptionsPaytoPurpose"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

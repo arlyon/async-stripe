@@ -148,14 +148,7 @@ impl std::str::FromStr for PaymentPagesCheckoutSessionPermissionsUpdateShippingD
         match s {
             "client_only" => Ok(ClientOnly),
             "server_only" => Ok(ServerOnly),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentPagesCheckoutSessionPermissionsUpdateShippingDetails"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

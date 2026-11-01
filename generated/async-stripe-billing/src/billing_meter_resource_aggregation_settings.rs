@@ -135,14 +135,7 @@ impl std::str::FromStr for BillingMeterResourceAggregationSettingsFormula {
             "count" => Ok(Count),
             "last" => Ok(Last),
             "sum" => Ok(Sum),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BillingMeterResourceAggregationSettingsFormula"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

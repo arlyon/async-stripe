@@ -153,14 +153,7 @@ impl std::str::FromStr for InsightsResourcesPaymentEvaluationRefundedReason {
             "fraudulent" => Ok(Fraudulent),
             "other" => Ok(Other),
             "requested_by_customer" => Ok(RequestedByCustomer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationRefundedReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

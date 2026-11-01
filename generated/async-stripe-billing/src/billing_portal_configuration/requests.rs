@@ -379,14 +379,7 @@ impl std::str::FromStr for CreateBillingPortalConfigurationFeaturesCustomerUpdat
             "phone" => Ok(Phone),
             "shipping" => Ok(Shipping),
             "tax_id" => Ok(TaxId),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -552,14 +545,7 @@ impl std::str::FromStr
             "too_complex" => Ok(TooComplex),
             "too_expensive" => Ok(TooExpensive),
             "unused" => Ok(Unused),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -637,14 +623,7 @@ impl std::str::FromStr for CreateBillingPortalConfigurationFeaturesSubscriptionC
         match s {
             "at_period_end" => Ok(AtPeriodEnd),
             "immediately" => Ok(Immediately),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -720,14 +699,7 @@ impl std::str::FromStr
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -866,14 +838,7 @@ impl std::str::FromStr
         match s {
             "now" => Ok(Now),
             "unchanged" => Ok(Unchanged),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -956,14 +921,7 @@ impl std::str::FromStr
             "price" => Ok(Price),
             "promotion_code" => Ok(PromotionCode),
             "quantity" => Ok(Quantity),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1047,14 +1005,7 @@ impl std::str::FromStr
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1196,14 +1147,7 @@ impl std::str::FromStr
         match s {
             "decreasing_item_amount" => Ok(DecreasingItemAmount),
             "shortening_interval" => Ok(ShorteningInterval),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1280,14 +1224,7 @@ impl std::str::FromStr
         match s {
             "continue_trial" => Ok(ContinueTrial),
             "end_trial" => Ok(EndTrial),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1630,14 +1567,7 @@ impl std::str::FromStr for UpdateBillingPortalConfigurationFeaturesCustomerUpdat
             "phone" => Ok(Phone),
             "shipping" => Ok(Shipping),
             "tax_id" => Ok(TaxId),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1799,14 +1729,7 @@ impl std::str::FromStr
             "too_complex" => Ok(TooComplex),
             "too_expensive" => Ok(TooExpensive),
             "unused" => Ok(Unused),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1884,14 +1807,7 @@ impl std::str::FromStr for UpdateBillingPortalConfigurationFeaturesSubscriptionC
         match s {
             "at_period_end" => Ok(AtPeriodEnd),
             "immediately" => Ok(Immediately),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1967,14 +1883,7 @@ impl std::str::FromStr
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2119,14 +2028,7 @@ impl std::str::FromStr
         match s {
             "now" => Ok(Now),
             "unchanged" => Ok(Unchanged),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2209,14 +2111,7 @@ impl std::str::FromStr
             "price" => Ok(Price),
             "promotion_code" => Ok(PromotionCode),
             "quantity" => Ok(Quantity),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2300,14 +2195,7 @@ impl std::str::FromStr
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2449,14 +2337,7 @@ impl std::str::FromStr
         match s {
             "decreasing_item_amount" => Ok(DecreasingItemAmount),
             "shortening_interval" => Ok(ShorteningInterval),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2533,14 +2414,7 @@ impl std::str::FromStr
         match s {
             "continue_trial" => Ok(ContinueTrial),
             "end_trial" => Ok(EndTrial),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

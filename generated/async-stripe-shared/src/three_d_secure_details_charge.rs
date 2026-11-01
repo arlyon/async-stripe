@@ -219,14 +219,7 @@ impl std::str::FromStr for ThreeDSecureDetailsChargeAuthenticationFlow {
         match s {
             "challenge" => Ok(Challenge),
             "frictionless" => Ok(Frictionless),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ThreeDSecureDetailsChargeAuthenticationFlow"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -319,14 +312,7 @@ impl std::str::FromStr for ThreeDSecureDetailsChargeElectronicCommerceIndicator 
             "05" => Ok(V05),
             "06" => Ok(V06),
             "07" => Ok(V07),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ThreeDSecureDetailsChargeElectronicCommerceIndicator"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -410,14 +396,7 @@ impl std::str::FromStr for ThreeDSecureDetailsChargeExemptionIndicator {
         match s {
             "low_risk" => Ok(LowRisk),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ThreeDSecureDetailsChargeExemptionIndicator"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -515,14 +494,7 @@ impl std::str::FromStr for ThreeDSecureDetailsChargeResult {
             "failed" => Ok(Failed),
             "not_supported" => Ok(NotSupported),
             "processing_error" => Ok(ProcessingError),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ThreeDSecureDetailsChargeResult"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -619,14 +591,7 @@ impl std::str::FromStr for ThreeDSecureDetailsChargeResultReason {
             "network_not_supported" => Ok(NetworkNotSupported),
             "protocol_error" => Ok(ProtocolError),
             "rejected" => Ok(Rejected),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ThreeDSecureDetailsChargeResultReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -716,14 +681,7 @@ impl std::str::FromStr for ThreeDSecureDetailsChargeVersion {
             "2.2.0" => Ok(V2_2_0),
             "2.3.0" => Ok(V2_3_0),
             "2.3.1" => Ok(V2_3_1),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ThreeDSecureDetailsChargeVersion"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

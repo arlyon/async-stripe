@@ -143,14 +143,7 @@ impl std::str::FromStr for ForwardedRequestDetailsHttpMethod {
         use ForwardedRequestDetailsHttpMethod::*;
         match s {
             "POST" => Ok(Post),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ForwardedRequestDetailsHttpMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -171,14 +171,7 @@ impl std::str::FromStr for TaxProductResourceCustomerDetailsAddressSource {
         match s {
             "billing" => Ok(Billing),
             "shipping" => Ok(Shipping),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductResourceCustomerDetailsAddressSource"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -264,14 +257,7 @@ impl std::str::FromStr for TaxProductResourceCustomerDetailsTaxabilityOverride {
             "customer_exempt" => Ok(CustomerExempt),
             "none" => Ok(None),
             "reverse_charge" => Ok(ReverseCharge),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductResourceCustomerDetailsTaxabilityOverride"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

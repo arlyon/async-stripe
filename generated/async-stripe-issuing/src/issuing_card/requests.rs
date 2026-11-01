@@ -388,14 +388,7 @@ impl std::str::FromStr for CreateIssuingCardReplacementReason {
             "expired" => Ok(Expired),
             "lost" => Ok(Lost),
             "stolen" => Ok(Stolen),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingCardReplacementReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -537,14 +530,7 @@ impl std::str::FromStr for CreateIssuingCardShippingAddressValidationMode {
             "disabled" => Ok(Disabled),
             "normalization_only" => Ok(NormalizationOnly),
             "validation_and_normalization" => Ok(ValidationAndNormalization),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingCardShippingAddressValidationMode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -613,14 +599,7 @@ impl std::str::FromStr for CreateIssuingCardShippingService {
             "express" => Ok(Express),
             "priority" => Ok(Priority),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingCardShippingService"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -685,14 +664,7 @@ impl std::str::FromStr for CreateIssuingCardShippingType {
         match s {
             "bulk" => Ok(Bulk),
             "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingCardShippingType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -833,14 +805,7 @@ impl std::str::FromStr for CreateIssuingCardSpendingControlsAllowedCardPresences
         match s {
             "not_present" => Ok(NotPresent),
             "present" => Ok(Present),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingCardSpendingControlsAllowedCardPresences"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1879,14 +1844,7 @@ impl std::str::FromStr for CreateIssuingCardSpendingControlsAllowedCategories {
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingCardSpendingControlsAllowedCategories"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1955,14 +1913,7 @@ impl std::str::FromStr for CreateIssuingCardSpendingControlsBlockedCardPresences
         match s {
             "not_present" => Ok(NotPresent),
             "present" => Ok(Present),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingCardSpendingControlsBlockedCardPresences"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3001,14 +2952,7 @@ impl std::str::FromStr for CreateIssuingCardSpendingControlsBlockedCategories {
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingCardSpendingControlsBlockedCategories"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4074,14 +4018,7 @@ impl std::str::FromStr for CreateIssuingCardSpendingControlsSpendingLimitsCatego
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingCardSpendingControlsSpendingLimitsCategories"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4159,14 +4096,7 @@ impl std::str::FromStr for CreateIssuingCardSpendingControlsSpendingLimitsInterv
             "per_authorization" => Ok(PerAuthorization),
             "weekly" => Ok(Weekly),
             "yearly" => Ok(Yearly),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingCardSpendingControlsSpendingLimitsInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4234,10 +4164,7 @@ impl std::str::FromStr for CreateIssuingCardStatus {
         match s {
             "active" => Ok(Active),
             "inactive" => Ok(Inactive),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateIssuingCardStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4485,14 +4412,7 @@ impl std::str::FromStr for UpdateIssuingCardCancellationReason {
         match s {
             "lost" => Ok(Lost),
             "stolen" => Ok(Stolen),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingCardCancellationReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4634,14 +4554,7 @@ impl std::str::FromStr for UpdateIssuingCardShippingAddressValidationMode {
             "disabled" => Ok(Disabled),
             "normalization_only" => Ok(NormalizationOnly),
             "validation_and_normalization" => Ok(ValidationAndNormalization),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingCardShippingAddressValidationMode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4710,14 +4623,7 @@ impl std::str::FromStr for UpdateIssuingCardShippingService {
             "express" => Ok(Express),
             "priority" => Ok(Priority),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingCardShippingService"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4782,14 +4688,7 @@ impl std::str::FromStr for UpdateIssuingCardShippingType {
         match s {
             "bulk" => Ok(Bulk),
             "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingCardShippingType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4930,14 +4829,7 @@ impl std::str::FromStr for UpdateIssuingCardSpendingControlsAllowedCardPresences
         match s {
             "not_present" => Ok(NotPresent),
             "present" => Ok(Present),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingCardSpendingControlsAllowedCardPresences"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5976,14 +5868,7 @@ impl std::str::FromStr for UpdateIssuingCardSpendingControlsAllowedCategories {
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingCardSpendingControlsAllowedCategories"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6052,14 +5937,7 @@ impl std::str::FromStr for UpdateIssuingCardSpendingControlsBlockedCardPresences
         match s {
             "not_present" => Ok(NotPresent),
             "present" => Ok(Present),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingCardSpendingControlsBlockedCardPresences"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7098,14 +6976,7 @@ impl std::str::FromStr for UpdateIssuingCardSpendingControlsBlockedCategories {
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingCardSpendingControlsBlockedCategories"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8171,14 +8042,7 @@ impl std::str::FromStr for UpdateIssuingCardSpendingControlsSpendingLimitsCatego
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingCardSpendingControlsSpendingLimitsCategories"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8256,14 +8120,7 @@ impl std::str::FromStr for UpdateIssuingCardSpendingControlsSpendingLimitsInterv
             "per_authorization" => Ok(PerAuthorization),
             "weekly" => Ok(Weekly),
             "yearly" => Ok(Yearly),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingCardSpendingControlsSpendingLimitsInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

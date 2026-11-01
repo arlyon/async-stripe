@@ -230,14 +230,7 @@ impl std::str::FromStr for PaymentMethodDetailsCardWalletType {
             "masterpass" => Ok(Masterpass),
             "samsung_pay" => Ok(SamsungPay),
             "visa_checkout" => Ok(VisaCheckout),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodDetailsCardWalletType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

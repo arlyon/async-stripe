@@ -61,10 +61,7 @@ impl std::str::FromStr for ListTaxRegistrationStatus {
             "all" => Ok(All),
             "expired" => Ok(Expired),
             "scheduled" => Ok(Scheduled),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListTaxRegistrationStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -811,14 +808,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAeStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -883,14 +873,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAeType {
         use CreateTaxRegistrationCountryOptionsAeType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsAeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1005,14 +988,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAlStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1077,14 +1053,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAlType {
         use CreateTaxRegistrationCountryOptionsAlType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsAlType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1167,14 +1136,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAmType {
         use CreateTaxRegistrationCountryOptionsAmType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsAmType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1289,14 +1251,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAoStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1361,14 +1316,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAoType {
         use CreateTaxRegistrationCountryOptionsAoType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsAoType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1481,14 +1429,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAtIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsAtIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1580,14 +1521,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAtStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1661,14 +1595,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAtType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsAtType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1783,14 +1710,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAuStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1855,14 +1775,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAuType {
         use CreateTaxRegistrationCountryOptionsAuType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsAuType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1977,14 +1890,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAwStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2049,14 +1955,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAwType {
         use CreateTaxRegistrationCountryOptionsAwType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsAwType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2139,14 +2038,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAzType {
         use CreateTaxRegistrationCountryOptionsAzType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsAzType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2261,14 +2153,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBaStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2333,14 +2218,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBaType {
         use CreateTaxRegistrationCountryOptionsBaType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsBaType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2455,14 +2333,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBbStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2527,14 +2398,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBbType {
         use CreateTaxRegistrationCountryOptionsBbType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsBbType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2649,14 +2513,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBdStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2721,14 +2578,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBdType {
         use CreateTaxRegistrationCountryOptionsBdType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsBdType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2841,14 +2691,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBeIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsBeIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2940,14 +2783,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBeStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3021,14 +2857,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBeType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsBeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3143,14 +2972,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBfStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3215,14 +3037,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBfType {
         use CreateTaxRegistrationCountryOptionsBfType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsBfType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3335,14 +3150,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBgIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsBgIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3434,14 +3242,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBgStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3515,14 +3316,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBgType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsBgType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3637,14 +3431,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBhStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3709,14 +3496,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBhType {
         use CreateTaxRegistrationCountryOptionsBhType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsBhType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3799,14 +3579,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBjType {
         use CreateTaxRegistrationCountryOptionsBjType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsBjType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3921,14 +3694,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBsStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3993,14 +3759,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBsType {
         use CreateTaxRegistrationCountryOptionsBsType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsBsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4083,14 +3842,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsByType {
         use CreateTaxRegistrationCountryOptionsByType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsByType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4202,14 +3954,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCaType {
             "province_standard" => Ok(ProvinceStandard),
             "simplified" => Ok(Simplified),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsCaType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4324,14 +4069,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCdStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4396,14 +4134,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCdType {
         use CreateTaxRegistrationCountryOptionsCdType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsCdType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4518,14 +4249,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsChStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4590,14 +4314,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsChType {
         use CreateTaxRegistrationCountryOptionsChType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsChType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4680,14 +4397,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsClType {
         use CreateTaxRegistrationCountryOptionsClType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsClType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4770,14 +4480,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCmType {
         use CreateTaxRegistrationCountryOptionsCmType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsCmType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4860,14 +4563,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCoType {
         use CreateTaxRegistrationCountryOptionsCoType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsCoType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4950,14 +4646,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCrType {
         use CreateTaxRegistrationCountryOptionsCrType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsCrType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5040,14 +4729,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCvType {
         use CreateTaxRegistrationCountryOptionsCvType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsCvType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5160,14 +4842,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCyIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsCyIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5259,14 +4934,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCyStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5340,14 +5008,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCyType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsCyType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5460,14 +5121,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCzIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsCzIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5559,14 +5213,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCzStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5640,14 +5287,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCzType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsCzType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5760,14 +5400,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDeIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsDeIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5859,14 +5492,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDeStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5940,14 +5566,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDeType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsDeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6060,14 +5679,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDkIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsDkIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6159,14 +5771,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDkStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6240,14 +5845,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDkType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsDkType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6330,14 +5928,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEcType {
         use CreateTaxRegistrationCountryOptionsEcType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsEcType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6450,14 +6041,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEeIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsEeIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6549,14 +6133,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEeStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6630,14 +6207,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEeType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsEeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6720,14 +6290,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEgType {
         use CreateTaxRegistrationCountryOptionsEgType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsEgType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6840,14 +6403,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEsIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsEsIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6939,14 +6495,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEsStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7020,14 +6569,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEsType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsEsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7142,14 +6684,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEtStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7214,14 +6749,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEtType {
         use CreateTaxRegistrationCountryOptionsEtType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsEtType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7334,14 +6862,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFiIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsFiIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7433,14 +6954,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFiStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7514,14 +7028,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFiType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsFiType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7634,14 +7141,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFrIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsFrIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7733,14 +7233,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFrStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7814,14 +7307,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFrType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsFrType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7936,14 +7422,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGbStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8008,14 +7487,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGbType {
         use CreateTaxRegistrationCountryOptionsGbType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsGbType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8098,14 +7570,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGeType {
         use CreateTaxRegistrationCountryOptionsGeType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsGeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8220,14 +7685,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGnStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8292,14 +7750,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGnType {
         use CreateTaxRegistrationCountryOptionsGnType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsGnType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8412,14 +7863,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGrIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsGrIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8511,14 +7955,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGrStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8592,14 +8029,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGrType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsGrType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8712,14 +8142,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHrIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsHrIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8811,14 +8234,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHrStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8892,14 +8308,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHrType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsHrType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9012,14 +8421,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHuIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsHuIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9111,14 +8513,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHuStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9192,14 +8587,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHuType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsHuType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9282,14 +8670,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIdType {
         use CreateTaxRegistrationCountryOptionsIdType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsIdType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9402,14 +8783,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIeIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsIeIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9501,14 +8875,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIeStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9582,14 +8949,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIeType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsIeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9672,14 +9032,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsInType {
         use CreateTaxRegistrationCountryOptionsInType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsInType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9794,14 +9147,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIsStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9866,14 +9212,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIsType {
         use CreateTaxRegistrationCountryOptionsIsType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsIsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9986,14 +9325,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsItIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsItIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10085,14 +9417,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsItStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10166,14 +9491,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsItType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsItType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10288,14 +9606,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsJpStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10360,14 +9671,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsJpType {
         use CreateTaxRegistrationCountryOptionsJpType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsJpType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10450,14 +9754,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKeType {
         use CreateTaxRegistrationCountryOptionsKeType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsKeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10540,14 +9837,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKgType {
         use CreateTaxRegistrationCountryOptionsKgType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsKgType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10630,14 +9920,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKhType {
         use CreateTaxRegistrationCountryOptionsKhType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsKhType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10720,14 +10003,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKrType {
         use CreateTaxRegistrationCountryOptionsKrType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsKrType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10810,14 +10086,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKzType {
         use CreateTaxRegistrationCountryOptionsKzType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsKzType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10900,14 +10169,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLaType {
         use CreateTaxRegistrationCountryOptionsLaType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsLaType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10990,14 +10252,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLkType {
         use CreateTaxRegistrationCountryOptionsLkType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsLkType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11110,14 +10365,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLtIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsLtIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11209,14 +10457,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLtStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11290,14 +10531,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLtType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsLtType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11410,14 +10644,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLuIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsLuIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11509,14 +10736,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLuStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11590,14 +10810,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLuType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsLuType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11710,14 +10923,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLvIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsLvIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11809,14 +11015,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLvStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11890,14 +11089,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLvType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsLvType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11980,14 +11172,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMaType {
         use CreateTaxRegistrationCountryOptionsMaType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsMaType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12070,14 +11255,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMdType {
         use CreateTaxRegistrationCountryOptionsMdType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsMdType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12192,14 +11370,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMeStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12264,14 +11435,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMeType {
         use CreateTaxRegistrationCountryOptionsMeType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsMeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12386,14 +11550,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMkStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12458,14 +11615,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMkType {
         use CreateTaxRegistrationCountryOptionsMkType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsMkType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12580,14 +11730,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMrStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12652,14 +11795,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMrType {
         use CreateTaxRegistrationCountryOptionsMrType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsMrType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12772,14 +11908,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMtIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsMtIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12871,14 +12000,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMtStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12952,14 +12074,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMtType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsMtType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13042,14 +12157,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMxType {
         use CreateTaxRegistrationCountryOptionsMxType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsMxType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13132,14 +12240,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMyType {
         use CreateTaxRegistrationCountryOptionsMyType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsMyType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13222,14 +12323,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNgType {
         use CreateTaxRegistrationCountryOptionsNgType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsNgType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13342,14 +12436,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNlIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsNlIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13441,14 +12528,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNlStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13522,14 +12602,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNlType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsNlType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13644,14 +12717,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNoStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13716,14 +12782,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNoType {
         use CreateTaxRegistrationCountryOptionsNoType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsNoType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13806,14 +12865,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNpType {
         use CreateTaxRegistrationCountryOptionsNpType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsNpType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13928,14 +12980,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNzStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14000,14 +13045,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNzType {
         use CreateTaxRegistrationCountryOptionsNzType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsNzType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14122,14 +13160,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsOmStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14194,14 +13225,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsOmType {
         use CreateTaxRegistrationCountryOptionsOmType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsOmType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14284,14 +13308,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPeType {
         use CreateTaxRegistrationCountryOptionsPeType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsPeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14374,14 +13391,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPhType {
         use CreateTaxRegistrationCountryOptionsPhType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsPhType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14494,14 +13504,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPlIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsPlIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14593,14 +13596,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPlStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14674,14 +13670,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPlType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsPlType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14794,14 +13783,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPtIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsPtIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14893,14 +13875,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPtStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14974,14 +13949,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPtType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsPtType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15094,14 +14062,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRoIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsRoIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15193,14 +14154,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRoStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15274,14 +14228,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRoType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsRoType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15396,14 +14343,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRsStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15468,14 +14408,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRsType {
         use CreateTaxRegistrationCountryOptionsRsType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsRsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15558,14 +14491,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRuType {
         use CreateTaxRegistrationCountryOptionsRuType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsRuType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15648,14 +14574,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSaType {
         use CreateTaxRegistrationCountryOptionsSaType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsSaType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15768,14 +14687,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSeIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsSeIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15867,14 +14779,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSeStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15948,14 +14853,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSeType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsSeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16070,14 +14968,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSgStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16142,14 +15033,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSgType {
         use CreateTaxRegistrationCountryOptionsSgType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsSgType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16262,14 +15146,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSiIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsSiIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16361,14 +15238,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSiStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16442,14 +15312,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSiType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsSiType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16562,14 +15425,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSkIgicPlaceOfSuppl
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsSkIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16661,14 +15517,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSkStandardPlaceOfS
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16742,14 +15591,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSkType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsSkType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16832,14 +15674,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSnType {
         use CreateTaxRegistrationCountryOptionsSnType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsSnType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16954,14 +15789,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSrStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -17026,14 +15854,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSrType {
         use CreateTaxRegistrationCountryOptionsSrType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsSrType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -17116,14 +15937,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsThType {
         use CreateTaxRegistrationCountryOptionsThType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsThType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -17206,14 +16020,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsTjType {
         use CreateTaxRegistrationCountryOptionsTjType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsTjType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -17296,14 +16103,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsTrType {
         use CreateTaxRegistrationCountryOptionsTrType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsTrType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -17386,14 +16186,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsTwType {
         use CreateTaxRegistrationCountryOptionsTwType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsTwType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -17476,14 +16269,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsTzType {
         use CreateTaxRegistrationCountryOptionsTzType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsTzType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -17566,14 +16352,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUaType {
         use CreateTaxRegistrationCountryOptionsUaType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsUaType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -17656,14 +16435,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUgType {
         use CreateTaxRegistrationCountryOptionsUgType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsUgType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -17908,14 +16680,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUsStateSalesTaxEle
             "local_use_tax" => Ok(LocalUseTax),
             "simplified_sellers_use_tax" => Ok(SimplifiedSellersUseTax),
             "single_local_use_tax" => Ok(SingleLocalUseTax),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -17998,14 +16763,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUsType {
             "state_communications_tax" => Ok(StateCommunicationsTax),
             "state_retail_delivery_fee" => Ok(StateRetailDeliveryFee),
             "state_sales_tax" => Ok(StateSalesTax),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsUsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -18120,14 +16878,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUyStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -18192,14 +16943,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUyType {
         use CreateTaxRegistrationCountryOptionsUyType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsUyType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -18282,14 +17026,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUzType {
         use CreateTaxRegistrationCountryOptionsUzType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsUzType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -18372,14 +17109,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsVnType {
         use CreateTaxRegistrationCountryOptionsVnType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsVnType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -18494,14 +17224,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZaStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -18566,14 +17289,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZaType {
         use CreateTaxRegistrationCountryOptionsZaType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsZaType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -18656,14 +17372,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZmType {
         use CreateTaxRegistrationCountryOptionsZmType::*;
         match s {
             "simplified" => Ok(Simplified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsZmType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -18778,14 +17487,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZwStandardPlaceOfS
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -18850,14 +17552,7 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZwType {
         use CreateTaxRegistrationCountryOptionsZwType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTaxRegistrationCountryOptionsZwType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -136,14 +136,7 @@ impl std::str::FromStr for SubscriptionsResourceBillingSchedulesAppliesToType {
         use SubscriptionsResourceBillingSchedulesAppliesToType::*;
         match s {
             "price" => Ok(Price),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscriptionsResourceBillingSchedulesAppliesToType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

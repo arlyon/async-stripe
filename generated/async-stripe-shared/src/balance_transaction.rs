@@ -314,14 +314,7 @@ impl std::str::FromStr for BalanceTransactionBalanceType {
             "payments" => Ok(Payments),
             "refund_and_dispute_prefunding" => Ok(RefundAndDisputePrefunding),
             "risk_reserved" => Ok(RiskReserved),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BalanceTransactionBalanceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -548,10 +541,7 @@ impl std::str::FromStr for BalanceTransactionType {
             "transfer_cancel" => Ok(TransferCancel),
             "transfer_failure" => Ok(TransferFailure),
             "transfer_refund" => Ok(TransferRefund),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "BalanceTransactionType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

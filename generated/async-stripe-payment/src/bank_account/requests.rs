@@ -309,14 +309,7 @@ impl std::str::FromStr for UpdateAccountBankAccountAccountHolderType {
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountBankAccountAccountHolderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -390,14 +383,7 @@ impl std::str::FromStr for UpdateAccountBankAccountAccountType {
             "futsu" => Ok(Futsu),
             "savings" => Ok(Savings),
             "toza" => Ok(Toza),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateAccountBankAccountAccountType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -732,14 +718,7 @@ impl std::str::FromStr for UpdateCustomerBankAccountAccountHolderType {
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateCustomerBankAccountAccountHolderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1066,14 +1045,7 @@ const _: () = {
                 "bank_account" => Self::BankAccount(FromValueOpt::from_value(Value::Object(o))?),
                 "source" => Self::Source(FromValueOpt::from_value(Value::Object(o))?),
 
-                _ => {
-                    tracing::warn!(
-                        "Unknown object type '{}' for enum '{}'",
-                        key,
-                        "UpdateCustomerBankAccountReturned"
-                    );
-                    return None;
-                }
+                _ => return None,
             })
         }
     }

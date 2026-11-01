@@ -284,14 +284,7 @@ impl std::str::FromStr for IdentityVerificationReportType {
             "document" => Ok(Document),
             "id_number" => Ok(IdNumber),
             "verification_flow" => Ok(VerificationFlow),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IdentityVerificationReportType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

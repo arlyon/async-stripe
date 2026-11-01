@@ -154,14 +154,7 @@ impl std::str::FromStr for TreasuryFinancialAccountsResourceInboundAchToggleSett
             "active" => Ok(Active),
             "pending" => Ok(Pending),
             "restricted" => Ok(Restricted),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryFinancialAccountsResourceInboundAchToggleSettingsStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

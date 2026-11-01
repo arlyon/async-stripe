@@ -268,14 +268,7 @@ impl std::str::FromStr for TaxTransactionLineItemTaxBehavior {
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxTransactionLineItemTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -356,10 +349,7 @@ impl std::str::FromStr for TaxTransactionLineItemType {
         match s {
             "reversal" => Ok(Reversal),
             "transaction" => Ok(Transaction),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TaxTransactionLineItemType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

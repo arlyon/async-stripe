@@ -143,14 +143,7 @@ impl std::str::FromStr for PaymentFlowsPrivatePaymentMethodsCardPresentCommonWal
             "google_pay" => Ok(GooglePay),
             "samsung_pay" => Ok(SamsungPay),
             "unknown" => Ok(Unknown),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentFlowsPrivatePaymentMethodsCardPresentCommonWalletType"
-                );
-                Ok(_Unknown(v.to_owned()))
-            }
+            v => Ok(_Unknown(v.to_owned())),
         }
     }
 }

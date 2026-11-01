@@ -511,10 +511,7 @@ impl std::str::FromStr for SetupIntentStatus {
             "requires_confirmation" => Ok(RequiresConfirmation),
             "requires_payment_method" => Ok(RequiresPaymentMethod),
             "succeeded" => Ok(Succeeded),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SetupIntentStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -890,14 +887,7 @@ impl std::str::FromStr for SetupIntentAllowedPaymentMethodTypes {
             "wechat_pay" => Ok(WechatPay),
             "wero" => Ok(Wero),
             "zip" => Ok(Zip),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentAllowedPaymentMethodTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -979,14 +969,7 @@ impl std::str::FromStr for SetupIntentCancellationReason {
             "abandoned" => Ok(Abandoned),
             "duplicate" => Ok(Duplicate),
             "requested_by_customer" => Ok(RequestedByCustomer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentCancellationReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1218,14 +1201,7 @@ impl std::str::FromStr for SetupIntentExcludedPaymentMethodTypes {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupIntentExcludedPaymentMethodTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1304,10 +1280,7 @@ impl std::str::FromStr for SetupIntentFlowDirections {
         match s {
             "inbound" => Ok(Inbound),
             "outbound" => Ok(Outbound),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SetupIntentFlowDirections");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

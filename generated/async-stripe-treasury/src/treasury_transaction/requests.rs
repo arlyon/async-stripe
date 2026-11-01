@@ -73,14 +73,7 @@ impl std::str::FromStr for ListTreasuryTransactionOrderBy {
         match s {
             "created" => Ok(Created),
             "posted_at" => Ok(PostedAt),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListTreasuryTransactionOrderBy"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -200,10 +200,7 @@ impl std::str::FromStr for BillingAlertStatus {
             "active" => Ok(Active),
             "archived" => Ok(Archived),
             "inactive" => Ok(Inactive),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "BillingAlertStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -291,10 +288,7 @@ impl std::str::FromStr for BillingAlertAlertType {
         use BillingAlertAlertType::*;
         match s {
             "usage_threshold" => Ok(UsageThreshold),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "BillingAlertAlertType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

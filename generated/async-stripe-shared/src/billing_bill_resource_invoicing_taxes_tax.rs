@@ -189,14 +189,7 @@ impl std::str::FromStr for BillingBillResourceInvoicingTaxesTaxTaxBehavior {
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BillingBillResourceInvoicingTaxesTaxTaxBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -322,14 +315,7 @@ impl std::str::FromStr for BillingBillResourceInvoicingTaxesTaxTaxabilityReason 
             "standard_rated" => Ok(StandardRated),
             "taxable_basis_reduced" => Ok(TaxableBasisReduced),
             "zero_rated" => Ok(ZeroRated),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BillingBillResourceInvoicingTaxesTaxTaxabilityReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -410,14 +396,7 @@ impl std::str::FromStr for BillingBillResourceInvoicingTaxesTaxType {
         use BillingBillResourceInvoicingTaxesTaxType::*;
         match s {
             "tax_rate_details" => Ok(TaxRateDetails),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BillingBillResourceInvoicingTaxesTaxType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

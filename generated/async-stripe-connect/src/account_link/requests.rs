@@ -66,10 +66,7 @@ impl std::str::FromStr for CreateAccountLinkCollect {
         match s {
             "currently_due" => Ok(CurrentlyDue),
             "eventually_due" => Ok(EventuallyDue),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateAccountLinkCollect");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -165,14 +162,7 @@ impl std::str::FromStr for CreateAccountLinkCollectionOptionsFields {
         match s {
             "currently_due" => Ok(CurrentlyDue),
             "eventually_due" => Ok(EventuallyDue),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountLinkCollectionOptionsFields"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -238,14 +228,7 @@ impl std::str::FromStr for CreateAccountLinkCollectionOptionsFutureRequirements 
         match s {
             "include" => Ok(Include),
             "omit" => Ok(Omit),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateAccountLinkCollectionOptionsFutureRequirements"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -316,10 +299,7 @@ impl std::str::FromStr for CreateAccountLinkType {
         match s {
             "account_onboarding" => Ok(AccountOnboarding),
             "account_update" => Ok(AccountUpdate),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateAccountLinkType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

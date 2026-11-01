@@ -154,14 +154,7 @@ impl std::str::FromStr for PersonEthnicityDetailsEthnicity {
             "other_hispanic_or_latino" => Ok(OtherHispanicOrLatino),
             "prefer_not_to_answer" => Ok(PreferNotToAnswer),
             "puerto_rican" => Ok(PuertoRican),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PersonEthnicityDetailsEthnicity"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

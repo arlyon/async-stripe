@@ -279,10 +279,7 @@ impl std::str::FromStr for RadarValueListItemType {
             "sepa_debit_fingerprint" => Ok(SepaDebitFingerprint),
             "string" => Ok(String),
             "us_bank_account_fingerprint" => Ok(UsBankAccountFingerprint),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "RadarValueListItemType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

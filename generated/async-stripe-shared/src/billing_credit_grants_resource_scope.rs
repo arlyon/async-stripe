@@ -144,14 +144,7 @@ impl std::str::FromStr for BillingCreditGrantsResourceScopePriceType {
         use BillingCreditGrantsResourceScopePriceType::*;
         match s {
             "metered" => Ok(Metered),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BillingCreditGrantsResourceScopePriceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

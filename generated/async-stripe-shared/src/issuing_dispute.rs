@@ -340,10 +340,7 @@ impl std::str::FromStr for IssuingDisputeLossReason {
                 Ok(TransactionQualifiesForVisaEasyPaymentService)
             }
             "transaction_unattended" => Ok(TransactionUnattended),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingDisputeLossReason");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -443,10 +440,7 @@ impl std::str::FromStr for IssuingDisputeStatus {
             "submitted" => Ok(Submitted),
             "unsubmitted" => Ok(Unsubmitted),
             "won" => Ok(Won),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingDisputeStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -144,14 +144,7 @@ impl std::str::FromStr
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductRegistrationsResourceCountryOptionsEuStandardPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -137,14 +137,7 @@ impl std::str::FromStr for BillingMeterResourceCustomerMappingSettingsType {
         use BillingMeterResourceCustomerMappingSettingsType::*;
         match s {
             "by_id" => Ok(ById),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BillingMeterResourceCustomerMappingSettingsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

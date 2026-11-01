@@ -279,14 +279,7 @@ impl std::str::FromStr for TreasuryCreditReversalNetwork {
         match s {
             "ach" => Ok(Ach),
             "stripe" => Ok(Stripe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryCreditReversalNetwork"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -380,14 +373,7 @@ impl std::str::FromStr for TreasuryCreditReversalStatus {
             "canceled" => Ok(Canceled),
             "posted" => Ok(Posted),
             "processing" => Ok(Processing),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryCreditReversalStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

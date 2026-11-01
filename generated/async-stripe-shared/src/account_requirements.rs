@@ -253,14 +253,7 @@ impl std::str::FromStr for AccountRequirementsDisabledReason {
             "requirements.past_due" => Ok(RequirementsPastDue),
             "requirements.pending_verification" => Ok(RequirementsPendingVerification),
             "under_review" => Ok(UnderReview),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "AccountRequirementsDisabledReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

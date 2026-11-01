@@ -186,14 +186,7 @@ impl std::str::FromStr for CreateBillingPortalSessionFlowDataAfterCompletionType
             "hosted_confirmation" => Ok(HostedConfirmation),
             "portal_homepage" => Ok(PortalHomepage),
             "redirect" => Ok(Redirect),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalSessionFlowDataAfterCompletionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -327,14 +320,7 @@ impl std::str::FromStr for CreateBillingPortalSessionFlowDataSubscriptionCancelR
         use CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType::*;
         match s {
             "coupon_offer" => Ok(CouponOffer),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -520,14 +506,7 @@ impl std::str::FromStr for CreateBillingPortalSessionFlowDataType {
             "subscription_cancel" => Ok(SubscriptionCancel),
             "subscription_update" => Ok(SubscriptionUpdate),
             "subscription_update_confirm" => Ok(SubscriptionUpdateConfirm),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateBillingPortalSessionFlowDataType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

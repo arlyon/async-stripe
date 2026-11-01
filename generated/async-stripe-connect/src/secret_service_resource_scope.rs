@@ -138,14 +138,7 @@ impl std::str::FromStr for SecretServiceResourceScopeType {
         match s {
             "account" => Ok(Account),
             "user" => Ok(User),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SecretServiceResourceScopeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

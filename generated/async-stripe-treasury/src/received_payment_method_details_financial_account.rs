@@ -134,14 +134,7 @@ impl std::str::FromStr for ReceivedPaymentMethodDetailsFinancialAccountNetwork {
         use ReceivedPaymentMethodDetailsFinancialAccountNetwork::*;
         match s {
             "stripe" => Ok(Stripe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ReceivedPaymentMethodDetailsFinancialAccountNetwork"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

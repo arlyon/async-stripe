@@ -322,14 +322,7 @@ impl std::str::FromStr for IssuingCardholderPreferredLocales {
             "es" => Ok(Es),
             "fr" => Ok(Fr),
             "it" => Ok(It),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingCardholderPreferredLocales"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -411,10 +404,7 @@ impl std::str::FromStr for IssuingCardholderStatus {
             "active" => Ok(Active),
             "blocked" => Ok(Blocked),
             "inactive" => Ok(Inactive),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingCardholderStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -493,10 +483,7 @@ impl std::str::FromStr for IssuingCardholderType {
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingCardholderType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -192,14 +192,7 @@ impl std::str::FromStr for AccountUnificationAccountControllerRequirementCollect
         match s {
             "application" => Ok(Application),
             "stripe" => Ok(Stripe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "AccountUnificationAccountControllerRequirementCollection"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -289,14 +282,7 @@ impl std::str::FromStr for AccountUnificationAccountControllerType {
         match s {
             "account" => Ok(Account),
             "application" => Ok(Application),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "AccountUnificationAccountControllerType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

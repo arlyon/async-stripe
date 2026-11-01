@@ -132,14 +132,7 @@ impl std::str::FromStr for AccountUnificationAccountControllerLossesPayments {
         match s {
             "application" => Ok(Application),
             "stripe" => Ok(Stripe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "AccountUnificationAccountControllerLossesPayments"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

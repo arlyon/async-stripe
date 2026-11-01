@@ -148,14 +148,7 @@ impl std::str::FromStr for SubscriptionSchedulesResourceDefaultSettingsAutomatic
         use SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason::*;
         match s {
             "requires_location_inputs" => Ok(RequiresLocationInputs),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

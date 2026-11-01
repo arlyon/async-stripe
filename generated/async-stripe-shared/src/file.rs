@@ -315,10 +315,7 @@ impl std::str::FromStr for FilePurpose {
             "terminal_reader_splashscreen" => Ok(TerminalReaderSplashscreen),
             "terminal_wifi_certificate" => Ok(TerminalWifiCertificate),
             "terminal_wifi_private_key" => Ok(TerminalWifiPrivateKey),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "FilePurpose");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

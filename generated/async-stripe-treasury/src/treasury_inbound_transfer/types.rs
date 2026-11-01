@@ -372,14 +372,7 @@ impl std::str::FromStr for TreasuryInboundTransferStatus {
             "failed" => Ok(Failed),
             "processing" => Ok(Processing),
             "succeeded" => Ok(Succeeded),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryInboundTransferStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

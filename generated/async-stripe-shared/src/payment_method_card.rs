@@ -295,14 +295,7 @@ impl std::str::FromStr for PaymentMethodCardRegulatedStatus {
         match s {
             "regulated" => Ok(Regulated),
             "unregulated" => Ok(Unregulated),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodCardRegulatedStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

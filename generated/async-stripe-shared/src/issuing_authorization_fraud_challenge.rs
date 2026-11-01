@@ -141,14 +141,7 @@ impl std::str::FromStr for IssuingAuthorizationFraudChallengeChannel {
         use IssuingAuthorizationFraudChallengeChannel::*;
         match s {
             "sms" => Ok(Sms),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationFraudChallengeChannel"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -240,14 +233,7 @@ impl std::str::FromStr for IssuingAuthorizationFraudChallengeStatus {
             "rejected" => Ok(Rejected),
             "undeliverable" => Ok(Undeliverable),
             "verified" => Ok(Verified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationFraudChallengeStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -328,14 +314,7 @@ impl std::str::FromStr for IssuingAuthorizationFraudChallengeUndeliverableReason
         match s {
             "no_phone_number" => Ok(NoPhoneNumber),
             "unsupported_phone_number" => Ok(UnsupportedPhoneNumber),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationFraudChallengeUndeliverableReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

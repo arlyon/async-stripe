@@ -189,10 +189,7 @@ impl std::str::FromStr for GelatoSessionLastErrorCode {
             "selfie_manipulated" => Ok(SelfieManipulated),
             "selfie_unverified_other" => Ok(SelfieUnverifiedOther),
             "under_supported_age" => Ok(UnderSupportedAge),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoSessionLastErrorCode");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

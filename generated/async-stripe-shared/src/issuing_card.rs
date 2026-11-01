@@ -424,14 +424,7 @@ impl std::str::FromStr for IssuingCardCancellationReason {
             "fulfillment_error" => Ok(FulfillmentError),
             "lost" => Ok(Lost),
             "stolen" => Ok(Stolen),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingCardCancellationReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -521,14 +514,7 @@ impl std::str::FromStr for IssuingCardReplacementReason {
             "fulfillment_error" => Ok(FulfillmentError),
             "lost" => Ok(Lost),
             "stolen" => Ok(Stolen),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingCardReplacementReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -622,10 +608,7 @@ impl std::str::FromStr for IssuingCardStatus {
             "active" => Ok(Active),
             "canceled" => Ok(Canceled),
             "inactive" => Ok(Inactive),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingCardStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -704,10 +687,7 @@ impl std::str::FromStr for IssuingCardType {
         match s {
             "physical" => Ok(Physical),
             "virtual" => Ok(Virtual),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingCardType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

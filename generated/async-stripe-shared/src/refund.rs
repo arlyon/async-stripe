@@ -407,10 +407,7 @@ impl std::str::FromStr for RefundPendingReason {
             "charge_pending" => Ok(ChargePending),
             "insufficient_funds" => Ok(InsufficientFunds),
             "processing" => Ok(Processing),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "RefundPendingReason");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -497,10 +494,7 @@ impl std::str::FromStr for RefundReason {
             "expired_uncaptured_charge" => Ok(ExpiredUncapturedCharge),
             "fraudulent" => Ok(Fraudulent),
             "requested_by_customer" => Ok(RequestedByCustomer),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "RefundReason");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

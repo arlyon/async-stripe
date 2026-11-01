@@ -157,14 +157,7 @@ impl std::str::FromStr for IssuingPersonalizationDesignRejectionReasonsCardLogo 
             "other" => Ok(Other),
             "other_entity" => Ok(OtherEntity),
             "promotional_material" => Ok(PromotionalMaterial),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingPersonalizationDesignRejectionReasonsCardLogo"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -263,14 +256,7 @@ impl std::str::FromStr for IssuingPersonalizationDesignRejectionReasonsCarrierTe
             "other" => Ok(Other),
             "other_entity" => Ok(OtherEntity),
             "promotional_material" => Ok(PromotionalMaterial),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingPersonalizationDesignRejectionReasonsCarrierText"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -145,14 +145,7 @@ impl std::str::FromStr for PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRe
         match s {
             "always" => Ok(Always),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

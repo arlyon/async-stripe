@@ -139,14 +139,7 @@ impl std::str::FromStr for PaypalSellerProtectionDisputeCategories {
         match s {
             "fraudulent" => Ok(Fraudulent),
             "product_not_received" => Ok(ProductNotReceived),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaypalSellerProtectionDisputeCategories"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -230,14 +223,7 @@ impl std::str::FromStr for PaypalSellerProtectionStatus {
             "eligible" => Ok(Eligible),
             "not_eligible" => Ok(NotEligible),
             "partially_eligible" => Ok(PartiallyEligible),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaypalSellerProtectionStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

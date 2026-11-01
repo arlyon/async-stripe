@@ -380,10 +380,7 @@ impl std::str::FromStr for PriceBillingScheme {
         match s {
             "per_unit" => Ok(PerUnit),
             "tiered" => Ok(Tiered),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PriceBillingScheme");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -465,10 +462,7 @@ impl std::str::FromStr for PriceTaxBehavior {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PriceTaxBehavior");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -547,10 +541,7 @@ impl std::str::FromStr for PriceTiersMode {
         match s {
             "graduated" => Ok(Graduated),
             "volume" => Ok(Volume),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PriceTiersMode");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -629,10 +620,7 @@ impl std::str::FromStr for PriceType {
         match s {
             "one_time" => Ok(OneTime),
             "recurring" => Ok(Recurring),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PriceType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -201,14 +201,7 @@ impl std::str::FromStr for ClimateSupplierRemovalPathway {
             "direct_air_capture" => Ok(DirectAirCapture),
             "enhanced_weathering" => Ok(EnhancedWeathering),
             "marine_carbon_removal" => Ok(MarineCarbonRemoval),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ClimateSupplierRemovalPathway"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

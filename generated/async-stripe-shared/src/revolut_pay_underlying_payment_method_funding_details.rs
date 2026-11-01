@@ -134,14 +134,7 @@ impl std::str::FromStr for RevolutPayUnderlyingPaymentMethodFundingDetailsType {
         use RevolutPayUnderlyingPaymentMethodFundingDetailsType::*;
         match s {
             "card" => Ok(Card),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "RevolutPayUnderlyingPaymentMethodFundingDetailsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

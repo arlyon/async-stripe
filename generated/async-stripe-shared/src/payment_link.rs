@@ -537,14 +537,7 @@ impl std::str::FromStr for PaymentLinkCustomerCreation {
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentLinkCustomerCreation"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -625,14 +618,7 @@ impl std::str::FromStr for PaymentLinkPaymentMethodCollection {
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentLinkPaymentMethodCollection"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -723,14 +709,7 @@ impl std::str::FromStr for PaymentLinkBillingAddressCollection {
         match s {
             "auto" => Ok(Auto),
             "required" => Ok(Required),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentLinkBillingAddressCollection"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -929,14 +908,7 @@ impl std::str::FromStr for PaymentLinkPaymentMethodTypes {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentLinkPaymentMethodTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1024,10 +996,7 @@ impl std::str::FromStr for PaymentLinkSubmitType {
             "donate" => Ok(Donate),
             "pay" => Ok(Pay),
             "subscribe" => Ok(Subscribe),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PaymentLinkSubmitType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

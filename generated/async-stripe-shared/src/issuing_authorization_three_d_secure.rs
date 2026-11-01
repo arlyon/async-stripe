@@ -138,14 +138,7 @@ impl std::str::FromStr for IssuingAuthorizationThreeDSecureResult {
             "authenticated" => Ok(Authenticated),
             "failed" => Ok(Failed),
             "required" => Ok(Required),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationThreeDSecureResult"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

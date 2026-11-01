@@ -71,14 +71,7 @@ impl std::str::FromStr for ListIdentityVerificationReportType {
         match s {
             "document" => Ok(Document),
             "id_number" => Ok(IdNumber),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListIdentityVerificationReportType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

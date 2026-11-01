@@ -149,14 +149,7 @@ impl std::str::FromStr for BillingCreditGrantsResourceBalanceDebitType {
             "credits_applied" => Ok(CreditsApplied),
             "credits_expired" => Ok(CreditsExpired),
             "credits_voided" => Ok(CreditsVoided),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BillingCreditGrantsResourceBalanceDebitType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

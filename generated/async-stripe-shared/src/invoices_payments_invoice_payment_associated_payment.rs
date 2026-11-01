@@ -163,14 +163,7 @@ impl std::str::FromStr for InvoicesPaymentsInvoicePaymentAssociatedPaymentType {
             "charge" => Ok(Charge),
             "payment_intent" => Ok(PaymentIntent),
             "payment_record" => Ok(PaymentRecord),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InvoicesPaymentsInvoicePaymentAssociatedPaymentType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

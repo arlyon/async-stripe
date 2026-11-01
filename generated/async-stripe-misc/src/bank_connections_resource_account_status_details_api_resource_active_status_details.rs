@@ -156,14 +156,7 @@ impl std::str::FromStr
         match s {
             "none" => Ok(None),
             "relink_required" => Ok(RelinkRequired),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BankConnectionsResourceAccountStatusDetailsApiResourceActiveStatusDetailsAction"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -270,14 +263,7 @@ impl std::str::FromStr
             "access_expired" => Ok(AccessExpired),
             "institution_requirement" => Ok(InstitutionRequirement),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BankConnectionsResourceAccountStatusDetailsApiResourceActiveStatusDetailsCause"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

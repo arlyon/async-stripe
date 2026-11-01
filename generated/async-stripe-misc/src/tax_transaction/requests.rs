@@ -402,14 +402,7 @@ impl std::str::FromStr for CreateReversalTaxTransactionMode {
         match s {
             "full" => Ok(Full),
             "partial" => Ok(Partial),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateReversalTaxTransactionMode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

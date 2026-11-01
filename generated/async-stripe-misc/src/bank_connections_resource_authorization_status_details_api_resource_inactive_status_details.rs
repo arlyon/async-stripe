@@ -154,14 +154,7 @@ impl std::str::FromStr
         match s {
             "none" => Ok(None),
             "relink_required" => Ok(RelinkRequired),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BankConnectionsResourceAuthorizationStatusDetailsApiResourceInactiveStatusDetailsAction"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

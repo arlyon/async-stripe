@@ -201,10 +201,7 @@ impl std::str::FromStr for PortalFlowsFlowType {
             "subscription_cancel" => Ok(SubscriptionCancel),
             "subscription_update" => Ok(SubscriptionUpdate),
             "subscription_update_confirm" => Ok(SubscriptionUpdateConfirm),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PortalFlowsFlowType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

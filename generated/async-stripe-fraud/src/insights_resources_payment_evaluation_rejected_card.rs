@@ -176,14 +176,7 @@ impl std::str::FromStr for InsightsResourcesPaymentEvaluationRejectedCardAddress
             "pass" => Ok(Pass),
             "unavailable" => Ok(Unavailable),
             "unchecked" => Ok(Unchecked),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationRejectedCardAddressLine1Check"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -280,14 +273,7 @@ impl std::str::FromStr for InsightsResourcesPaymentEvaluationRejectedCardAddress
             "pass" => Ok(Pass),
             "unavailable" => Ok(Unavailable),
             "unchecked" => Ok(Unchecked),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationRejectedCardAddressPostalCodeCheck"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -388,14 +374,7 @@ impl std::str::FromStr for InsightsResourcesPaymentEvaluationRejectedCardCvcChec
             "pass" => Ok(Pass),
             "unavailable" => Ok(Unavailable),
             "unchecked" => Ok(Unchecked),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationRejectedCardCvcCheck"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -515,14 +494,7 @@ impl std::str::FromStr for InsightsResourcesPaymentEvaluationRejectedCardReason 
             "processing_error" => Ok(ProcessingError),
             "reported_stolen" => Ok(ReportedStolen),
             "try_again_later" => Ok(TryAgainLater),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationRejectedCardReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

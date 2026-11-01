@@ -187,14 +187,7 @@ impl std::str::FromStr for TaxProductResourceLineItemTaxBreakdownSourcing {
         match s {
             "destination" => Ok(Destination),
             "origin" => Ok(Origin),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductResourceLineItemTaxBreakdownSourcing"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -317,14 +310,7 @@ impl std::str::FromStr for TaxProductResourceLineItemTaxBreakdownTaxabilityReaso
             "standard_rated" => Ok(StandardRated),
             "taxable_basis_reduced" => Ok(TaxableBasisReduced),
             "zero_rated" => Ok(ZeroRated),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductResourceLineItemTaxBreakdownTaxabilityReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

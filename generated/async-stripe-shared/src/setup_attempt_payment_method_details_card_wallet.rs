@@ -150,14 +150,7 @@ impl std::str::FromStr for SetupAttemptPaymentMethodDetailsCardWalletType {
             "apple_pay" => Ok(ApplePay),
             "google_pay" => Ok(GooglePay),
             "link" => Ok(Link),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetupAttemptPaymentMethodDetailsCardWalletType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

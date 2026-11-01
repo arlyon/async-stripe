@@ -133,14 +133,7 @@ impl std::str::FromStr for PortalResourceScheduleUpdateAtPeriodEndConditionType 
         match s {
             "decreasing_item_amount" => Ok(DecreasingItemAmount),
             "shortening_interval" => Ok(ShorteningInterval),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PortalResourceScheduleUpdateAtPeriodEndConditionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

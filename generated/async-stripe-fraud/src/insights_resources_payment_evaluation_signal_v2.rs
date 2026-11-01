@@ -161,14 +161,7 @@ impl std::str::FromStr for InsightsResourcesPaymentEvaluationSignalV2RiskLevel {
             "normal" => Ok(Normal),
             "not_assessed" => Ok(NotAssessed),
             "unknown" => Ok(Unknown),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationSignalV2RiskLevel"
-                );
-                Ok(_Unknown(v.to_owned()))
-            }
+            v => Ok(_Unknown(v.to_owned())),
         }
     }
 }

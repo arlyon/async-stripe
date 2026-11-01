@@ -174,10 +174,7 @@ impl std::str::FromStr for AutomaticTaxDisabledReason {
         match s {
             "finalization_requires_location_inputs" => Ok(FinalizationRequiresLocationInputs),
             "finalization_system_error" => Ok(FinalizationSystemError),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "AutomaticTaxDisabledReason");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -261,10 +258,7 @@ impl std::str::FromStr for AutomaticTaxStatus {
             "complete" => Ok(Complete),
             "failed" => Ok(Failed),
             "requires_location_inputs" => Ok(RequiresLocationInputs),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "AutomaticTaxStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

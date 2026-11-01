@@ -201,14 +201,7 @@ impl std::str::FromStr for BalanceSettingsResourcePayoutsStatus {
         match s {
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BalanceSettingsResourcePayoutsStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

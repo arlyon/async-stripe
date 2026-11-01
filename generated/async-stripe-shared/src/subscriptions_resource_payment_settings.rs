@@ -313,14 +313,7 @@ impl std::str::FromStr for SubscriptionsResourcePaymentSettingsPaymentMethodType
             "upi" => Ok(Upi),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscriptionsResourcePaymentSettingsPaymentMethodTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -408,14 +401,7 @@ impl std::str::FromStr for SubscriptionsResourcePaymentSettingsSaveDefaultPaymen
         match s {
             "off" => Ok(Off),
             "on_subscription" => Ok(OnSubscription),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

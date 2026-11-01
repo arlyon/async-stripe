@@ -191,14 +191,7 @@ impl std::str::FromStr for CheckoutUsBankAccountPaymentMethodOptionsSetupFutureU
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -287,14 +280,7 @@ impl std::str::FromStr for CheckoutUsBankAccountPaymentMethodOptionsVerification
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

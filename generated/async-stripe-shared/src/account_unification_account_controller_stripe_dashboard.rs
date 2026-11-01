@@ -136,14 +136,7 @@ impl std::str::FromStr for AccountUnificationAccountControllerStripeDashboardTyp
             "express" => Ok(Express),
             "full" => Ok(Full),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "AccountUnificationAccountControllerStripeDashboardType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

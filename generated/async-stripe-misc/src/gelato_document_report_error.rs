@@ -141,14 +141,7 @@ impl std::str::FromStr for GelatoDocumentReportErrorCode {
             "document_expired" => Ok(DocumentExpired),
             "document_type_not_supported" => Ok(DocumentTypeNotSupported),
             "document_unverified_other" => Ok(DocumentUnverifiedOther),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "GelatoDocumentReportErrorCode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

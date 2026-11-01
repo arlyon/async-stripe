@@ -597,10 +597,7 @@ impl std::str::FromStr for TaxIdType {
             "za_vat" => Ok(ZaVat),
             "zm_tin" => Ok(ZmTin),
             "zw_tin" => Ok(ZwTin),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TaxIdType");
-                Ok(_Unknown(v.to_owned()))
-            }
+            v => Ok(_Unknown(v.to_owned())),
         }
     }
 }

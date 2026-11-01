@@ -136,14 +136,7 @@ impl std::str::FromStr for TaxProductRegistrationsResourceCountryOptionsDefaultI
         use TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType::*;
         match s {
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductRegistrationsResourceCountryOptionsDefaultInboundGoodsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

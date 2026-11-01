@@ -142,14 +142,7 @@ impl std::str::FromStr for IssuingCardApplePayIneligibleReason {
             "missing_agreement" => Ok(MissingAgreement),
             "missing_cardholder_contact" => Ok(MissingCardholderContact),
             "unsupported_region" => Ok(UnsupportedRegion),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingCardApplePayIneligibleReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

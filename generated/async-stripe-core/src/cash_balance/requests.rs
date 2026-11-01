@@ -151,14 +151,7 @@ impl std::str::FromStr for UpdateCashBalanceSettingsReconciliationMode {
             "automatic" => Ok(Automatic),
             "manual" => Ok(Manual),
             "merchant_default" => Ok(MerchantDefault),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateCashBalanceSettingsReconciliationMode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

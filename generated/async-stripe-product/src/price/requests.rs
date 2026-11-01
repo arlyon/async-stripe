@@ -117,10 +117,7 @@ impl std::str::FromStr for ListPriceRecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListPriceRecurringInterval");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -185,14 +182,7 @@ impl std::str::FromStr for ListPriceRecurringUsageType {
         match s {
             "licensed" => Ok(Licensed),
             "metered" => Ok(Metered),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ListPriceRecurringUsageType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -829,14 +819,7 @@ impl std::str::FromStr for CreatePriceRecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePriceRecurringInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -905,14 +888,7 @@ impl std::str::FromStr for CreatePriceRecurringUsageType {
         match s {
             "licensed" => Ok(Licensed),
             "metered" => Ok(Metered),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePriceRecurringUsageType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1063,14 +1039,7 @@ impl std::str::FromStr for CreatePriceTransformQuantityRound {
         match s {
             "down" => Ok(Down),
             "up" => Ok(Up),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePriceTransformQuantityRound"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

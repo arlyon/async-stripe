@@ -370,14 +370,7 @@ impl std::str::FromStr for IdentityVerificationSessionType {
             "document" => Ok(Document),
             "id_number" => Ok(IdNumber),
             "verification_flow" => Ok(VerificationFlow),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IdentityVerificationSessionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -474,14 +467,7 @@ impl std::str::FromStr for IdentityVerificationSessionStatus {
             "processing" => Ok(Processing),
             "requires_input" => Ok(RequiresInput),
             "verified" => Ok(Verified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IdentityVerificationSessionStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

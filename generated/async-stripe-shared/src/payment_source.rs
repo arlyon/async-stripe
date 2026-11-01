@@ -86,10 +86,7 @@ const _: () = {
                 "card" => Self::Card(FromValueOpt::from_value(Value::Object(o))?),
                 "source" => Self::Source(FromValueOpt::from_value(Value::Object(o))?),
 
-                _ => {
-                    tracing::warn!("Unknown object type '{}' for enum '{}'", key, "PaymentSource");
-                    return None;
-                }
+                _ => return None,
             })
         }
     }

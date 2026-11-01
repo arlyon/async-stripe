@@ -238,14 +238,7 @@ impl std::str::FromStr
         match s {
             "transfer_all" => Ok(TransferAll),
             "transfer_up_to_amount" => Ok(TransferUpToAmount),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -363,14 +356,7 @@ impl std::str::FromStr for UpdateBalanceSettingsPaymentsPayoutsScheduleInterval 
             "manual" => Ok(Manual),
             "monthly" => Ok(Monthly),
             "weekly" => Ok(Weekly),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBalanceSettingsPaymentsPayoutsScheduleInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -446,14 +432,7 @@ impl std::str::FromStr for UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPay
             "thursday" => Ok(Thursday),
             "tuesday" => Ok(Tuesday),
             "wednesday" => Ok(Wednesday),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

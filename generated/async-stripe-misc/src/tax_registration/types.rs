@@ -234,10 +234,7 @@ impl std::str::FromStr for TaxRegistrationStatus {
             "active" => Ok(Active),
             "expired" => Ok(Expired),
             "scheduled" => Ok(Scheduled),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TaxRegistrationStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

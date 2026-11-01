@@ -136,14 +136,7 @@ impl std::str::FromStr for TaxProductRegistrationsResourceCountryOptionsIgicPlac
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TaxProductRegistrationsResourceCountryOptionsIgicPlaceOfSupplyScheme"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

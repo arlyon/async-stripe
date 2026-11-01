@@ -496,10 +496,7 @@ impl std::str::FromStr for CreditNoteStatus {
         match s {
             "issued" => Ok(Issued),
             "void" => Ok(Void),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreditNoteStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -585,10 +582,7 @@ impl std::str::FromStr for CreditNoteType {
             "mixed" => Ok(Mixed),
             "post_payment" => Ok(PostPayment),
             "pre_payment" => Ok(PrePayment),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreditNoteType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -685,10 +679,7 @@ impl std::str::FromStr for CreditNoteReason {
             "fraudulent" => Ok(Fraudulent),
             "order_change" => Ok(OrderChange),
             "product_unsatisfactory" => Ok(ProductUnsatisfactory),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreditNoteReason");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

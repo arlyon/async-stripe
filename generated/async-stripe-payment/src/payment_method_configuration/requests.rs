@@ -492,14 +492,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationAcssDebitDisplayPrefe
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -625,14 +618,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationAffirmDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -761,14 +747,7 @@ impl std::str::FromStr
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -903,14 +882,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationAlipayDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1034,14 +1006,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationAlmaDisplayPreference
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationAlmaDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1163,14 +1128,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationAmazonPayDisplayPrefe
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1296,14 +1254,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationApplePayDisplayPrefer
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1430,14 +1381,7 @@ impl std::str::FromStr
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1564,14 +1508,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationAuBecsDebitDisplayPre
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1695,14 +1632,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationBacsDebitDisplayPrefe
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1828,14 +1758,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationBancontactDisplayPref
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1961,14 +1884,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationBillieDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationBillieDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2093,14 +2009,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationBizumDisplayPreferenc
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationBizumDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2224,14 +2133,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationBlikDisplayPreference
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationBlikDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2354,14 +2256,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationBoletoDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2486,14 +2381,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationCardDisplayPreference
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationCardDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2621,14 +2509,7 @@ impl std::str::FromStr
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2761,14 +2642,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationCashappDisplayPrefere
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationCashappDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2892,14 +2766,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationCryptoDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3029,14 +2896,7 @@ impl std::str::FromStr
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3170,14 +3030,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationEpsDisplayPreferenceP
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationEpsDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3302,14 +3155,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationFpxDisplayPreferenceP
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationFpxDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3437,14 +3283,7 @@ impl std::str::FromStr
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3580,14 +3419,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationGiropayDisplayPrefere
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3713,14 +3545,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationGooglePayDisplayPrefe
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3846,14 +3671,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationGrabpayDisplayPrefere
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -3979,14 +3797,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationIdealDisplayPreferenc
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationIdealDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4110,14 +3921,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationJcbDisplayPreferenceP
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationJcbDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4239,14 +4043,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationKakaoPayDisplayPrefer
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4373,14 +4170,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationKlarnaDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4505,14 +4295,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationKonbiniDisplayPrefere
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4636,14 +4419,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationKrCardDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4768,14 +4544,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationLinkDisplayPreference
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationLinkDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -4899,14 +4668,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationMbWayDisplayPreferenc
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5030,14 +4792,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationMobilepayDisplayPrefe
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5161,14 +4916,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationMultibancoDisplayPref
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationMultibancoDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5292,14 +5040,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationNaverPayDisplayPrefer
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5427,14 +5168,7 @@ impl std::str::FromStr
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5562,14 +5296,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationOxxoDisplayPreference
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5693,14 +5420,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationP24DisplayPreferenceP
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationP24DisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5824,14 +5544,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationPayByBankDisplayPrefe
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationPayByBankDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -5955,14 +5668,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationPaycoDisplayPreferenc
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6085,14 +5791,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationPaynowDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6217,14 +5916,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationPaypalDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6350,14 +6042,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationPaytoDisplayPreferenc
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationPaytoDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6481,14 +6166,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationPixDisplayPreferenceP
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationPixDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6611,14 +6289,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationPromptpayDisplayPrefe
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6743,14 +6414,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationRevolutPayDisplayPref
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -6874,14 +6538,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationSamsungPayDisplayPref
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7007,14 +6664,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationSatispayDisplayPrefer
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationSatispayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7140,14 +6790,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationScalapayDisplayPrefer
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationScalapayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7272,14 +6915,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationSepaDebitDisplayPrefe
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7404,14 +7040,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationSofortDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationSofortDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7537,14 +7166,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationSunbitDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationSunbitDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7670,14 +7292,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationSwishDisplayPreferenc
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationSwishDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7801,14 +7416,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationTwintDisplayPreferenc
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationTwintDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -7930,14 +7538,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationUpiDisplayPreferenceP
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationUpiDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8063,14 +7664,7 @@ impl std::str::FromStr
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8199,14 +7793,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationWechatPayDisplayPrefe
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -8331,14 +7918,7 @@ impl std::str::FromStr for CreatePaymentMethodConfigurationZipDisplayPreferenceP
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentMethodConfigurationZipDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9190,14 +8770,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationAcssDebitDisplayPrefe
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9323,14 +8896,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationAffirmDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9459,14 +9025,7 @@ impl std::str::FromStr
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9601,14 +9160,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationAlipayDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9732,14 +9284,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationAlmaDisplayPreference
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationAlmaDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9861,14 +9406,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationAmazonPayDisplayPrefe
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -9994,14 +9532,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationApplePayDisplayPrefer
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10128,14 +9659,7 @@ impl std::str::FromStr
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10262,14 +9786,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationAuBecsDebitDisplayPre
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10393,14 +9910,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationBacsDebitDisplayPrefe
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10526,14 +10036,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationBancontactDisplayPref
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10659,14 +10162,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationBillieDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationBillieDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10791,14 +10287,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationBizumDisplayPreferenc
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationBizumDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -10922,14 +10411,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationBlikDisplayPreference
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11052,14 +10534,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationBoletoDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11184,14 +10659,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationCardDisplayPreference
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationCardDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11319,14 +10787,7 @@ impl std::str::FromStr
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11459,14 +10920,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationCashappDisplayPrefere
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11590,14 +11044,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationCryptoDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11727,14 +11174,7 @@ impl std::str::FromStr
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -11868,14 +11308,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationEpsDisplayPreferenceP
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12000,14 +11433,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationFpxDisplayPreferenceP
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12135,14 +11561,7 @@ impl std::str::FromStr
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12278,14 +11697,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationGiropayDisplayPrefere
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12411,14 +11823,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationGooglePayDisplayPrefe
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12544,14 +11949,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationGrabpayDisplayPrefere
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12677,14 +12075,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationIdealDisplayPreferenc
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12808,14 +12199,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationJcbDisplayPreferenceP
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -12937,14 +12321,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationKakaoPayDisplayPrefer
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13071,14 +12448,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationKlarnaDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13203,14 +12573,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationKonbiniDisplayPrefere
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13334,14 +12697,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationKrCardDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13466,14 +12822,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationLinkDisplayPreference
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13597,14 +12946,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationMbWayDisplayPreferenc
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13728,14 +13070,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationMobilepayDisplayPrefe
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13859,14 +13194,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationMultibancoDisplayPref
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationMultibancoDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -13990,14 +13318,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationNaverPayDisplayPrefer
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14125,14 +13446,7 @@ impl std::str::FromStr
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14260,14 +13574,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationOxxoDisplayPreference
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14391,14 +13698,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationP24DisplayPreferenceP
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationP24DisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14522,14 +13822,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationPayByBankDisplayPrefe
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationPayByBankDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14653,14 +13946,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationPaycoDisplayPreferenc
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14783,14 +14069,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationPaynowDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -14915,14 +14194,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationPaypalDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15048,14 +14320,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationPaytoDisplayPreferenc
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationPaytoDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15179,14 +14444,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationPixDisplayPreferenceP
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationPixDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15309,14 +14567,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationPromptpayDisplayPrefe
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15441,14 +14692,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationRevolutPayDisplayPref
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15572,14 +14816,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationSamsungPayDisplayPref
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15705,14 +14942,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationSatispayDisplayPrefer
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationSatispayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15838,14 +15068,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationScalapayDisplayPrefer
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationScalapayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -15970,14 +15193,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationSepaDebitDisplayPrefe
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16102,14 +15318,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationSofortDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16235,14 +15444,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationSunbitDisplayPreferen
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationSunbitDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16368,14 +15570,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationSwishDisplayPreferenc
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16499,14 +15694,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationTwintDisplayPreferenc
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationTwintDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16628,14 +15816,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationUpiDisplayPreferenceP
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationUpiDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16761,14 +15942,7 @@ impl std::str::FromStr
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -16897,14 +16071,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationWechatPayDisplayPrefe
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -17029,14 +16196,7 @@ impl std::str::FromStr for UpdatePaymentMethodConfigurationZipDisplayPreferenceP
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentMethodConfigurationZipDisplayPreferencePreference"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

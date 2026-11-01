@@ -952,14 +952,7 @@ impl std::str::FromStr for CollectInputsTerminalReaderInputsSelectionChoicesStyl
         match s {
             "primary" => Ok(Primary),
             "secondary" => Ok(Secondary),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CollectInputsTerminalReaderInputsSelectionChoicesStyle"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1060,14 +1053,7 @@ impl std::str::FromStr for CollectInputsTerminalReaderInputsTogglesDefaultValue 
         match s {
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CollectInputsTerminalReaderInputsTogglesDefaultValue"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1145,14 +1131,7 @@ impl std::str::FromStr for CollectInputsTerminalReaderInputsType {
             "selection" => Ok(Selection),
             "signature" => Ok(Signature),
             "text" => Ok(Text),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CollectInputsTerminalReaderInputsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1354,14 +1333,7 @@ impl std::str::FromStr for CollectPaymentMethodTerminalReaderCollectConfigAllowR
             "always" => Ok(Always),
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1686,14 +1658,7 @@ impl std::str::FromStr for ProcessPaymentIntentTerminalReaderProcessConfigAllowR
             "always" => Ok(Always),
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1865,14 +1830,7 @@ impl std::str::FromStr for ProcessSetupIntentTerminalReaderAllowRedisplay {
             "always" => Ok(Always),
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ProcessSetupIntentTerminalReaderAllowRedisplay"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2290,14 +2248,7 @@ impl std::str::FromStr for SetReaderDisplayTerminalReaderType {
         use SetReaderDisplayTerminalReaderType::*;
         match s {
             "cart" => Ok(Cart),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SetReaderDisplayTerminalReaderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2552,14 +2503,7 @@ impl std::str::FromStr for PresentPaymentMethodTerminalReaderType {
             "card" => Ok(Card),
             "card_present" => Ok(CardPresent),
             "interac_present" => Ok(InteracPresent),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PresentPaymentMethodTerminalReaderType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2731,14 +2675,7 @@ impl std::str::FromStr for SucceedInputCollectionTerminalReaderSkipNonRequiredIn
         match s {
             "all" => Ok(All),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SucceedInputCollectionTerminalReaderSkipNonRequiredInputs"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

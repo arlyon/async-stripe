@@ -147,14 +147,7 @@ impl std::str::FromStr for IssuingCardShippingAddressValidationMode {
             "disabled" => Ok(Disabled),
             "normalization_only" => Ok(NormalizationOnly),
             "validation_and_normalization" => Ok(ValidationAndNormalization),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingCardShippingAddressValidationMode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -238,14 +231,7 @@ impl std::str::FromStr for IssuingCardShippingAddressValidationResult {
             "indeterminate" => Ok(Indeterminate),
             "likely_deliverable" => Ok(LikelyDeliverable),
             "likely_undeliverable" => Ok(LikelyUndeliverable),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingCardShippingAddressValidationResult"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

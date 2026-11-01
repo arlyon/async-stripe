@@ -341,10 +341,7 @@ impl std::str::FromStr for TopupInitiatedBy {
         match s {
             "stripe" => Ok(Stripe),
             "user" => Ok(User),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TopupInitiatedBy");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -434,10 +431,7 @@ impl std::str::FromStr for TopupStatus {
             "pending" => Ok(Pending),
             "reversed" => Ok(Reversed),
             "succeeded" => Ok(Succeeded),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TopupStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

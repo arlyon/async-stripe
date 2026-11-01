@@ -142,14 +142,7 @@ impl std::str::FromStr for IssuingCardGooglePayIneligibleReason {
             "missing_agreement" => Ok(MissingAgreement),
             "missing_cardholder_contact" => Ok(MissingCardholderContact),
             "unsupported_region" => Ok(UnsupportedRegion),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingCardGooglePayIneligibleReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

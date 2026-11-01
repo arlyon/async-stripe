@@ -149,14 +149,7 @@ impl std::str::FromStr for PortalFlowsFlowAfterCompletionType {
             "hosted_confirmation" => Ok(HostedConfirmation),
             "portal_homepage" => Ok(PortalHomepage),
             "redirect" => Ok(Redirect),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PortalFlowsFlowAfterCompletionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

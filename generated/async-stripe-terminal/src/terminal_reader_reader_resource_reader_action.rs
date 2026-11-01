@@ -269,14 +269,7 @@ impl std::str::FromStr for TerminalReaderReaderResourceReaderActionStatus {
             "failed" => Ok(Failed),
             "in_progress" => Ok(InProgress),
             "succeeded" => Ok(Succeeded),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TerminalReaderReaderResourceReaderActionStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -377,14 +370,7 @@ impl std::str::FromStr for TerminalReaderReaderResourceReaderActionType {
             "process_setup_intent" => Ok(ProcessSetupIntent),
             "refund_payment" => Ok(RefundPayment),
             "set_reader_display" => Ok(SetReaderDisplay),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TerminalReaderReaderResourceReaderActionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

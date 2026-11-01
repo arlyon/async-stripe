@@ -177,14 +177,7 @@ impl std::str::FromStr
             "always" => Ok(Always),
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentPagesCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -283,14 +276,7 @@ impl std::str::FromStr for PaymentPagesCheckoutSessionSavedPaymentMethodOptionsP
         match s {
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -386,14 +372,7 @@ impl std::str::FromStr for PaymentPagesCheckoutSessionSavedPaymentMethodOptionsP
         match s {
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

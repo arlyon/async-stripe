@@ -914,14 +914,7 @@ impl std::str::FromStr for CheckoutSessionCustomerCreation {
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutSessionCustomerCreation"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1003,14 +996,7 @@ impl std::str::FromStr for CheckoutSessionPaymentMethodCollection {
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutSessionPaymentMethodCollection"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1095,14 +1081,7 @@ impl std::str::FromStr for CheckoutSessionPaymentStatus {
             "no_payment_required" => Ok(NoPaymentRequired),
             "paid" => Ok(Paid),
             "unpaid" => Ok(Unpaid),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutSessionPaymentStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1193,14 +1172,7 @@ impl std::str::FromStr for CheckoutSessionBillingAddressCollection {
         match s {
             "auto" => Ok(Auto),
             "required" => Ok(Required),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutSessionBillingAddressCollection"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1396,10 +1368,7 @@ impl std::str::FromStr for CheckoutSessionLocale {
             "zh" => Ok(Zh),
             "zh-HK" => Ok(ZhMinusHk),
             "zh-TW" => Ok(ZhMinusTw),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CheckoutSessionLocale");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1481,10 +1450,7 @@ impl std::str::FromStr for CheckoutSessionMode {
             "payment" => Ok(Payment),
             "setup" => Ok(Setup),
             "subscription" => Ok(Subscription),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CheckoutSessionMode");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1563,14 +1529,7 @@ impl std::str::FromStr for CheckoutSessionOriginContext {
         match s {
             "mobile_app" => Ok(MobileApp),
             "web" => Ok(Web),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutSessionOriginContext"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1652,14 +1611,7 @@ impl std::str::FromStr for CheckoutSessionRedirectOnCompletion {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CheckoutSessionRedirectOnCompletion"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1741,10 +1693,7 @@ impl std::str::FromStr for CheckoutSessionStatus {
             "complete" => Ok(Complete),
             "expired" => Ok(Expired),
             "open" => Ok(Open),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CheckoutSessionStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1832,10 +1781,7 @@ impl std::str::FromStr for CheckoutSessionSubmitType {
             "donate" => Ok(Donate),
             "pay" => Ok(Pay),
             "subscribe" => Ok(Subscribe),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CheckoutSessionSubmitType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1920,10 +1866,7 @@ impl std::str::FromStr for CheckoutSessionUiMode {
             "embedded_page" => Ok(EmbeddedPage),
             "form" => Ok(Form),
             "hosted_page" => Ok(HostedPage),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CheckoutSessionUiMode");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

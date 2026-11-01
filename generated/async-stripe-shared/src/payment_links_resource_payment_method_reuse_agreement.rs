@@ -138,14 +138,7 @@ impl std::str::FromStr for PaymentLinksResourcePaymentMethodReuseAgreementPositi
         match s {
             "auto" => Ok(Auto),
             "hidden" => Ok(Hidden),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentLinksResourcePaymentMethodReuseAgreementPosition"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

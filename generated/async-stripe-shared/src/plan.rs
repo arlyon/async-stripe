@@ -369,10 +369,7 @@ impl std::str::FromStr for PlanBillingScheme {
         match s {
             "per_unit" => Ok(PerUnit),
             "tiered" => Ok(Tiered),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PlanBillingScheme");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -457,10 +454,7 @@ impl std::str::FromStr for PlanInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PlanInterval");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -539,10 +533,7 @@ impl std::str::FromStr for PlanTiersMode {
         match s {
             "graduated" => Ok(Graduated),
             "volume" => Ok(Volume),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PlanTiersMode");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -621,10 +612,7 @@ impl std::str::FromStr for PlanUsageType {
         match s {
             "licensed" => Ok(Licensed),
             "metered" => Ok(Metered),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PlanUsageType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

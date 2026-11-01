@@ -163,14 +163,7 @@ impl std::str::FromStr for BankConnectionsResourceAccountNumberDetailsIdentifier
         match s {
             "account_number" => Ok(AccountNumber),
             "tokenized_account_number" => Ok(TokenizedAccountNumber),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BankConnectionsResourceAccountNumberDetailsIdentifierType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -259,14 +252,7 @@ impl std::str::FromStr for BankConnectionsResourceAccountNumberDetailsStatus {
         match s {
             "deactivated" => Ok(Deactivated),
             "transactable" => Ok(Transactable),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BankConnectionsResourceAccountNumberDetailsStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -347,14 +333,7 @@ impl std::str::FromStr for BankConnectionsResourceAccountNumberDetailsSupportedN
         use BankConnectionsResourceAccountNumberDetailsSupportedNetworks::*;
         match s {
             "ach" => Ok(Ach),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "BankConnectionsResourceAccountNumberDetailsSupportedNetworks"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

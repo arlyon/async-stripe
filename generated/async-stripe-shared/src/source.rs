@@ -531,10 +531,7 @@ impl std::str::FromStr for SourceAllowRedisplay {
             "always" => Ok(Always),
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SourceAllowRedisplay");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -669,10 +666,7 @@ impl std::str::FromStr for SourceType {
             "sofort" => Ok(Sofort),
             "three_d_secure" => Ok(ThreeDSecure),
             "wechat" => Ok(Wechat),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SourceType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

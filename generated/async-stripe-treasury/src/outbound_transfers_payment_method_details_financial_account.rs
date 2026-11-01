@@ -137,14 +137,7 @@ impl std::str::FromStr for OutboundTransfersPaymentMethodDetailsFinancialAccount
         use OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork::*;
         match s {
             "stripe" => Ok(Stripe),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

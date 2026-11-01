@@ -484,14 +484,7 @@ impl std::str::FromStr for RefreshFinancialConnectionsAccountFeatures {
             "balance" => Ok(Balance),
             "ownership" => Ok(Ownership),
             "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "RefreshFinancialConnectionsAccountFeatures"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -634,14 +627,7 @@ impl std::str::FromStr for SubscribeFinancialConnectionsAccountFeatures {
         use SubscribeFinancialConnectionsAccountFeatures::*;
         match s {
             "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscribeFinancialConnectionsAccountFeatures"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -785,14 +771,7 @@ impl std::str::FromStr for UnsubscribeFinancialConnectionsAccountFeatures {
         use UnsubscribeFinancialConnectionsAccountFeatures::*;
         match s {
             "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UnsubscribeFinancialConnectionsAccountFeatures"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

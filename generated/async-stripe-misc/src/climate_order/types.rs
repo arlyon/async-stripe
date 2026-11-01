@@ -364,14 +364,7 @@ impl std::str::FromStr for ClimateOrderCancellationReason {
             "expired" => Ok(Expired),
             "product_unavailable" => Ok(ProductUnavailable),
             "requested" => Ok(Requested),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ClimateOrderCancellationReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -461,10 +454,7 @@ impl std::str::FromStr for ClimateOrderStatus {
             "confirmed" => Ok(Confirmed),
             "delivered" => Ok(Delivered),
             "open" => Ok(Open),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ClimateOrderStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

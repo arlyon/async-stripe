@@ -521,10 +521,7 @@ impl std::str::FromStr for QuoteCollectionMethod {
         match s {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "QuoteCollectionMethod");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -609,10 +606,7 @@ impl std::str::FromStr for QuoteStatus {
             "canceled" => Ok(Canceled),
             "draft" => Ok(Draft),
             "open" => Ok(Open),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "QuoteStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

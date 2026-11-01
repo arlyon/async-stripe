@@ -366,10 +366,7 @@ impl std::str::FromStr for ListTaxIdOwnerType {
             "application" => Ok(Application),
             "customer" => Ok(Customer),
             "self" => Ok(Self_),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListTaxIdOwnerType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -954,10 +951,7 @@ impl std::str::FromStr for CreateCustomerTaxIdType {
             "za_vat" => Ok(ZaVat),
             "zm_tin" => Ok(ZmTin),
             "zw_tin" => Ok(ZwTin),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateCustomerTaxIdType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1140,10 +1134,7 @@ impl std::str::FromStr for CreateTaxIdOwnerType {
             "application" => Ok(Application),
             "customer" => Ok(Customer),
             "self" => Ok(Self_),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateTaxIdOwnerType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1553,10 +1544,7 @@ impl std::str::FromStr for CreateTaxIdType {
             "za_vat" => Ok(ZaVat),
             "zm_tin" => Ok(ZmTin),
             "zw_tin" => Ok(ZwTin),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateTaxIdType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

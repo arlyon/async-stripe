@@ -194,14 +194,7 @@ impl std::str::FromStr for MandateBacsDebitNetworkStatus {
             "pending" => Ok(Pending),
             "refused" => Ok(Refused),
             "revoked" => Ok(Revoked),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "MandateBacsDebitNetworkStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -291,14 +284,7 @@ impl std::str::FromStr for MandateBacsDebitRevocationReason {
             "bank_ownership_changed" => Ok(BankOwnershipChanged),
             "could_not_process" => Ok(CouldNotProcess),
             "debit_not_authorized" => Ok(DebitNotAuthorized),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "MandateBacsDebitRevocationReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -134,14 +134,7 @@ impl std::str::FromStr for PaymentIntentProcessingType {
         use PaymentIntentProcessingType::*;
         match s {
             "card" => Ok(Card),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentIntentProcessingType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

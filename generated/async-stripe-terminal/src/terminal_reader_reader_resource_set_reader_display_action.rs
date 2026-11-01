@@ -136,14 +136,7 @@ impl std::str::FromStr for TerminalReaderReaderResourceSetReaderDisplayActionTyp
         use TerminalReaderReaderResourceSetReaderDisplayActionType::*;
         match s {
             "cart" => Ok(Cart),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TerminalReaderReaderResourceSetReaderDisplayActionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

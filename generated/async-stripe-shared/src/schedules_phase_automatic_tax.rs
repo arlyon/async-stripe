@@ -143,14 +143,7 @@ impl std::str::FromStr for SchedulesPhaseAutomaticTaxDisabledReason {
         use SchedulesPhaseAutomaticTaxDisabledReason::*;
         match s {
             "requires_location_inputs" => Ok(RequiresLocationInputs),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SchedulesPhaseAutomaticTaxDisabledReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -150,7 +150,7 @@ impl std::str::FromStr for CustomerBalanceResourceCashBalanceTransactionResource
     "ach" => Ok(Ach),
 "domestic_wire_us" => Ok(DomesticWireUs),
 "swift" => Ok(Swift),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork"); Ok(Unknown(v.to_owned())) }
+v => Ok(Unknown(v.to_owned())),
 
         }
     }

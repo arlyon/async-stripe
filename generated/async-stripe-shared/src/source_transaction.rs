@@ -315,10 +315,7 @@ impl std::str::FromStr for SourceTransactionType {
             "sofort" => Ok(Sofort),
             "three_d_secure" => Ok(ThreeDSecure),
             "wechat" => Ok(Wechat),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SourceTransactionType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -416,10 +416,7 @@ impl std::str::FromStr for BillingPortalSessionLocale {
             "zh" => Ok(Zh),
             "zh-HK" => Ok(ZhMinusHk),
             "zh-TW" => Ok(ZhMinusTw),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "BillingPortalSessionLocale");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

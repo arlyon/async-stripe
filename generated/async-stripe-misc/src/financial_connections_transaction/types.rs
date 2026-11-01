@@ -258,14 +258,7 @@ impl std::str::FromStr for FinancialConnectionsTransactionStatus {
             "pending" => Ok(Pending),
             "posted" => Ok(Posted),
             "void" => Ok(Void),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FinancialConnectionsTransactionStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

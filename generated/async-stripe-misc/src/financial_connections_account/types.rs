@@ -370,14 +370,7 @@ impl std::str::FromStr for FinancialConnectionsAccountCategory {
             "credit" => Ok(Credit),
             "investment" => Ok(Investment),
             "other" => Ok(Other),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FinancialConnectionsAccountCategory"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -464,14 +457,7 @@ impl std::str::FromStr for FinancialConnectionsAccountPermissions {
             "ownership" => Ok(Ownership),
             "payment_method" => Ok(PaymentMethod),
             "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FinancialConnectionsAccountPermissions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -555,14 +541,7 @@ impl std::str::FromStr for FinancialConnectionsAccountStatus {
             "active" => Ok(Active),
             "disconnected" => Ok(Disconnected),
             "inactive" => Ok(Inactive),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FinancialConnectionsAccountStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -668,14 +647,7 @@ impl std::str::FromStr for FinancialConnectionsAccountSubcategory {
             "mortgage" => Ok(Mortgage),
             "other" => Ok(Other),
             "savings" => Ok(Savings),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FinancialConnectionsAccountSubcategory"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -753,14 +725,7 @@ impl std::str::FromStr for FinancialConnectionsAccountSubscriptions {
         use FinancialConnectionsAccountSubscriptions::*;
         match s {
             "transactions" => Ok(Transactions),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FinancialConnectionsAccountSubscriptions"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -841,14 +806,7 @@ impl std::str::FromStr for FinancialConnectionsAccountSupportedPaymentMethodType
         match s {
             "link" => Ok(Link),
             "us_bank_account" => Ok(UsBankAccount),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "FinancialConnectionsAccountSupportedPaymentMethodTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

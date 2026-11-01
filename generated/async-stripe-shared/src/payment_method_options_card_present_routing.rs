@@ -132,14 +132,7 @@ impl std::str::FromStr for PaymentMethodOptionsCardPresentRoutingRequestedPriori
         match s {
             "domestic" => Ok(Domestic),
             "international" => Ok(International),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsCardPresentRoutingRequestedPriority"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -143,14 +143,7 @@ impl std::str::FromStr for PaymentMethodOptionsSunbitCaptureMethod {
         use PaymentMethodOptionsSunbitCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsSunbitCaptureMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -235,14 +228,7 @@ impl std::str::FromStr for PaymentMethodOptionsSunbitSetupFutureUsage {
         use PaymentMethodOptionsSunbitSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentMethodOptionsSunbitSetupFutureUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

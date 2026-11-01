@@ -136,10 +136,7 @@ impl std::str::FromStr for PortalFlowsRetentionType {
         use PortalFlowsRetentionType::*;
         match s {
             "coupon_offer" => Ok(CouponOffer),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PortalFlowsRetentionType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -135,14 +135,7 @@ impl std::str::FromStr for TerminalReaderReaderResourcePrintContentType {
         use TerminalReaderReaderResourcePrintContentType::*;
         match s {
             "image" => Ok(Image),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TerminalReaderReaderResourcePrintContentType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

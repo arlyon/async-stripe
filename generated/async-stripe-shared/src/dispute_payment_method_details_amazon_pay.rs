@@ -132,14 +132,7 @@ impl std::str::FromStr for DisputePaymentMethodDetailsAmazonPayDisputeType {
         match s {
             "chargeback" => Ok(Chargeback),
             "claim" => Ok(Claim),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "DisputePaymentMethodDetailsAmazonPayDisputeType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

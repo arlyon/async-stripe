@@ -120,14 +120,7 @@ impl std::str::FromStr
         use RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType::*;
         match s {
             "metered" => Ok(Metered),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -232,14 +225,7 @@ impl std::str::FromStr for RetrieveForMyAccountBillingCreditBalanceSummaryFilter
         match s {
             "applicability_scope" => Ok(ApplicabilityScope),
             "credit_grant" => Ok(CreditGrant),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "RetrieveForMyAccountBillingCreditBalanceSummaryFilterType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

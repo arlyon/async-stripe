@@ -1179,14 +1179,7 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             "treasury.received_credit.failed" => Ok(TreasuryReceivedCreditFailed),
             "treasury.received_credit.succeeded" => Ok(TreasuryReceivedCreditSucceeded),
             "treasury.received_debit.created" => Ok(TreasuryReceivedDebitCreated),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateWebhookEndpointEnabledEvents"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -2257,14 +2250,7 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             "treasury.received_credit.failed" => Ok(TreasuryReceivedCreditFailed),
             "treasury.received_credit.succeeded" => Ok(TreasuryReceivedCreditSucceeded),
             "treasury.received_debit.created" => Ok(TreasuryReceivedDebitCreated),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateWebhookEndpointEnabledEvents"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -397,10 +397,7 @@ impl std::str::FromStr for InvoiceItemFrozenFields {
             "discounts" => Ok(Discounts),
             "pricing" => Ok(Pricing),
             "quantity" => Ok(Quantity),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "InvoiceItemFrozenFields");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

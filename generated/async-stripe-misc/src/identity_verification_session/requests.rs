@@ -379,14 +379,7 @@ impl std::str::FromStr for CreateIdentityVerificationSessionOptionsDocumentAllow
             "driving_license" => Ok(DrivingLicense),
             "id_card" => Ok(IdCard),
             "passport" => Ok(Passport),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIdentityVerificationSessionOptionsDocumentAllowedTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -475,14 +468,7 @@ impl std::str::FromStr for CreateIdentityVerificationSessionType {
         match s {
             "document" => Ok(Document),
             "id_number" => Ok(IdNumber),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIdentityVerificationSessionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -766,14 +752,7 @@ impl std::str::FromStr for UpdateIdentityVerificationSessionOptionsDocumentAllow
             "driving_license" => Ok(DrivingLicense),
             "id_card" => Ok(IdCard),
             "passport" => Ok(Passport),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -839,14 +818,7 @@ impl std::str::FromStr for UpdateIdentityVerificationSessionType {
         match s {
             "document" => Ok(Document),
             "id_number" => Ok(IdNumber),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIdentityVerificationSessionType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

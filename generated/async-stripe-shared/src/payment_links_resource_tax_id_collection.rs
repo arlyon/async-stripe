@@ -135,14 +135,7 @@ impl std::str::FromStr for PaymentLinksResourceTaxIdCollectionRequired {
         match s {
             "if_supported" => Ok(IfSupported),
             "never" => Ok(Never),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentLinksResourceTaxIdCollectionRequired"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

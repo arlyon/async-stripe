@@ -142,10 +142,7 @@ impl std::str::FromStr for InboundTransfersType {
         use InboundTransfersType::*;
         match s {
             "us_bank_account" => Ok(UsBankAccount),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "InboundTransfersType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

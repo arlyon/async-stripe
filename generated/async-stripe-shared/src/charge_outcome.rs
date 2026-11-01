@@ -240,10 +240,7 @@ impl std::str::FromStr for ChargeOutcomeAdviceCode {
             "confirm_card_data" => Ok(ConfirmCardData),
             "do_not_try_again" => Ok(DoNotTryAgain),
             "try_again_later" => Ok(TryAgainLater),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ChargeOutcomeAdviceCode");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

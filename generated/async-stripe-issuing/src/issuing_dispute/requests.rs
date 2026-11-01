@@ -390,14 +390,7 @@ impl std::str::FromStr for CreateIssuingDisputeEvidenceCanceledProductType {
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingDisputeEvidenceCanceledProductType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -463,14 +456,7 @@ impl std::str::FromStr for CreateIssuingDisputeEvidenceCanceledReturnStatus {
         match s {
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingDisputeEvidenceCanceledReturnStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -612,14 +598,7 @@ impl std::str::FromStr for CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed
         match s {
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -760,14 +739,7 @@ impl std::str::FromStr for CreateIssuingDisputeEvidenceNotReceivedProductType {
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingDisputeEvidenceNotReceivedProductType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -872,14 +844,7 @@ impl std::str::FromStr for CreateIssuingDisputeEvidenceOtherProductType {
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingDisputeEvidenceOtherProductType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -963,14 +928,7 @@ impl std::str::FromStr for CreateIssuingDisputeEvidenceReason {
             "not_received" => Ok(NotReceived),
             "other" => Ok(Other),
             "service_not_as_described" => Ok(ServiceNotAsDescribed),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateIssuingDisputeEvidenceReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1290,14 +1248,7 @@ impl std::str::FromStr for UpdateIssuingDisputeEvidenceCanceledProductType {
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingDisputeEvidenceCanceledProductType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1363,14 +1314,7 @@ impl std::str::FromStr for UpdateIssuingDisputeEvidenceCanceledReturnStatus {
         match s {
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingDisputeEvidenceCanceledReturnStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1512,14 +1456,7 @@ impl std::str::FromStr for UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed
         match s {
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1660,14 +1597,7 @@ impl std::str::FromStr for UpdateIssuingDisputeEvidenceNotReceivedProductType {
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingDisputeEvidenceNotReceivedProductType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1772,14 +1702,7 @@ impl std::str::FromStr for UpdateIssuingDisputeEvidenceOtherProductType {
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingDisputeEvidenceOtherProductType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1863,14 +1786,7 @@ impl std::str::FromStr for UpdateIssuingDisputeEvidenceReason {
             "not_received" => Ok(NotReceived),
             "other" => Ok(Other),
             "service_not_as_described" => Ok(ServiceNotAsDescribed),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateIssuingDisputeEvidenceReason"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

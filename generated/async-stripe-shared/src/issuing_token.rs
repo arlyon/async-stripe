@@ -256,10 +256,7 @@ impl std::str::FromStr for IssuingTokenNetwork {
         match s {
             "mastercard" => Ok(Mastercard),
             "visa" => Ok(Visa),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingTokenNetwork");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -343,10 +340,7 @@ impl std::str::FromStr for IssuingTokenWalletProvider {
             "apple_pay" => Ok(ApplePay),
             "google_pay" => Ok(GooglePay),
             "samsung_pay" => Ok(SamsungPay),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingTokenWalletProvider");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -443,10 +437,7 @@ impl std::str::FromStr for IssuingTokenStatus {
             "deleted" => Ok(Deleted),
             "requested" => Ok(Requested),
             "suspended" => Ok(Suspended),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingTokenStatus");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

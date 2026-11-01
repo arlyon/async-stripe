@@ -148,14 +148,7 @@ impl std::str::FromStr for IssuingCardFraudWarningType {
             "fraud_dispute_filed" => Ok(FraudDisputeFiled),
             "third_party_reported" => Ok(ThirdPartyReported),
             "user_indicated_fraud" => Ok(UserIndicatedFraud),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingCardFraudWarningType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

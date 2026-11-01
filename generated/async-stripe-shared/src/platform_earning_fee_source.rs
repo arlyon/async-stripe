@@ -145,14 +145,7 @@ impl std::str::FromStr for PlatformEarningFeeSourceType {
         match s {
             "charge" => Ok(Charge),
             "payout" => Ok(Payout),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PlatformEarningFeeSourceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

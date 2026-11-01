@@ -212,10 +212,7 @@ impl std::str::FromStr for PaymentMethodEpsBank {
             "volksbank_gruppe" => Ok(VolksbankGruppe),
             "volkskreditbank_ag" => Ok(VolkskreditbankAg),
             "vr_bank_braunau" => Ok(VrBankBraunau),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PaymentMethodEpsBank");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

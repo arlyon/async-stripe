@@ -447,10 +447,7 @@ impl std::str::FromStr for CreateSourceFlow {
             "none" => Ok(None),
             "receiver" => Ok(Receiver),
             "redirect" => Ok(Redirect),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateSourceFlow");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -616,14 +613,7 @@ impl std::str::FromStr for CreateSourceMandateAcceptanceStatus {
             "pending" => Ok(Pending),
             "refused" => Ok(Refused),
             "revoked" => Ok(Revoked),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSourceMandateAcceptanceStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -688,14 +678,7 @@ impl std::str::FromStr for CreateSourceMandateAcceptanceType {
         match s {
             "offline" => Ok(Offline),
             "online" => Ok(Online),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSourceMandateAcceptanceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -764,14 +747,7 @@ impl std::str::FromStr for CreateSourceMandateInterval {
             "one_time" => Ok(OneTime),
             "scheduled" => Ok(Scheduled),
             "variable" => Ok(Variable),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSourceMandateInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -846,14 +822,7 @@ impl std::str::FromStr for CreateSourceMandateNotificationMethod {
             "manual" => Ok(Manual),
             "none" => Ok(None),
             "stripe_email" => Ok(StripeEmail),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSourceMandateNotificationMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -951,14 +920,7 @@ impl std::str::FromStr for CreateSourceReceiverRefundAttributesMethod {
             "email" => Ok(Email),
             "manual" => Ok(Manual),
             "none" => Ok(None),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSourceReceiverRefundAttributesMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1125,14 +1087,7 @@ impl std::str::FromStr for CreateSourceSourceOrderItemsType {
             "shipping" => Ok(Shipping),
             "sku" => Ok(Sku),
             "tax" => Ok(Tax),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateSourceSourceOrderItemsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1196,10 +1151,7 @@ impl std::str::FromStr for CreateSourceUsage {
         match s {
             "reusable" => Ok(Reusable),
             "single_use" => Ok(SingleUse),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateSourceUsage");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1543,14 +1495,7 @@ impl std::str::FromStr for UpdateSourceMandateAcceptanceStatus {
             "pending" => Ok(Pending),
             "refused" => Ok(Refused),
             "revoked" => Ok(Revoked),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSourceMandateAcceptanceStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1615,14 +1560,7 @@ impl std::str::FromStr for UpdateSourceMandateAcceptanceType {
         match s {
             "offline" => Ok(Offline),
             "online" => Ok(Online),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSourceMandateAcceptanceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1691,14 +1629,7 @@ impl std::str::FromStr for UpdateSourceMandateInterval {
             "one_time" => Ok(OneTime),
             "scheduled" => Ok(Scheduled),
             "variable" => Ok(Variable),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSourceMandateInterval"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1773,14 +1704,7 @@ impl std::str::FromStr for UpdateSourceMandateNotificationMethod {
             "manual" => Ok(Manual),
             "none" => Ok(None),
             "stripe_email" => Ok(StripeEmail),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSourceMandateNotificationMethod"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1925,14 +1849,7 @@ impl std::str::FromStr for UpdateSourceSourceOrderItemsType {
             "shipping" => Ok(Shipping),
             "sku" => Ok(Sku),
             "tax" => Ok(Tax),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateSourceSourceOrderItemsType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

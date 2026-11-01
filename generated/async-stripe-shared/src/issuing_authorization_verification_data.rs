@@ -208,14 +208,7 @@ impl std::str::FromStr for IssuingAuthorizationVerificationDataAddressLine1Check
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationVerificationDataAddressLine1Check"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -304,14 +297,7 @@ impl std::str::FromStr for IssuingAuthorizationVerificationDataAddressPostalCode
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationVerificationDataAddressPostalCodeCheck"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -403,14 +389,7 @@ impl std::str::FromStr for IssuingAuthorizationVerificationDataCvcCheck {
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationVerificationDataCvcCheck"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -496,14 +475,7 @@ impl std::str::FromStr for IssuingAuthorizationVerificationDataExpiryCheck {
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationVerificationDataExpiryCheck"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

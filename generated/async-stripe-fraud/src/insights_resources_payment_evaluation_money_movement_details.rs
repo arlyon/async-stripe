@@ -142,14 +142,7 @@ impl std::str::FromStr for InsightsResourcesPaymentEvaluationMoneyMovementDetail
         use InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType::*;
         match s {
             "card" => Ok(Card),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationMoneyMovementDetailsMoneyMovementType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

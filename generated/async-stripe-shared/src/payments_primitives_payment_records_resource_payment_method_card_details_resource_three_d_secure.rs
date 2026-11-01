@@ -208,7 +208,7 @@ impl std::str::FromStr for PaymentsPrimitivesPaymentRecordsResourcePaymentMethod
         match s {
     "challenge" => Ok(Challenge),
 "frictionless" => Ok(Frictionless),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureAuthenticationFlow"); Ok(Unknown(v.to_owned())) }
+v => Ok(Unknown(v.to_owned())),
 
         }
     }
@@ -305,7 +305,7 @@ impl std::str::FromStr for PaymentsPrimitivesPaymentRecordsResourcePaymentMethod
 "05" => Ok(V05),
 "06" => Ok(V06),
 "07" => Ok(V07),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureElectronicCommerceIndicator"); Ok(Unknown(v.to_owned())) }
+v => Ok(Unknown(v.to_owned())),
 
         }
     }
@@ -386,7 +386,7 @@ impl std::str::FromStr for PaymentsPrimitivesPaymentRecordsResourcePaymentMethod
         match s {
     "low_risk" => Ok(LowRisk),
 "none" => Ok(None),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureExemptionIndicator"); Ok(Unknown(v.to_owned())) }
+v => Ok(Unknown(v.to_owned())),
 
         }
     }
@@ -483,14 +483,7 @@ impl std::str::FromStr
             "failed" => Ok(Failed),
             "not_supported" => Ok(NotSupported),
             "processing_error" => Ok(ProcessingError),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureResult"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -607,7 +600,7 @@ impl std::str::FromStr for PaymentsPrimitivesPaymentRecordsResourcePaymentMethod
 "network_not_supported" => Ok(NetworkNotSupported),
 "protocol_error" => Ok(ProtocolError),
 "rejected" => Ok(Rejected),
-v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureResultReason"); Ok(Unknown(v.to_owned())) }
+v => Ok(Unknown(v.to_owned())),
 
         }
     }
@@ -692,14 +685,7 @@ impl std::str::FromStr
             "1.0.2" => Ok(V1_0_2),
             "2.1.0" => Ok(V2_1_0),
             "2.2.0" => Ok(V2_2_0),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureVersion"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

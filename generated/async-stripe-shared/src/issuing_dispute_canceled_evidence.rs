@@ -230,14 +230,7 @@ impl std::str::FromStr for IssuingDisputeCanceledEvidenceProductType {
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingDisputeCanceledEvidenceProductType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -320,14 +313,7 @@ impl std::str::FromStr for IssuingDisputeCanceledEvidenceReturnStatus {
         match s {
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingDisputeCanceledEvidenceReturnStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

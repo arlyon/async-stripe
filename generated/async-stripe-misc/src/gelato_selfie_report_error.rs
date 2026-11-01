@@ -144,14 +144,7 @@ impl std::str::FromStr for GelatoSelfieReportErrorCode {
             "selfie_face_mismatch" => Ok(SelfieFaceMismatch),
             "selfie_manipulated" => Ok(SelfieManipulated),
             "selfie_unverified_other" => Ok(SelfieUnverifiedOther),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "GelatoSelfieReportErrorCode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

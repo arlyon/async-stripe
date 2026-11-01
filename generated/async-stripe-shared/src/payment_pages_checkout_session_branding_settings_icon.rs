@@ -147,14 +147,7 @@ impl std::str::FromStr for PaymentPagesCheckoutSessionBrandingSettingsIconType {
         match s {
             "file" => Ok(File),
             "url" => Ok(Url),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentPagesCheckoutSessionBrandingSettingsIconType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

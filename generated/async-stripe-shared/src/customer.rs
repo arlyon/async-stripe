@@ -485,10 +485,7 @@ impl std::str::FromStr for CustomerTaxExempt {
             "exempt" => Ok(Exempt),
             "none" => Ok(None),
             "reverse" => Ok(Reverse),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerTaxExempt");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

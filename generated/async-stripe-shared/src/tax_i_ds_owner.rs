@@ -178,10 +178,7 @@ impl std::str::FromStr for TaxIDsOwnerType {
             "application" => Ok(Application),
             "customer" => Ok(Customer),
             "self" => Ok(Self_),
-            v => {
-                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TaxIDsOwnerType");
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

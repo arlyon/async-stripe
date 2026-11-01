@@ -179,14 +179,7 @@ impl std::str::FromStr for IssuingAuthorizationFleetDataPurchaseType {
             "fuel_and_non_fuel_purchase" => Ok(FuelAndNonFuelPurchase),
             "fuel_purchase" => Ok(FuelPurchase),
             "non_fuel_purchase" => Ok(NonFuelPurchase),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationFleetDataPurchaseType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -272,14 +265,7 @@ impl std::str::FromStr for IssuingAuthorizationFleetDataServiceType {
             "full_service" => Ok(FullService),
             "non_fuel_transaction" => Ok(NonFuelTransaction),
             "self_service" => Ok(SelfService),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "IssuingAuthorizationFleetDataServiceType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

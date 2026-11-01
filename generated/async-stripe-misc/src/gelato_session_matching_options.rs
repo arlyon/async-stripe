@@ -137,14 +137,7 @@ impl std::str::FromStr for GelatoSessionMatchingOptionsDob {
         match s {
             "none" => Ok(None),
             "similar" => Ok(Similar),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "GelatoSessionMatchingOptionsDob"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -225,14 +218,7 @@ impl std::str::FromStr for GelatoSessionMatchingOptionsName {
         match s {
             "none" => Ok(None),
             "similar" => Ok(Similar),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "GelatoSessionMatchingOptionsName"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

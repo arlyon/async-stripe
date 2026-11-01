@@ -142,14 +142,7 @@ impl std::str::FromStr for SubscriptionsResourcePauseCollectionBehavior {
             "keep_as_draft" => Ok(KeepAsDraft),
             "mark_uncollectible" => Ok(MarkUncollectible),
             "void" => Ok(Void),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "SubscriptionsResourcePauseCollectionBehavior"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

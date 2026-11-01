@@ -661,14 +661,7 @@ impl std::str::FromStr for CreateTerminalConfigurationWifiType {
             "enterprise_eap_peap" => Ok(EnterpriseEapPeap),
             "enterprise_eap_tls" => Ok(EnterpriseEapTls),
             "personal_psk" => Ok(PersonalPsk),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreateTerminalConfigurationWifiType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -1190,14 +1183,7 @@ impl std::str::FromStr for UpdateTerminalConfigurationWifiType {
             "enterprise_eap_peap" => Ok(EnterpriseEapPeap),
             "enterprise_eap_tls" => Ok(EnterpriseEapTls),
             "personal_psk" => Ok(PersonalPsk),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdateTerminalConfigurationWifiType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

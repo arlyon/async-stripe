@@ -355,14 +355,7 @@ impl std::str::FromStr for TreasuryFinancialAccountArray {
             "outbound_transfers.ach" => Ok(OutboundTransfersAch),
             "outbound_transfers.us_domestic_wire" => Ok(OutboundTransfersUsDomesticWire),
             "remote_deposit_capture" => Ok(RemoteDepositCapture),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryFinancialAccountArray"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
@@ -442,14 +435,7 @@ impl std::str::FromStr for TreasuryFinancialAccountStatus {
         match s {
             "closed" => Ok(Closed),
             "open" => Ok(Open),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "TreasuryFinancialAccountStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -511,14 +511,7 @@ impl std::str::FromStr for AccountRequirementsErrorCode {
                 Ok(VerificationRequiresAdditionalProofOfRegistration)
             }
             "verification_supportability" => Ok(VerificationSupportability),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "AccountRequirementsErrorCode"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

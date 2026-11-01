@@ -154,14 +154,7 @@ impl std::str::FromStr for InsightsResourcesPaymentEvaluationUserInterventionRai
             "3ds" => Ok(V3ds),
             "captcha" => Ok(Captcha),
             "custom" => Ok(Custom),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InsightsResourcesPaymentEvaluationUserInterventionRaisedType"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

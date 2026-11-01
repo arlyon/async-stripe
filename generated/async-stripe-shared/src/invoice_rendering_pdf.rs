@@ -139,14 +139,7 @@ impl std::str::FromStr for InvoiceRenderingPdfPageSize {
             "a4" => Ok(A4),
             "auto" => Ok(Auto),
             "letter" => Ok(Letter),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "InvoiceRenderingPdfPageSize"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }

@@ -154,14 +154,7 @@ impl std::str::FromStr for PaymentPagesCheckoutSessionAutomaticTaxStatus {
             "complete" => Ok(Complete),
             "failed" => Ok(Failed),
             "requires_location_inputs" => Ok(RequiresLocationInputs),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentPagesCheckoutSessionAutomaticTaxStatus"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
+            v => Ok(Unknown(v.to_owned())),
         }
     }
 }
