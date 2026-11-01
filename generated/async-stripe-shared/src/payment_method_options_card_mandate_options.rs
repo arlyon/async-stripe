@@ -116,41 +116,33 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                Some(amount_type),
-                Some(description),
-                Some(end_date),
-                Some(interval),
-                Some(interval_count),
-                Some(reference),
-                Some(start_date),
-                Some(supported_types),
-            ) = (
-                self.amount,
-                self.amount_type.take(),
-                self.description.take(),
-                self.end_date,
-                self.interval.take(),
-                self.interval_count,
-                self.reference.take(),
-                self.start_date,
-                self.supported_types.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                amount_type,
-                description,
-                end_date,
-                interval,
-                interval_count,
-                reference,
-                start_date,
-                supported_types,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    amount_type: Some(amount_type),
+                    description: Some(description),
+                    end_date: Some(end_date),
+                    interval: Some(interval),
+                    interval_count: Some(interval_count),
+                    reference: Some(reference),
+                    start_date: Some(start_date),
+                    supported_types: Some(supported_types),
+                } => Some(Self::Out {
+                    amount,
+                    amount_type,
+                    description,
+                    end_date,
+                    interval,
+                    interval_count,
+                    reference,
+                    start_date,
+                    supported_types,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

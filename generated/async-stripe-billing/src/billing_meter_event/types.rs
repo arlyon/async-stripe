@@ -99,25 +99,27 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(created),
-                Some(event_name),
-                Some(identifier),
-                Some(livemode),
-                Some(payload),
-                Some(timestamp),
-            ) = (
-                self.created,
-                self.event_name.take(),
-                self.identifier.take(),
-                self.livemode,
-                self.payload.take(),
-                self.timestamp,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { created, event_name, identifier, livemode, payload, timestamp })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    created: Some(created),
+                    event_name: Some(event_name),
+                    identifier: Some(identifier),
+                    livemode: Some(livemode),
+                    payload: Some(payload),
+                    timestamp: Some(timestamp),
+                } => Some(Self::Out {
+                    created,
+                    event_name,
+                    identifier,
+                    livemode,
+                    payload,
+                    timestamp,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

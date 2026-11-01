@@ -104,44 +104,35 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(bacs_debit_payments),
-                Some(branding),
-                Some(card_issuing),
-                Some(card_payments),
-                Some(dashboard),
-                Some(invoices),
-                Some(payments),
-                Some(payouts),
-                Some(sepa_debit_payments),
-                Some(treasury),
-            ) = (
-                self.bacs_debit_payments.take(),
-                self.branding.take(),
-                self.card_issuing.take(),
-                self.card_payments.take(),
-                self.dashboard.take(),
-                self.invoices.take(),
-                self.payments.take(),
-                self.payouts.take(),
-                self.sepa_debit_payments.take(),
-                self.treasury.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                bacs_debit_payments,
-                branding,
-                card_issuing,
-                card_payments,
-                dashboard,
-                invoices,
-                payments,
-                payouts,
-                sepa_debit_payments,
-                treasury,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    bacs_debit_payments: Some(bacs_debit_payments),
+                    branding: Some(branding),
+                    card_issuing: Some(card_issuing),
+                    card_payments: Some(card_payments),
+                    dashboard: Some(dashboard),
+                    invoices: Some(invoices),
+                    payments: Some(payments),
+                    payouts: Some(payouts),
+                    sepa_debit_payments: Some(sepa_debit_payments),
+                    treasury: Some(treasury),
+                } => Some(Self::Out {
+                    bacs_debit_payments,
+                    branding,
+                    card_issuing,
+                    card_payments,
+                    dashboard,
+                    invoices,
+                    payments,
+                    payouts,
+                    sepa_debit_payments,
+                    treasury,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

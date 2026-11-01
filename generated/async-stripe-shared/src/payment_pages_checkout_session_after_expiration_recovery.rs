@@ -86,12 +86,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(allow_promotion_codes), Some(enabled), Some(expires_at), Some(url)) =
-                (self.allow_promotion_codes, self.enabled, self.expires_at, self.url.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { allow_promotion_codes, enabled, expires_at, url })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    allow_promotion_codes: Some(allow_promotion_codes),
+                    enabled: Some(enabled),
+                    expires_at: Some(expires_at),
+                    url: Some(url),
+                } => Some(Self::Out { allow_promotion_codes, enabled, expires_at, url }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -121,47 +121,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(category),
-                Some(category_code),
-                Some(city),
-                Some(country),
-                Some(name),
-                Some(network_id),
-                Some(postal_code),
-                Some(state),
-                Some(tax_id),
-                Some(terminal_id),
-                Some(url),
-            ) = (
-                self.category.take(),
-                self.category_code.take(),
-                self.city.take(),
-                self.country.take(),
-                self.name.take(),
-                self.network_id.take(),
-                self.postal_code.take(),
-                self.state.take(),
-                self.tax_id.take(),
-                self.terminal_id.take(),
-                self.url.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                category,
-                category_code,
-                city,
-                country,
-                name,
-                network_id,
-                postal_code,
-                state,
-                tax_id,
-                terminal_id,
-                url,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    category: Some(category),
+                    category_code: Some(category_code),
+                    city: Some(city),
+                    country: Some(country),
+                    name: Some(name),
+                    network_id: Some(network_id),
+                    postal_code: Some(postal_code),
+                    state: Some(state),
+                    tax_id: Some(tax_id),
+                    terminal_id: Some(terminal_id),
+                    url: Some(url),
+                } => Some(Self::Out {
+                    category,
+                    category_code,
+                    city,
+                    country,
+                    name,
+                    network_id,
+                    postal_code,
+                    state,
+                    tax_id,
+                    terminal_id,
+                    url,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

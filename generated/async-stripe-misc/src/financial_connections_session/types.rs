@@ -124,50 +124,39 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(account_holder),
-                Some(accounts),
-                Some(bank_account_token),
-                Some(client_secret),
-                Some(filters),
-                Some(id),
-                Some(limits),
-                Some(livemode),
-                Some(manual_entry),
-                Some(permissions),
-                Some(prefetch),
-                Some(return_url),
-            ) = (
-                self.account_holder.take(),
-                self.accounts.take(),
-                self.bank_account_token.take(),
-                self.client_secret.take(),
-                self.filters.take(),
-                self.id.take(),
-                self.limits,
-                self.livemode,
-                self.manual_entry.take(),
-                self.permissions.take(),
-                self.prefetch.take(),
-                self.return_url.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                account_holder,
-                accounts,
-                bank_account_token,
-                client_secret,
-                filters,
-                id,
-                limits,
-                livemode,
-                manual_entry,
-                permissions,
-                prefetch,
-                return_url,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    account_holder: Some(account_holder),
+                    accounts: Some(accounts),
+                    bank_account_token: Some(bank_account_token),
+                    client_secret: Some(client_secret),
+                    filters: Some(filters),
+                    id: Some(id),
+                    limits: Some(limits),
+                    livemode: Some(livemode),
+                    manual_entry: Some(manual_entry),
+                    permissions: Some(permissions),
+                    prefetch: Some(prefetch),
+                    return_url: Some(return_url),
+                } => Some(Self::Out {
+                    account_holder,
+                    accounts,
+                    bank_account_token,
+                    client_secret,
+                    filters,
+                    id,
+                    limits,
+                    livemode,
+                    manual_entry,
+                    permissions,
+                    prefetch,
+                    return_url,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

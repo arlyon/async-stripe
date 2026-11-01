@@ -79,12 +79,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(height), Some(length), Some(weight), Some(width)) =
-                (self.height, self.length, self.weight, self.width)
-            else {
-                return None;
-            };
-            Some(Self::Out { height, length, weight, width })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    height: Some(height),
+                    length: Some(length),
+                    weight: Some(weight),
+                    width: Some(width),
+                } => Some(Self::Out { height, length, weight, width }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

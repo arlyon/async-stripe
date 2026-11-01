@@ -84,12 +84,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(metadata), Some(subscription), Some(subscription_proration_date)) =
-                (self.metadata.take(), self.subscription.take(), self.subscription_proration_date)
-            else {
-                return None;
-            };
-            Some(Self::Out { metadata, subscription, subscription_proration_date })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    metadata: Some(metadata),
+                    subscription: Some(subscription),
+                    subscription_proration_date: Some(subscription_proration_date),
+                } => Some(Self::Out { metadata, subscription, subscription_proration_date }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

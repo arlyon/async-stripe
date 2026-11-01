@@ -108,38 +108,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(account_holder_type),
-                Some(account_type),
-                Some(bank_name),
-                Some(fingerprint),
-                Some(last4),
-                Some(mandate),
-                Some(network),
-                Some(routing_number),
-            ) = (
-                self.account_holder_type.take(),
-                self.account_type.take(),
-                self.bank_name.take(),
-                self.fingerprint.take(),
-                self.last4.take(),
-                self.mandate.take(),
-                self.network.take(),
-                self.routing_number.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                account_holder_type,
-                account_type,
-                bank_name,
-                fingerprint,
-                last4,
-                mandate,
-                network,
-                routing_number,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    account_holder_type: Some(account_holder_type),
+                    account_type: Some(account_type),
+                    bank_name: Some(bank_name),
+                    fingerprint: Some(fingerprint),
+                    last4: Some(last4),
+                    mandate: Some(mandate),
+                    network: Some(network),
+                    routing_number: Some(routing_number),
+                } => Some(Self::Out {
+                    account_holder_type,
+                    account_type,
+                    bank_name,
+                    fingerprint,
+                    last4,
+                    mandate,
+                    network,
+                    routing_number,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

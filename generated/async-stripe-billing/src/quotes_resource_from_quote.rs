@@ -71,10 +71,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(is_revision), Some(quote)) = (self.is_revision, self.quote.take()) else {
-                return None;
-            };
-            Some(Self::Out { is_revision, quote })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { is_revision: Some(is_revision), quote: Some(quote) } => {
+                    Some(Self::Out { is_revision, quote })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

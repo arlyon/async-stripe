@@ -120,56 +120,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(acss_debit),
-                Some(amazon_pay),
-                Some(bacs_debit),
-                Some(bizum),
-                Some(card),
-                Some(card_present),
-                Some(klarna),
-                Some(link),
-                Some(paypal),
-                Some(payto),
-                Some(pix),
-                Some(sepa_debit),
-                Some(upi),
-                Some(us_bank_account),
-            ) = (
-                self.acss_debit.take(),
-                self.amazon_pay,
-                self.bacs_debit.take(),
-                self.bizum,
-                self.card.take(),
-                self.card_present,
-                self.klarna.take(),
-                self.link.take(),
-                self.paypal.take(),
-                self.payto.take(),
-                self.pix.take(),
-                self.sepa_debit.take(),
-                self.upi.take(),
-                self.us_bank_account.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                acss_debit,
-                amazon_pay,
-                bacs_debit,
-                bizum,
-                card,
-                card_present,
-                klarna,
-                link,
-                paypal,
-                payto,
-                pix,
-                sepa_debit,
-                upi,
-                us_bank_account,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    acss_debit: Some(acss_debit),
+                    amazon_pay: Some(amazon_pay),
+                    bacs_debit: Some(bacs_debit),
+                    bizum: Some(bizum),
+                    card: Some(card),
+                    card_present: Some(card_present),
+                    klarna: Some(klarna),
+                    link: Some(link),
+                    paypal: Some(paypal),
+                    payto: Some(payto),
+                    pix: Some(pix),
+                    sepa_debit: Some(sepa_debit),
+                    upi: Some(upi),
+                    us_bank_account: Some(us_bank_account),
+                } => Some(Self::Out {
+                    acss_debit,
+                    amazon_pay,
+                    bacs_debit,
+                    bizum,
+                    card,
+                    card_present,
+                    klarna,
+                    link,
+                    paypal,
+                    payto,
+                    pix,
+                    sepa_debit,
+                    upi,
+                    us_bank_account,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -86,29 +86,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(flat_amount),
-                Some(flat_amount_decimal),
-                Some(unit_amount),
-                Some(unit_amount_decimal),
-                Some(up_to),
-            ) = (
-                self.flat_amount,
-                self.flat_amount_decimal.take(),
-                self.unit_amount,
-                self.unit_amount_decimal.take(),
-                self.up_to,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                flat_amount,
-                flat_amount_decimal,
-                unit_amount,
-                unit_amount_decimal,
-                up_to,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    flat_amount: Some(flat_amount),
+                    flat_amount_decimal: Some(flat_amount_decimal),
+                    unit_amount: Some(unit_amount),
+                    unit_amount_decimal: Some(unit_amount_decimal),
+                    up_to: Some(up_to),
+                } => Some(Self::Out {
+                    flat_amount,
+                    flat_amount_decimal,
+                    unit_amount,
+                    unit_amount_decimal,
+                    up_to,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

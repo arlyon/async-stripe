@@ -190,71 +190,53 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(client_reference_id),
-                Some(client_secret),
-                Some(created),
-                Some(id),
-                Some(last_error),
-                Some(last_verification_report),
-                Some(livemode),
-                Some(metadata),
-                Some(options),
-                Some(provided_details),
-                Some(redaction),
-                Some(related_customer),
-                Some(related_customer_account),
-                Some(related_person),
-                Some(status),
-                Some(type_),
-                Some(url),
-                Some(verification_flow),
-                Some(verified_outputs),
-            ) = (
-                self.client_reference_id.take(),
-                self.client_secret.take(),
-                self.created,
-                self.id.take(),
-                self.last_error.take(),
-                self.last_verification_report.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.options.take(),
-                self.provided_details.take(),
-                self.redaction.take(),
-                self.related_customer.take(),
-                self.related_customer_account.take(),
-                self.related_person.take(),
-                self.status.take(),
-                self.type_.take(),
-                self.url.take(),
-                self.verification_flow.take(),
-                self.verified_outputs.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                client_reference_id,
-                client_secret,
-                created,
-                id,
-                last_error,
-                last_verification_report,
-                livemode,
-                metadata,
-                options,
-                provided_details,
-                redaction,
-                related_customer,
-                related_customer_account,
-                related_person,
-                status,
-                type_,
-                url,
-                verification_flow,
-                verified_outputs,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    client_reference_id: Some(client_reference_id),
+                    client_secret: Some(client_secret),
+                    created: Some(created),
+                    id: Some(id),
+                    last_error: Some(last_error),
+                    last_verification_report: Some(last_verification_report),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    options: Some(options),
+                    provided_details: Some(provided_details),
+                    redaction: Some(redaction),
+                    related_customer: Some(related_customer),
+                    related_customer_account: Some(related_customer_account),
+                    related_person: Some(related_person),
+                    status: Some(status),
+                    type_: Some(type_),
+                    url: Some(url),
+                    verification_flow: Some(verification_flow),
+                    verified_outputs: Some(verified_outputs),
+                } => Some(Self::Out {
+                    client_reference_id,
+                    client_secret,
+                    created,
+                    id,
+                    last_error,
+                    last_verification_report,
+                    livemode,
+                    metadata,
+                    options,
+                    provided_details,
+                    redaction,
+                    related_customer,
+                    related_customer_account,
+                    related_person,
+                    status,
+                    type_,
+                    url,
+                    verification_flow,
+                    verified_outputs,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

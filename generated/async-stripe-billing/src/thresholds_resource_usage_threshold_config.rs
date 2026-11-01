@@ -81,12 +81,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(filters), Some(gte), Some(meter), Some(recurrence)) =
-                (self.filters.take(), self.gte, self.meter.take(), self.recurrence.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { filters, gte, meter, recurrence })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    filters: Some(filters),
+                    gte: Some(gte),
+                    meter: Some(meter),
+                    recurrence: Some(recurrence),
+                } => Some(Self::Out { filters, gte, meter, recurrence }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

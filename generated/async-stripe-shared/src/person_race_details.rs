@@ -71,10 +71,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(race), Some(race_other)) = (self.race.take(), self.race_other.take()) else {
-                return None;
-            };
-            Some(Self::Out { race, race_other })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { race: Some(race), race_other: Some(race_other) } => {
+                    Some(Self::Out { race, race_other })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

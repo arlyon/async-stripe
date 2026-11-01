@@ -82,12 +82,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(object), Some(previous_attributes)) =
-                (self.object.take(), self.previous_attributes.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { object, previous_attributes })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { object: Some(object), previous_attributes: Some(previous_attributes) } => {
+                    Some(Self::Out { object, previous_attributes })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

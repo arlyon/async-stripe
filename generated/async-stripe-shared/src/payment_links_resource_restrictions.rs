@@ -66,10 +66,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(completed_sessions),) = (self.completed_sessions,) else {
-                return None;
-            };
-            Some(Self::Out { completed_sessions })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { completed_sessions: Some(completed_sessions) } => {
+                    Some(Self::Out { completed_sessions })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

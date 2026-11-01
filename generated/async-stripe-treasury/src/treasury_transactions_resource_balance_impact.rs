@@ -76,12 +76,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(cash), Some(inbound_pending), Some(outbound_pending)) =
-                (self.cash, self.inbound_pending, self.outbound_pending)
-            else {
-                return None;
-            };
-            Some(Self::Out { cash, inbound_pending, outbound_pending })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    cash: Some(cash),
+                    inbound_pending: Some(inbound_pending),
+                    outbound_pending: Some(outbound_pending),
+                } => Some(Self::Out { cash, inbound_pending, outbound_pending }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

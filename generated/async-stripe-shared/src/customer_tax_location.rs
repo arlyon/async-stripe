@@ -75,12 +75,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(country), Some(source), Some(state)) =
-                (self.country.take(), self.source.take(), self.state.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { country, source, state })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { country: Some(country), source: Some(source), state: Some(state) } => {
+                    Some(Self::Out { country, source, state })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

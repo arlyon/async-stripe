@@ -72,11 +72,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(apple_terms_and_conditions),) = (self.apple_terms_and_conditions.take(),)
-            else {
-                return None;
-            };
-            Some(Self::Out { apple_terms_and_conditions })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { apple_terms_and_conditions: Some(apple_terms_and_conditions) } => {
+                    Some(Self::Out { apple_terms_and_conditions })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

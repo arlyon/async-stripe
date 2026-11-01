@@ -84,15 +84,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(comment), Some(feedback), Some(feedback_option), Some(reason)) = (
-                self.comment.take(),
-                self.feedback.take(),
-                self.feedback_option.take(),
-                self.reason.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { comment, feedback, feedback_option, reason })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    comment: Some(comment),
+                    feedback: Some(feedback),
+                    feedback_option: Some(feedback_option),
+                    reason: Some(reason),
+                } => Some(Self::Out { comment, feedback, feedback_option, reason }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

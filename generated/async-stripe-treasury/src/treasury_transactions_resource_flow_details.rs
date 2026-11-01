@@ -102,41 +102,33 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(credit_reversal),
-                Some(debit_reversal),
-                Some(inbound_transfer),
-                Some(issuing_authorization),
-                Some(outbound_payment),
-                Some(outbound_transfer),
-                Some(received_credit),
-                Some(received_debit),
-                Some(type_),
-            ) = (
-                self.credit_reversal.take(),
-                self.debit_reversal.take(),
-                self.inbound_transfer.take(),
-                self.issuing_authorization.take(),
-                self.outbound_payment.take(),
-                self.outbound_transfer.take(),
-                self.received_credit.take(),
-                self.received_debit.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                credit_reversal,
-                debit_reversal,
-                inbound_transfer,
-                issuing_authorization,
-                outbound_payment,
-                outbound_transfer,
-                received_credit,
-                received_debit,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    credit_reversal: Some(credit_reversal),
+                    debit_reversal: Some(debit_reversal),
+                    inbound_transfer: Some(inbound_transfer),
+                    issuing_authorization: Some(issuing_authorization),
+                    outbound_payment: Some(outbound_payment),
+                    outbound_transfer: Some(outbound_transfer),
+                    received_credit: Some(received_credit),
+                    received_debit: Some(received_debit),
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    credit_reversal,
+                    debit_reversal,
+                    inbound_transfer,
+                    issuing_authorization,
+                    outbound_payment,
+                    outbound_transfer,
+                    received_credit,
+                    received_debit,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

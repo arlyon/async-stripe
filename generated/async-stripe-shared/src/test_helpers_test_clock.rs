@@ -108,38 +108,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(created),
-                Some(deletes_after),
-                Some(frozen_time),
-                Some(id),
-                Some(livemode),
-                Some(name),
-                Some(status),
-                Some(status_details),
-            ) = (
-                self.created,
-                self.deletes_after,
-                self.frozen_time,
-                self.id.take(),
-                self.livemode,
-                self.name.take(),
-                self.status.take(),
-                self.status_details,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                created,
-                deletes_after,
-                frozen_time,
-                id,
-                livemode,
-                name,
-                status,
-                status_details,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    created: Some(created),
+                    deletes_after: Some(deletes_after),
+                    frozen_time: Some(frozen_time),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    name: Some(name),
+                    status: Some(status),
+                    status_details: Some(status_details),
+                } => Some(Self::Out {
+                    created,
+                    deletes_after,
+                    frozen_time,
+                    id,
+                    livemode,
+                    name,
+                    status,
+                    status_details,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

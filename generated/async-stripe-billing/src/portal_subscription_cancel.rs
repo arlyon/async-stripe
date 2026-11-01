@@ -79,15 +79,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(cancellation_reason), Some(enabled), Some(mode), Some(proration_behavior)) = (
-                self.cancellation_reason.take(),
-                self.enabled,
-                self.mode.take(),
-                self.proration_behavior.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { cancellation_reason, enabled, mode, proration_behavior })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    cancellation_reason: Some(cancellation_reason),
+                    enabled: Some(enabled),
+                    mode: Some(mode),
+                    proration_behavior: Some(proration_behavior),
+                } => Some(Self::Out { cancellation_reason, enabled, mode, proration_behavior }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -85,15 +85,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(fingerprint), Some(location), Some(reader), Some(transaction_id)) = (
-                self.fingerprint.take(),
-                self.location.take(),
-                self.reader.take(),
-                self.transaction_id.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { fingerprint, location, reader, transaction_id })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    fingerprint: Some(fingerprint),
+                    location: Some(location),
+                    reader: Some(reader),
+                    transaction_id: Some(transaction_id),
+                } => Some(Self::Out { fingerprint, location, reader, transaction_id }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

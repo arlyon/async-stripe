@@ -69,10 +69,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(target_frozen_time),) = (self.target_frozen_time,) else {
-                return None;
-            };
-            Some(Self::Out { target_frozen_time })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { target_frozen_time: Some(target_frozen_time) } => {
+                    Some(Self::Out { target_frozen_time })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -111,35 +111,29 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(local_amusement_tax),
-                Some(local_lease_tax),
-                Some(mass_transit_parking_tax),
-                Some(parking_tax),
-                Some(state),
-                Some(state_sales_tax),
-                Some(type_),
-            ) = (
-                self.local_amusement_tax.take(),
-                self.local_lease_tax.take(),
-                self.mass_transit_parking_tax.take(),
-                self.parking_tax.take(),
-                self.state.take(),
-                self.state_sales_tax.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                local_amusement_tax,
-                local_lease_tax,
-                mass_transit_parking_tax,
-                parking_tax,
-                state,
-                state_sales_tax,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    local_amusement_tax: Some(local_amusement_tax),
+                    local_lease_tax: Some(local_lease_tax),
+                    mass_transit_parking_tax: Some(mass_transit_parking_tax),
+                    parking_tax: Some(parking_tax),
+                    state: Some(state),
+                    state_sales_tax: Some(state_sales_tax),
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    local_amusement_tax,
+                    local_lease_tax,
+                    mass_transit_parking_tax,
+                    parking_tax,
+                    state,
+                    state_sales_tax,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -119,47 +119,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(acss_debit),
-                Some(bancontact),
-                Some(billie),
-                Some(card),
-                Some(customer_balance),
-                Some(konbini),
-                Some(payto),
-                Some(pix),
-                Some(sepa_debit),
-                Some(upi),
-                Some(us_bank_account),
-            ) = (
-                self.acss_debit.take(),
-                self.bancontact.take(),
-                self.billie,
-                self.card.take(),
-                self.customer_balance.take(),
-                self.konbini,
-                self.payto.take(),
-                self.pix.take(),
-                self.sepa_debit,
-                self.upi.take(),
-                self.us_bank_account.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                acss_debit,
-                bancontact,
-                billie,
-                card,
-                customer_balance,
-                konbini,
-                payto,
-                pix,
-                sepa_debit,
-                upi,
-                us_bank_account,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    acss_debit: Some(acss_debit),
+                    bancontact: Some(bancontact),
+                    billie: Some(billie),
+                    card: Some(card),
+                    customer_balance: Some(customer_balance),
+                    konbini: Some(konbini),
+                    payto: Some(payto),
+                    pix: Some(pix),
+                    sepa_debit: Some(sepa_debit),
+                    upi: Some(upi),
+                    us_bank_account: Some(us_bank_account),
+                } => Some(Self::Out {
+                    acss_debit,
+                    bancontact,
+                    billie,
+                    card,
+                    customer_balance,
+                    konbini,
+                    payto,
+                    pix,
+                    sepa_debit,
+                    upi,
+                    us_bank_account,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

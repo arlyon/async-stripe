@@ -89,29 +89,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount_subtotal),
-                Some(amount_total),
-                Some(interval),
-                Some(interval_count),
-                Some(total_details),
-            ) = (
-                self.amount_subtotal,
-                self.amount_total,
-                self.interval.take(),
-                self.interval_count,
-                self.total_details.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount_subtotal,
-                amount_total,
-                interval,
-                interval_count,
-                total_details,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount_subtotal: Some(amount_subtotal),
+                    amount_total: Some(amount_total),
+                    interval: Some(interval),
+                    interval_count: Some(interval_count),
+                    total_details: Some(total_details),
+                } => Some(Self::Out {
+                    amount_subtotal,
+                    amount_total,
+                    interval,
+                    interval_count,
+                    total_details,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

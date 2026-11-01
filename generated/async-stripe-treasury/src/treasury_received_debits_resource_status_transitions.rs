@@ -67,10 +67,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(completed_at),) = (self.completed_at,) else {
-                return None;
-            };
-            Some(Self::Out { completed_at })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { completed_at: Some(completed_at) } => Some(Self::Out { completed_at }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -67,10 +67,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(collection_method),) = (self.collection_method.take(),) else {
-                return None;
-            };
-            Some(Self::Out { collection_method })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { collection_method: Some(collection_method) } => {
+                    Some(Self::Out { collection_method })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

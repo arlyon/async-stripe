@@ -107,29 +107,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(created),
-                Some(expired),
-                Some(expires_at),
-                Some(file),
-                Some(id),
-                Some(livemode),
-                Some(metadata),
-                Some(url),
-            ) = (
-                self.created,
-                self.expired,
-                self.expires_at,
-                self.file.take(),
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.url.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { created, expired, expires_at, file, id, livemode, metadata, url })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    created: Some(created),
+                    expired: Some(expired),
+                    expires_at: Some(expires_at),
+                    file: Some(file),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    url: Some(url),
+                } => Some(Self::Out {
+                    created,
+                    expired,
+                    expires_at,
+                    file,
+                    id,
+                    livemode,
+                    metadata,
+                    url,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

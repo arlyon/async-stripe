@@ -93,26 +93,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(disable_stripe_user_authentication),
-                Some(external_account_collection),
-                Some(send_money),
-                Some(transfer_balance),
-            ) = (
-                self.disable_stripe_user_authentication,
-                self.external_account_collection,
-                self.send_money,
-                self.transfer_balance,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                disable_stripe_user_authentication,
-                external_account_collection,
-                send_money,
-                transfer_balance,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    disable_stripe_user_authentication: Some(disable_stripe_user_authentication),
+                    external_account_collection: Some(external_account_collection),
+                    send_money: Some(send_money),
+                    transfer_balance: Some(transfer_balance),
+                } => Some(Self::Out {
+                    disable_stripe_user_authentication,
+                    external_account_collection,
+                    send_money,
+                    transfer_balance,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

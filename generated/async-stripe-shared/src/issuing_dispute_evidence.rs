@@ -110,41 +110,33 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(canceled),
-                Some(duplicate),
-                Some(fraudulent),
-                Some(merchandise_not_as_described),
-                Some(no_valid_authorization),
-                Some(not_received),
-                Some(other),
-                Some(reason),
-                Some(service_not_as_described),
-            ) = (
-                self.canceled.take(),
-                self.duplicate.take(),
-                self.fraudulent.take(),
-                self.merchandise_not_as_described.take(),
-                self.no_valid_authorization.take(),
-                self.not_received.take(),
-                self.other.take(),
-                self.reason.take(),
-                self.service_not_as_described.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                canceled,
-                duplicate,
-                fraudulent,
-                merchandise_not_as_described,
-                no_valid_authorization,
-                not_received,
-                other,
-                reason,
-                service_not_as_described,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    canceled: Some(canceled),
+                    duplicate: Some(duplicate),
+                    fraudulent: Some(fraudulent),
+                    merchandise_not_as_described: Some(merchandise_not_as_described),
+                    no_valid_authorization: Some(no_valid_authorization),
+                    not_received: Some(not_received),
+                    other: Some(other),
+                    reason: Some(reason),
+                    service_not_as_described: Some(service_not_as_described),
+                } => Some(Self::Out {
+                    canceled,
+                    duplicate,
+                    fraudulent,
+                    merchandise_not_as_described,
+                    no_valid_authorization,
+                    not_received,
+                    other,
+                    reason,
+                    service_not_as_described,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

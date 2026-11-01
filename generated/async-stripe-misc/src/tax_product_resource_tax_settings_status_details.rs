@@ -69,10 +69,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(active), Some(pending)) = (self.active, self.pending.take()) else {
-                return None;
-            };
-            Some(Self::Out { active, pending })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { active: Some(active), pending: Some(pending) } => {
+                    Some(Self::Out { active, pending })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

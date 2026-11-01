@@ -95,32 +95,27 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(account_tax_ids),
-                Some(custom_fields),
-                Some(days_until_due),
-                Some(description),
-                Some(footer),
-                Some(issuer),
-            ) = (
-                self.account_tax_ids.take(),
-                self.custom_fields.take(),
-                self.days_until_due,
-                self.description.take(),
-                self.footer.take(),
-                self.issuer.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                account_tax_ids,
-                custom_fields,
-                days_until_due,
-                description,
-                footer,
-                issuer,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    account_tax_ids: Some(account_tax_ids),
+                    custom_fields: Some(custom_fields),
+                    days_until_due: Some(days_until_due),
+                    description: Some(description),
+                    footer: Some(footer),
+                    issuer: Some(issuer),
+                } => Some(Self::Out {
+                    account_tax_ids,
+                    custom_fields,
+                    days_until_due,
+                    description,
+                    footer,
+                    issuer,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

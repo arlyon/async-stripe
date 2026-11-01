@@ -81,18 +81,17 @@ subscription_reference: Some(None),
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(image_url),
-Some(product_url),
-Some(reference),
-Some(subscription_reference),
-) = (self.image_url.take(),
-self.product_url.take(),
-self.reference.take(),
-self.subscription_reference.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { image_url,product_url,reference,subscription_reference })
+        match core::mem::replace(self, Self::deser_default()) {
+                Self { image_url: Some(image_url),
+product_url: Some(product_url),
+reference: Some(reference),
+subscription_reference: Some(subscription_reference),
+ } => Some(Self::Out { image_url,product_url,reference,subscription_reference }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
     }
 }
 

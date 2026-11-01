@@ -101,32 +101,27 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(delay_days),
-                Some(interval),
-                Some(monthly_anchor),
-                Some(monthly_payout_days),
-                Some(weekly_anchor),
-                Some(weekly_payout_days),
-            ) = (
-                self.delay_days,
-                self.interval.take(),
-                self.monthly_anchor,
-                self.monthly_payout_days.take(),
-                self.weekly_anchor.take(),
-                self.weekly_payout_days.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                delay_days,
-                interval,
-                monthly_anchor,
-                monthly_payout_days,
-                weekly_anchor,
-                weekly_payout_days,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    delay_days: Some(delay_days),
+                    interval: Some(interval),
+                    monthly_anchor: Some(monthly_anchor),
+                    monthly_payout_days: Some(monthly_payout_days),
+                    weekly_anchor: Some(weekly_anchor),
+                    weekly_payout_days: Some(weekly_payout_days),
+                } => Some(Self::Out {
+                    delay_days,
+                    interval,
+                    monthly_anchor,
+                    monthly_payout_days,
+                    weekly_anchor,
+                    weekly_payout_days,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -115,47 +115,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(custom_text),
-                Some(email),
-                Some(numeric),
-                Some(phone),
-                Some(required),
-                Some(selection),
-                Some(signature),
-                Some(skipped),
-                Some(text),
-                Some(toggles),
-                Some(type_),
-            ) = (
-                self.custom_text.take(),
-                self.email.take(),
-                self.numeric.take(),
-                self.phone.take(),
-                self.required,
-                self.selection.take(),
-                self.signature.take(),
-                self.skipped,
-                self.text.take(),
-                self.toggles.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                custom_text,
-                email,
-                numeric,
-                phone,
-                required,
-                selection,
-                signature,
-                skipped,
-                text,
-                toggles,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    custom_text: Some(custom_text),
+                    email: Some(email),
+                    numeric: Some(numeric),
+                    phone: Some(phone),
+                    required: Some(required),
+                    selection: Some(selection),
+                    signature: Some(signature),
+                    skipped: Some(skipped),
+                    text: Some(text),
+                    toggles: Some(toggles),
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    custom_text,
+                    email,
+                    numeric,
+                    phone,
+                    required,
+                    selection,
+                    signature,
+                    skipped,
+                    text,
+                    toggles,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -71,11 +71,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(available), Some(pending)) = (self.available.take(), self.pending.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { available, pending })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { available: Some(available), pending: Some(pending) } => {
+                    Some(Self::Out { available, pending })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

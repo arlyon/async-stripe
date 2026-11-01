@@ -71,10 +71,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(count), Some(limit)) = (self.count, self.limit) else {
-                return None;
-            };
-            Some(Self::Out { count, limit })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { count: Some(count), limit: Some(limit) } => Some(Self::Out { count, limit }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -77,14 +77,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(debit_negative_balances), Some(schedule), Some(statement_descriptor)) = (
-                self.debit_negative_balances,
-                self.schedule.take(),
-                self.statement_descriptor.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { debit_negative_balances, schedule, statement_descriptor })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    debit_negative_balances: Some(debit_negative_balances),
+                    schedule: Some(schedule),
+                    statement_descriptor: Some(statement_descriptor),
+                } => Some(Self::Out { debit_negative_balances, schedule, statement_descriptor }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

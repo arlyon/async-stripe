@@ -125,47 +125,37 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(client_device_metadata_details),
-                Some(created_at),
-                Some(customer_details),
-                Some(events),
-                Some(id),
-                Some(livemode),
-                Some(metadata),
-                Some(outcome),
-                Some(payment_details),
-                Some(recommended_action),
-                Some(signals),
-            ) = (
-                self.client_device_metadata_details.take(),
-                self.created_at,
-                self.customer_details.take(),
-                self.events.take(),
-                self.id.take(),
-                self.livemode,
-                self.metadata.take(),
-                self.outcome.take(),
-                self.payment_details.take(),
-                self.recommended_action.take(),
-                self.signals.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                client_device_metadata_details,
-                created_at,
-                customer_details,
-                events,
-                id,
-                livemode,
-                metadata,
-                outcome,
-                payment_details,
-                recommended_action,
-                signals,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    client_device_metadata_details: Some(client_device_metadata_details),
+                    created_at: Some(created_at),
+                    customer_details: Some(customer_details),
+                    events: Some(events),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    metadata: Some(metadata),
+                    outcome: Some(outcome),
+                    payment_details: Some(payment_details),
+                    recommended_action: Some(recommended_action),
+                    signals: Some(signals),
+                } => Some(Self::Out {
+                    client_device_metadata_details,
+                    created_at,
+                    customer_details,
+                    events,
+                    id,
+                    livemode,
+                    metadata,
+                    outcome,
+                    payment_details,
+                    recommended_action,
+                    signals,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

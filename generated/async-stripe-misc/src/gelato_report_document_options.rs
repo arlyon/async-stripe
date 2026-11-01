@@ -86,26 +86,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(allowed_types),
-                Some(require_id_number),
-                Some(require_live_capture),
-                Some(require_matching_selfie),
-            ) = (
-                self.allowed_types.take(),
-                self.require_id_number,
-                self.require_live_capture,
-                self.require_matching_selfie,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                allowed_types,
-                require_id_number,
-                require_live_capture,
-                require_matching_selfie,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    allowed_types: Some(allowed_types),
+                    require_id_number: Some(require_id_number),
+                    require_live_capture: Some(require_live_capture),
+                    require_matching_selfie: Some(require_matching_selfie),
+                } => Some(Self::Out {
+                    allowed_types,
+                    require_id_number,
+                    require_live_capture,
+                    require_matching_selfie,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -97,32 +97,27 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(fees),
-                Some(is_controller),
-                Some(losses),
-                Some(requirement_collection),
-                Some(stripe_dashboard),
-                Some(type_),
-            ) = (
-                self.fees.take(),
-                self.is_controller,
-                self.losses.take(),
-                self.requirement_collection.take(),
-                self.stripe_dashboard.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                fees,
-                is_controller,
-                losses,
-                requirement_collection,
-                stripe_dashboard,
-                type_,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    fees: Some(fees),
+                    is_controller: Some(is_controller),
+                    losses: Some(losses),
+                    requirement_collection: Some(requirement_collection),
+                    stripe_dashboard: Some(stripe_dashboard),
+                    type_: Some(type_),
+                } => Some(Self::Out {
+                    fees,
+                    is_controller,
+                    losses,
+                    requirement_collection,
+                    stripe_dashboard,
+                    type_,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

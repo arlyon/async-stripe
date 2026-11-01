@@ -99,27 +99,21 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(city),
-                Some(country),
-                Some(line1),
-                Some(line2),
-                Some(postal_code),
-                Some(state),
-                Some(town),
-            ) = (
-                self.city.take(),
-                self.country.take(),
-                self.line1.take(),
-                self.line2.take(),
-                self.postal_code.take(),
-                self.state.take(),
-                self.town.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { city, country, line1, line2, postal_code, state, town })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    city: Some(city),
+                    country: Some(country),
+                    line1: Some(line1),
+                    line2: Some(line2),
+                    postal_code: Some(postal_code),
+                    state: Some(state),
+                    town: Some(town),
+                } => Some(Self::Out { city, country, line1, line2, postal_code, state, town }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

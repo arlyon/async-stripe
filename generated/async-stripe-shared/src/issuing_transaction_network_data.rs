@@ -84,14 +84,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(authorization_code), Some(processing_date), Some(transaction_id)) = (
-                self.authorization_code.take(),
-                self.processing_date.take(),
-                self.transaction_id.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { authorization_code, processing_date, transaction_id })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    authorization_code: Some(authorization_code),
+                    processing_date: Some(processing_date),
+                    transaction_id: Some(transaction_id),
+                } => Some(Self::Out { authorization_code, processing_date, transaction_id }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

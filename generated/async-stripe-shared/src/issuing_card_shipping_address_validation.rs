@@ -75,12 +75,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(mode), Some(normalized_address), Some(result)) =
-                (self.mode.take(), self.normalized_address.take(), self.result.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { mode, normalized_address, result })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    mode: Some(mode),
+                    normalized_address: Some(normalized_address),
+                    result: Some(result),
+                } => Some(Self::Out { mode, normalized_address, result }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

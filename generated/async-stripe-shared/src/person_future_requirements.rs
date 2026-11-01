@@ -102,32 +102,27 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(alternatives),
-                Some(currently_due),
-                Some(errors),
-                Some(eventually_due),
-                Some(past_due),
-                Some(pending_verification),
-            ) = (
-                self.alternatives.take(),
-                self.currently_due.take(),
-                self.errors.take(),
-                self.eventually_due.take(),
-                self.past_due.take(),
-                self.pending_verification.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                alternatives,
-                currently_due,
-                errors,
-                eventually_due,
-                past_due,
-                pending_verification,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    alternatives: Some(alternatives),
+                    currently_due: Some(currently_due),
+                    errors: Some(errors),
+                    eventually_due: Some(eventually_due),
+                    past_due: Some(past_due),
+                    pending_verification: Some(pending_verification),
+                } => Some(Self::Out {
+                    alternatives,
+                    currently_due,
+                    errors,
+                    eventually_due,
+                    past_due,
+                    pending_verification,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

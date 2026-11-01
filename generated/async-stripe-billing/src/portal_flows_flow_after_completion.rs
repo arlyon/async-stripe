@@ -77,12 +77,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(hosted_confirmation), Some(redirect), Some(type_)) =
-                (self.hosted_confirmation.take(), self.redirect.take(), self.type_.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { hosted_confirmation, redirect, type_ })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    hosted_confirmation: Some(hosted_confirmation),
+                    redirect: Some(redirect),
+                    type_: Some(type_),
+                } => Some(Self::Out { hosted_confirmation, redirect, type_ }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

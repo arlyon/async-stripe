@@ -111,38 +111,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(customer_account_id),
-                Some(customer_device_fingerprint),
-                Some(customer_device_id),
-                Some(customer_email_address),
-                Some(customer_purchase_ip),
-                Some(merchandise_or_services),
-                Some(product_description),
-                Some(shipping_address),
-            ) = (
-                self.customer_account_id.take(),
-                self.customer_device_fingerprint.take(),
-                self.customer_device_id.take(),
-                self.customer_email_address.take(),
-                self.customer_purchase_ip.take(),
-                self.merchandise_or_services.take(),
-                self.product_description.take(),
-                self.shipping_address.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                customer_account_id,
-                customer_device_fingerprint,
-                customer_device_id,
-                customer_email_address,
-                customer_purchase_ip,
-                merchandise_or_services,
-                product_description,
-                shipping_address,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    customer_account_id: Some(customer_account_id),
+                    customer_device_fingerprint: Some(customer_device_fingerprint),
+                    customer_device_id: Some(customer_device_id),
+                    customer_email_address: Some(customer_email_address),
+                    customer_purchase_ip: Some(customer_purchase_ip),
+                    merchandise_or_services: Some(merchandise_or_services),
+                    product_description: Some(product_description),
+                    shipping_address: Some(shipping_address),
+                } => Some(Self::Out {
+                    customer_account_id,
+                    customer_device_fingerprint,
+                    customer_device_id,
+                    customer_email_address,
+                    customer_purchase_ip,
+                    merchandise_or_services,
+                    product_description,
+                    shipping_address,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

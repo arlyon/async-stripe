@@ -88,21 +88,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(after_submit),
-                Some(shipping_address),
-                Some(submit),
-                Some(terms_of_service_acceptance),
-            ) = (
-                self.after_submit.take(),
-                self.shipping_address.take(),
-                self.submit.take(),
-                self.terms_of_service_acceptance.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { after_submit, shipping_address, submit, terms_of_service_acceptance })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    after_submit: Some(after_submit),
+                    shipping_address: Some(shipping_address),
+                    submit: Some(submit),
+                    terms_of_service_acceptance: Some(terms_of_service_acceptance),
+                } => Some(Self::Out {
+                    after_submit,
+                    shipping_address,
+                    submit,
+                    terms_of_service_acceptance,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

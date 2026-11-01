@@ -115,35 +115,29 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(default_currency),
-                Some(id),
-                Some(supported_bank_account_currencies),
-                Some(supported_payment_currencies),
-                Some(supported_payment_methods),
-                Some(supported_transfer_countries),
-                Some(verification_fields),
-            ) = (
-                self.default_currency.take(),
-                self.id.take(),
-                self.supported_bank_account_currencies.take(),
-                self.supported_payment_currencies.take(),
-                self.supported_payment_methods.take(),
-                self.supported_transfer_countries.take(),
-                self.verification_fields.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                default_currency,
-                id,
-                supported_bank_account_currencies,
-                supported_payment_currencies,
-                supported_payment_methods,
-                supported_transfer_countries,
-                verification_fields,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    default_currency: Some(default_currency),
+                    id: Some(id),
+                    supported_bank_account_currencies: Some(supported_bank_account_currencies),
+                    supported_payment_currencies: Some(supported_payment_currencies),
+                    supported_payment_methods: Some(supported_payment_methods),
+                    supported_transfer_countries: Some(supported_transfer_countries),
+                    verification_fields: Some(verification_fields),
+                } => Some(Self::Out {
+                    default_currency,
+                    id,
+                    supported_bank_account_currencies,
+                    supported_payment_currencies,
+                    supported_payment_methods,
+                    supported_transfer_countries,
+                    verification_fields,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

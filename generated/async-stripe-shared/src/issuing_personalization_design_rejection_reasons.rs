@@ -71,12 +71,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(card_logo), Some(carrier_text)) =
-                (self.card_logo.take(), self.carrier_text.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { card_logo, carrier_text })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { card_logo: Some(card_logo), carrier_text: Some(carrier_text) } => {
+                    Some(Self::Out { card_logo, carrier_text })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

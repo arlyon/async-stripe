@@ -72,12 +72,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(is_default), Some(is_platform_default)) =
-                (self.is_default, self.is_platform_default)
-            else {
-                return None;
-            };
-            Some(Self::Out { is_default, is_platform_default })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    is_default: Some(is_default),
+                    is_platform_default: Some(is_platform_default),
+                } => Some(Self::Out { is_default, is_platform_default }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

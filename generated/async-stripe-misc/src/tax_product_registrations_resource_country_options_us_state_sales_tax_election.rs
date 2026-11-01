@@ -73,11 +73,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(jurisdiction), Some(type_)) = (self.jurisdiction.take(), self.type_.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { jurisdiction, type_ })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { jurisdiction: Some(jurisdiction), type_: Some(type_) } => {
+                    Some(Self::Out { jurisdiction, type_ })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

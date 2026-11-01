@@ -73,10 +73,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enabled), Some(liability)) = (self.enabled, self.liability.take()) else {
-                return None;
-            };
-            Some(Self::Out { enabled, liability })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { enabled: Some(enabled), liability: Some(liability) } => {
+                    Some(Self::Out { enabled, liability })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

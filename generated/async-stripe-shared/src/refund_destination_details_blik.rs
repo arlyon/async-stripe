@@ -79,14 +79,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(network_decline_code), Some(reference), Some(reference_status)) = (
-                self.network_decline_code.take(),
-                self.reference.take(),
-                self.reference_status.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { network_decline_code, reference, reference_status })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    network_decline_code: Some(network_decline_code),
+                    reference: Some(reference),
+                    reference_status: Some(reference_status),
+                } => Some(Self::Out { network_decline_code, reference, reference_status }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

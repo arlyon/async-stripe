@@ -67,10 +67,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(customer_notification),) = (self.customer_notification,) else {
-                return None;
-            };
-            Some(Self::Out { customer_notification })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { customer_notification: Some(customer_notification) } => {
+                    Some(Self::Out { customer_notification })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

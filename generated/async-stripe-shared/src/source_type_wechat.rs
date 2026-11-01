@@ -76,12 +76,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(prepay_id), Some(qr_code_url), Some(statement_descriptor)) =
-                (self.prepay_id.take(), self.qr_code_url.take(), self.statement_descriptor.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { prepay_id, qr_code_url, statement_descriptor })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    prepay_id: Some(prepay_id),
+                    qr_code_url: Some(qr_code_url),
+                    statement_descriptor: Some(statement_descriptor),
+                } => Some(Self::Out { prepay_id, qr_code_url, statement_descriptor }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

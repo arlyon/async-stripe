@@ -84,15 +84,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(entity), Some(expires_at), Some(hosted_voucher_url), Some(reference)) = (
-                self.entity.take(),
-                self.expires_at,
-                self.hosted_voucher_url.take(),
-                self.reference.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { entity, expires_at, hosted_voucher_url, reference })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    entity: Some(entity),
+                    expires_at: Some(expires_at),
+                    hosted_voucher_url: Some(hosted_voucher_url),
+                    reference: Some(reference),
+                } => Some(Self::Out { entity, expires_at, hosted_voucher_url, reference }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

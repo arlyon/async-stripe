@@ -94,25 +94,20 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(fleet),
-                Some(flight),
-                Some(fuel),
-                Some(lodging),
-                Some(receipt),
-                Some(reference),
-            ) = (
-                self.fleet.take(),
-                self.flight.take(),
-                self.fuel.take(),
-                self.lodging,
-                self.receipt.take(),
-                self.reference.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { fleet, flight, fuel, lodging, receipt, reference })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    fleet: Some(fleet),
+                    flight: Some(flight),
+                    fuel: Some(fuel),
+                    lodging: Some(lodging),
+                    receipt: Some(receipt),
+                    reference: Some(reference),
+                } => Some(Self::Out { fleet, flight, fuel, lodging, receipt, reference }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

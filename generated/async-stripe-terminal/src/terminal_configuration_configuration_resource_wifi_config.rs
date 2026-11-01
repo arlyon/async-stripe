@@ -93,21 +93,20 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(enterprise_eap_peap),
-                Some(enterprise_eap_tls),
-                Some(personal_psk),
-                Some(type_),
-            ) = (
-                self.enterprise_eap_peap.take(),
-                self.enterprise_eap_tls.take(),
-                self.personal_psk.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { enterprise_eap_peap, enterprise_eap_tls, personal_psk, type_ })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    enterprise_eap_peap: Some(enterprise_eap_peap),
+                    enterprise_eap_tls: Some(enterprise_eap_tls),
+                    personal_psk: Some(personal_psk),
+                    type_: Some(type_),
+                } => {
+                    Some(Self::Out { enterprise_eap_peap, enterprise_eap_tls, personal_psk, type_ })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

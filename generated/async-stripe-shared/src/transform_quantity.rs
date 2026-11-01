@@ -71,10 +71,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(divide_by), Some(round)) = (self.divide_by, self.round.take()) else {
-                return None;
-            };
-            Some(Self::Out { divide_by, round })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { divide_by: Some(divide_by), round: Some(round) } => {
+                    Some(Self::Out { divide_by, round })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

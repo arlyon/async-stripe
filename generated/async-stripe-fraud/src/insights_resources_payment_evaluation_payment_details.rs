@@ -108,35 +108,29 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amount),
-                Some(currency),
-                Some(description),
-                Some(money_movement_details),
-                Some(payment_method_details),
-                Some(shipping_details),
-                Some(statement_descriptor),
-            ) = (
-                self.amount,
-                self.currency.take(),
-                self.description.take(),
-                self.money_movement_details.take(),
-                self.payment_method_details.take(),
-                self.shipping_details.take(),
-                self.statement_descriptor.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amount,
-                currency,
-                description,
-                money_movement_details,
-                payment_method_details,
-                shipping_details,
-                statement_descriptor,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amount: Some(amount),
+                    currency: Some(currency),
+                    description: Some(description),
+                    money_movement_details: Some(money_movement_details),
+                    payment_method_details: Some(payment_method_details),
+                    shipping_details: Some(shipping_details),
+                    statement_descriptor: Some(statement_descriptor),
+                } => Some(Self::Out {
+                    amount,
+                    currency,
+                    description,
+                    money_movement_details,
+                    payment_method_details,
+                    shipping_details,
+                    statement_descriptor,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

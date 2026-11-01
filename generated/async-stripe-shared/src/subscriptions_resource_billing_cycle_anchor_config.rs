@@ -89,12 +89,19 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(day_of_month), Some(hour), Some(minute), Some(month), Some(second)) =
-                (self.day_of_month, self.hour, self.minute, self.month, self.second)
-            else {
-                return None;
-            };
-            Some(Self::Out { day_of_month, hour, minute, month, second })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    day_of_month: Some(day_of_month),
+                    hour: Some(hour),
+                    minute: Some(minute),
+                    month: Some(month),
+                    second: Some(second),
+                } => Some(Self::Out { day_of_month, hour, minute, month, second }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

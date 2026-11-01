@@ -68,10 +68,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(splashscreen),) = (self.splashscreen.take(),) else {
-                return None;
-            };
-            Some(Self::Out { splashscreen })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { splashscreen: Some(splashscreen) } => Some(Self::Out { splashscreen }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -80,15 +80,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(country), Some(display_name), Some(level), Some(state)) = (
-                self.country.take(),
-                self.display_name.take(),
-                self.level.take(),
-                self.state.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { country, display_name, level, state })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    country: Some(country),
+                    display_name: Some(display_name),
+                    level: Some(level),
+                    state: Some(state),
+                } => Some(Self::Out { country, display_name, level, state }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

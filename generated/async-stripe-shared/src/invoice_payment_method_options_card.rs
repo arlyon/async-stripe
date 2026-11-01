@@ -72,12 +72,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(installments), Some(request_three_d_secure)) =
-                (self.installments, self.request_three_d_secure.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { installments, request_three_d_secure })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    installments: Some(installments),
+                    request_three_d_secure: Some(request_three_d_secure),
+                } => Some(Self::Out { installments, request_three_d_secure }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

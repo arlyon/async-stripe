@@ -81,19 +81,21 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(mastercard_compliance),
-                Some(visa_compelling_evidence_3),
-                Some(visa_compliance),
-            ) = (
-                self.mastercard_compliance,
-                self.visa_compelling_evidence_3.take(),
-                self.visa_compliance,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { mastercard_compliance, visa_compelling_evidence_3, visa_compliance })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    mastercard_compliance: Some(mastercard_compliance),
+                    visa_compelling_evidence_3: Some(visa_compelling_evidence_3),
+                    visa_compliance: Some(visa_compliance),
+                } => Some(Self::Out {
+                    mastercard_compliance,
+                    visa_compelling_evidence_3,
+                    visa_compliance,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

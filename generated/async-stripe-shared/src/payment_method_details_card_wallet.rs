@@ -107,41 +107,33 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(amex_express_checkout),
-                Some(apple_pay),
-                Some(dynamic_last4),
-                Some(google_pay),
-                Some(link),
-                Some(masterpass),
-                Some(samsung_pay),
-                Some(type_),
-                Some(visa_checkout),
-            ) = (
-                self.amex_express_checkout,
-                self.apple_pay,
-                self.dynamic_last4.take(),
-                self.google_pay,
-                self.link.take(),
-                self.masterpass.take(),
-                self.samsung_pay,
-                self.type_.take(),
-                self.visa_checkout.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                amex_express_checkout,
-                apple_pay,
-                dynamic_last4,
-                google_pay,
-                link,
-                masterpass,
-                samsung_pay,
-                type_,
-                visa_checkout,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    amex_express_checkout: Some(amex_express_checkout),
+                    apple_pay: Some(apple_pay),
+                    dynamic_last4: Some(dynamic_last4),
+                    google_pay: Some(google_pay),
+                    link: Some(link),
+                    masterpass: Some(masterpass),
+                    samsung_pay: Some(samsung_pay),
+                    type_: Some(type_),
+                    visa_checkout: Some(visa_checkout),
+                } => Some(Self::Out {
+                    amex_express_checkout,
+                    apple_pay,
+                    dynamic_last4,
+                    google_pay,
+                    link,
+                    masterpass,
+                    samsung_pay,
+                    type_,
+                    visa_checkout,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

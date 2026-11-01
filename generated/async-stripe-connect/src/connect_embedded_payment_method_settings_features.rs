@@ -71,12 +71,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(disable_stripe_user_authentication),) =
-                (self.disable_stripe_user_authentication,)
-            else {
-                return None;
-            };
-            Some(Self::Out { disable_stripe_user_authentication })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    disable_stripe_user_authentication: Some(disable_stripe_user_authentication),
+                } => Some(Self::Out { disable_stripe_user_authentication }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

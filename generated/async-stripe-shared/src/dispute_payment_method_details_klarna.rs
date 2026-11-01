@@ -73,12 +73,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(chargeback_loss_reason_code), Some(reason_code)) =
-                (self.chargeback_loss_reason_code.take(), self.reason_code.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { chargeback_loss_reason_code, reason_code })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    chargeback_loss_reason_code: Some(chargeback_loss_reason_code),
+                    reason_code: Some(reason_code),
+                } => Some(Self::Out { chargeback_loss_reason_code, reason_code }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

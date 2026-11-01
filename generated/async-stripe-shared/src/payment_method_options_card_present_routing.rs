@@ -67,10 +67,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(requested_priority),) = (self.requested_priority.take(),) else {
-                return None;
-            };
-            Some(Self::Out { requested_priority })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { requested_priority: Some(requested_priority) } => {
+                    Some(Self::Out { requested_priority })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

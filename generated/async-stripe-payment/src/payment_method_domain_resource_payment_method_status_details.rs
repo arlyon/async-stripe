@@ -70,10 +70,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(error_message),) = (self.error_message.take(),) else {
-                return None;
-            };
-            Some(Self::Out { error_message })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { error_message: Some(error_message) } => Some(Self::Out { error_message }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

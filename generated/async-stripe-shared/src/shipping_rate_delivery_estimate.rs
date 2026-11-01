@@ -71,10 +71,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(maximum), Some(minimum)) = (self.maximum.take(), self.minimum.take()) else {
-                return None;
-            };
-            Some(Self::Out { maximum, minimum })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { maximum: Some(maximum), minimum: Some(minimum) } => {
+                    Some(Self::Out { maximum, minimum })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

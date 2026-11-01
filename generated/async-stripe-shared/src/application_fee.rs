@@ -139,56 +139,43 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(account),
-                Some(amount),
-                Some(amount_refunded),
-                Some(application),
-                Some(balance_transaction),
-                Some(charge),
-                Some(created),
-                Some(currency),
-                Some(fee_source),
-                Some(id),
-                Some(livemode),
-                Some(originating_transaction),
-                Some(refunded),
-                Some(refunds),
-            ) = (
-                self.account.take(),
-                self.amount,
-                self.amount_refunded,
-                self.application.take(),
-                self.balance_transaction.take(),
-                self.charge.take(),
-                self.created,
-                self.currency.take(),
-                self.fee_source.take(),
-                self.id.take(),
-                self.livemode,
-                self.originating_transaction.take(),
-                self.refunded,
-                self.refunds.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                account,
-                amount,
-                amount_refunded,
-                application,
-                balance_transaction,
-                charge,
-                created,
-                currency,
-                fee_source,
-                id,
-                livemode,
-                originating_transaction,
-                refunded,
-                refunds,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    account: Some(account),
+                    amount: Some(amount),
+                    amount_refunded: Some(amount_refunded),
+                    application: Some(application),
+                    balance_transaction: Some(balance_transaction),
+                    charge: Some(charge),
+                    created: Some(created),
+                    currency: Some(currency),
+                    fee_source: Some(fee_source),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    originating_transaction: Some(originating_transaction),
+                    refunded: Some(refunded),
+                    refunds: Some(refunds),
+                } => Some(Self::Out {
+                    account,
+                    amount,
+                    amount_refunded,
+                    application,
+                    balance_transaction,
+                    charge,
+                    created,
+                    currency,
+                    fee_source,
+                    id,
+                    livemode,
+                    originating_transaction,
+                    refunded,
+                    refunds,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

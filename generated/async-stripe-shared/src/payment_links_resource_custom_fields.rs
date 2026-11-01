@@ -98,27 +98,21 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(dropdown),
-                Some(key),
-                Some(label),
-                Some(numeric),
-                Some(optional),
-                Some(text),
-                Some(type_),
-            ) = (
-                self.dropdown.take(),
-                self.key.take(),
-                self.label.take(),
-                self.numeric.take(),
-                self.optional,
-                self.text.take(),
-                self.type_.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { dropdown, key, label, numeric, optional, text, type_ })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    dropdown: Some(dropdown),
+                    key: Some(key),
+                    label: Some(label),
+                    numeric: Some(numeric),
+                    optional: Some(optional),
+                    text: Some(text),
+                    type_: Some(type_),
+                } => Some(Self::Out { dropdown, key, label, numeric, optional, text, type_ }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

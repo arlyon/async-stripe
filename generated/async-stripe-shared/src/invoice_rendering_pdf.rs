@@ -69,10 +69,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(page_size),) = (self.page_size.take(),) else {
-                return None;
-            };
-            Some(Self::Out { page_size })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { page_size: Some(page_size) } => Some(Self::Out { page_size }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

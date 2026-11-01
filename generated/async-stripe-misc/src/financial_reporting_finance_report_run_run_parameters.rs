@@ -109,38 +109,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(columns),
-                Some(connected_account),
-                Some(currency),
-                Some(interval_end),
-                Some(interval_start),
-                Some(payout),
-                Some(reporting_category),
-                Some(timezone),
-            ) = (
-                self.columns.take(),
-                self.connected_account.take(),
-                self.currency.take(),
-                self.interval_end,
-                self.interval_start,
-                self.payout.take(),
-                self.reporting_category.take(),
-                self.timezone.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                columns,
-                connected_account,
-                currency,
-                interval_end,
-                interval_start,
-                payout,
-                reporting_category,
-                timezone,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    columns: Some(columns),
+                    connected_account: Some(connected_account),
+                    currency: Some(currency),
+                    interval_end: Some(interval_end),
+                    interval_start: Some(interval_start),
+                    payout: Some(payout),
+                    reporting_category: Some(reporting_category),
+                    timezone: Some(timezone),
+                } => Some(Self::Out {
+                    columns,
+                    connected_account,
+                    currency,
+                    interval_end,
+                    interval_start,
+                    payout,
+                    reporting_category,
+                    timezone,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -74,10 +74,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(password), Some(ssid)) = (self.password.take(), self.ssid.take()) else {
-                return None;
-            };
-            Some(Self::Out { password, ssid })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { password: Some(password), ssid: Some(ssid) } => {
+                    Some(Self::Out { password, ssid })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

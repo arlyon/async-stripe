@@ -95,26 +95,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(mandate_options),
-                Some(setup_future_usage),
-                Some(target_date),
-                Some(verification_method),
-            ) = (
-                self.mandate_options.take(),
-                self.setup_future_usage.take(),
-                self.target_date.take(),
-                self.verification_method.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                mandate_options,
-                setup_future_usage,
-                target_date,
-                verification_method,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    mandate_options: Some(mandate_options),
+                    setup_future_usage: Some(setup_future_usage),
+                    target_date: Some(target_date),
+                    verification_method: Some(verification_method),
+                } => Some(Self::Out {
+                    mandate_options,
+                    setup_future_usage,
+                    target_date,
+                    verification_method,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

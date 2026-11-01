@@ -71,12 +71,16 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(reconciliation_mode), Some(using_merchant_default)) =
-                (self.reconciliation_mode.take(), self.using_merchant_default)
-            else {
-                return None;
-            };
-            Some(Self::Out { reconciliation_mode, using_merchant_default })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    reconciliation_mode: Some(reconciliation_mode),
+                    using_merchant_default: Some(using_merchant_default),
+                } => Some(Self::Out { reconciliation_mode, using_merchant_default }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

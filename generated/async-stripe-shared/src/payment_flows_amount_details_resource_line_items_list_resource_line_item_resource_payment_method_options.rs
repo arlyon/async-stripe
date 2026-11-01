@@ -83,18 +83,17 @@ paypal: Some(None),
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(card),
-Some(card_present),
-Some(klarna),
-Some(paypal),
-) = (self.card.take(),
-self.card_present.take(),
-self.klarna.take(),
-self.paypal.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { card,card_present,klarna,paypal })
+        match core::mem::replace(self, Self::deser_default()) {
+                Self { card: Some(card),
+card_present: Some(card_present),
+klarna: Some(klarna),
+paypal: Some(paypal),
+ } => Some(Self::Out { card,card_present,klarna,paypal }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
     }
 }
 

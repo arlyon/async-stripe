@@ -71,10 +71,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enabled), Some(optional)) = (self.enabled, self.optional) else {
-                return None;
-            };
-            Some(Self::Out { enabled, optional })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { enabled: Some(enabled), optional: Some(optional) } => {
+                    Some(Self::Out { enabled, optional })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

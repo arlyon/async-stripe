@@ -87,21 +87,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(id),
-                Some(period_end),
-                Some(period_start),
-                Some(tax_deduction_account_number),
-            ) = (
-                self.id.take(),
-                self.period_end,
-                self.period_start,
-                self.tax_deduction_account_number.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out { id, period_end, period_start, tax_deduction_account_number })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    id: Some(id),
+                    period_end: Some(period_end),
+                    period_start: Some(period_start),
+                    tax_deduction_account_number: Some(tax_deduction_account_number),
+                } => Some(Self::Out { id, period_end, period_start, tax_deduction_account_number }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

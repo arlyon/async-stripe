@@ -116,38 +116,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(data_available_end),
-                Some(data_available_start),
-                Some(default_columns),
-                Some(id),
-                Some(livemode),
-                Some(name),
-                Some(updated),
-                Some(version),
-            ) = (
-                self.data_available_end,
-                self.data_available_start,
-                self.default_columns.take(),
-                self.id.take(),
-                self.livemode,
-                self.name.take(),
-                self.updated,
-                self.version,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                data_available_end,
-                data_available_start,
-                default_columns,
-                id,
-                livemode,
-                name,
-                updated,
-                version,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    data_available_end: Some(data_available_end),
+                    data_available_start: Some(data_available_start),
+                    default_columns: Some(default_columns),
+                    id: Some(id),
+                    livemode: Some(livemode),
+                    name: Some(name),
+                    updated: Some(updated),
+                    version: Some(version),
+                } => Some(Self::Out {
+                    data_available_end,
+                    data_available_start,
+                    default_columns,
+                    id,
+                    livemode,
+                    name,
+                    updated,
+                    version,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

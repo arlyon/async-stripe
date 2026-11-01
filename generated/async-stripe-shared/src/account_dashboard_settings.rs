@@ -73,12 +73,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(display_name), Some(timezone)) =
-                (self.display_name.take(), self.timezone.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { display_name, timezone })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { display_name: Some(display_name), timezone: Some(timezone) } => {
+                    Some(Self::Out { display_name, timezone })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -75,12 +75,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(location), Some(reader), Some(reference)) =
-                (self.location.take(), self.reader.take(), self.reference.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { location, reader, reference })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    location: Some(location),
+                    reader: Some(reader),
+                    reference: Some(reference),
+                } => Some(Self::Out { location, reader, reference }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

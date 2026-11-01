@@ -84,15 +84,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(browser), Some(device), Some(platform), Some(version)) = (
-                self.browser.take(),
-                self.device.take(),
-                self.platform.take(),
-                self.version.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { browser, device, platform, version })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    browser: Some(browser),
+                    device: Some(device),
+                    platform: Some(platform),
+                    version: Some(version),
+                } => Some(Self::Out { browser, device, platform, version }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -85,15 +85,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(description), Some(skip_button), Some(submit_button), Some(title)) = (
-                self.description.take(),
-                self.skip_button.take(),
-                self.submit_button.take(),
-                self.title.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { description, skip_button, submit_button, title })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    description: Some(description),
+                    skip_button: Some(skip_button),
+                    submit_button: Some(submit_button),
+                    title: Some(title),
+                } => Some(Self::Out { description, skip_button, submit_button, title }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

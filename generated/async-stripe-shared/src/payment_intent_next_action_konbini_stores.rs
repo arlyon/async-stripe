@@ -84,15 +84,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(familymart), Some(lawson), Some(ministop), Some(seicomart)) = (
-                self.familymart.take(),
-                self.lawson.take(),
-                self.ministop.take(),
-                self.seicomart.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { familymart, lawson, ministop, seicomart })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    familymart: Some(familymart),
+                    lawson: Some(lawson),
+                    ministop: Some(ministop),
+                    seicomart: Some(seicomart),
+                } => Some(Self::Out { familymart, lawson, ministop, seicomart }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

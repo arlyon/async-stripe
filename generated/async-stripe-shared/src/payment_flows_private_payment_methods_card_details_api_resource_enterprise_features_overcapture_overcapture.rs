@@ -75,14 +75,15 @@ status: None,
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(maximum_amount_capturable),
-Some(status),
-) = (self.maximum_amount_capturable,
-self.status.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { maximum_amount_capturable,status })
+        match core::mem::replace(self, Self::deser_default()) {
+                Self { maximum_amount_capturable: Some(maximum_amount_capturable),
+status: Some(status),
+ } => Some(Self::Out { maximum_amount_capturable,status }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
     }
 }
 

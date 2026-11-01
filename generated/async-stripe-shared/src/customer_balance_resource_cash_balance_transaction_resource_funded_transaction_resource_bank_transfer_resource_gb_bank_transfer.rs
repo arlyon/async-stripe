@@ -80,16 +80,16 @@ sort_code: Some(None),
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(account_number_last4),
-Some(sender_name),
-Some(sort_code),
-) = (self.account_number_last4.take(),
-self.sender_name.take(),
-self.sort_code.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { account_number_last4,sender_name,sort_code })
+        match core::mem::replace(self, Self::deser_default()) {
+                Self { account_number_last4: Some(account_number_last4),
+sender_name: Some(sender_name),
+sort_code: Some(sort_code),
+ } => Some(Self::Out { account_number_last4,sender_name,sort_code }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
     }
 }
 

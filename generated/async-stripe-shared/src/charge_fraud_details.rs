@@ -71,12 +71,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(stripe_report), Some(user_report)) =
-                (self.stripe_report.take(), self.user_report.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { stripe_report, user_report })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { stripe_report: Some(stripe_report), user_report: Some(user_report) } => {
+                    Some(Self::Out { stripe_report, user_report })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

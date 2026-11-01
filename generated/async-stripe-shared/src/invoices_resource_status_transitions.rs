@@ -84,12 +84,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(finalized_at), Some(marked_uncollectible_at), Some(paid_at), Some(voided_at)) =
-                (self.finalized_at, self.marked_uncollectible_at, self.paid_at, self.voided_at)
-            else {
-                return None;
-            };
-            Some(Self::Out { finalized_at, marked_uncollectible_at, paid_at, voided_at })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    finalized_at: Some(finalized_at),
+                    marked_uncollectible_at: Some(marked_uncollectible_at),
+                    paid_at: Some(paid_at),
+                    voided_at: Some(voided_at),
+                } => Some(Self::Out { finalized_at, marked_uncollectible_at, paid_at, voided_at }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

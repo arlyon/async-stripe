@@ -79,12 +79,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(evaluated_at), Some(risk_level), Some(score)) =
-                (self.evaluated_at, self.risk_level.take(), self.score)
-            else {
-                return None;
-            };
-            Some(Self::Out { evaluated_at, risk_level, score })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    evaluated_at: Some(evaluated_at),
+                    risk_level: Some(risk_level),
+                    score: Some(score),
+                } => Some(Self::Out { evaluated_at, risk_level, score }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

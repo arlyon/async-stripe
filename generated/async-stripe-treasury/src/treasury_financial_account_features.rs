@@ -105,35 +105,29 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(card_issuing),
-                Some(deposit_insurance),
-                Some(financial_addresses),
-                Some(inbound_transfers),
-                Some(intra_stripe_flows),
-                Some(outbound_payments),
-                Some(outbound_transfers),
-            ) = (
-                self.card_issuing.take(),
-                self.deposit_insurance.take(),
-                self.financial_addresses.take(),
-                self.inbound_transfers.take(),
-                self.intra_stripe_flows.take(),
-                self.outbound_payments.take(),
-                self.outbound_transfers.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                card_issuing,
-                deposit_insurance,
-                financial_addresses,
-                inbound_transfers,
-                intra_stripe_flows,
-                outbound_payments,
-                outbound_transfers,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    card_issuing: Some(card_issuing),
+                    deposit_insurance: Some(deposit_insurance),
+                    financial_addresses: Some(financial_addresses),
+                    inbound_transfers: Some(inbound_transfers),
+                    intra_stripe_flows: Some(intra_stripe_flows),
+                    outbound_payments: Some(outbound_payments),
+                    outbound_transfers: Some(outbound_transfers),
+                } => Some(Self::Out {
+                    card_issuing,
+                    deposit_insurance,
+                    financial_addresses,
+                    inbound_transfers,
+                    intra_stripe_flows,
+                    outbound_payments,
+                    outbound_transfers,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

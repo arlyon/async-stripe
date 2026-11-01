@@ -3,6 +3,7 @@
 
 use stripe::ClientBuilder;
 
+mod builder_take_out;
 mod deser;
 mod enums;
 pub mod generated;

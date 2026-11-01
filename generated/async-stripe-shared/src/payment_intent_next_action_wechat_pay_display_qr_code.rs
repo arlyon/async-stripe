@@ -89,29 +89,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(data),
-                Some(hosted_instructions_url),
-                Some(image_data_url),
-                Some(image_url_png),
-                Some(image_url_svg),
-            ) = (
-                self.data.take(),
-                self.hosted_instructions_url.take(),
-                self.image_data_url.take(),
-                self.image_url_png.take(),
-                self.image_url_svg.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                data,
-                hosted_instructions_url,
-                image_data_url,
-                image_url_png,
-                image_url_svg,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    data: Some(data),
+                    hosted_instructions_url: Some(hosted_instructions_url),
+                    image_data_url: Some(image_data_url),
+                    image_url_png: Some(image_url_png),
+                    image_url_svg: Some(image_url_svg),
+                } => Some(Self::Out {
+                    data,
+                    hosted_instructions_url,
+                    image_data_url,
+                    image_url_png,
+                    image_url_svg,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

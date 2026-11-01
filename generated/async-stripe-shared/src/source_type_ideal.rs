@@ -80,15 +80,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(bank), Some(bic), Some(iban_last4), Some(statement_descriptor)) = (
-                self.bank.take(),
-                self.bic.take(),
-                self.iban_last4.take(),
-                self.statement_descriptor.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { bank, bic, iban_last4, statement_descriptor })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    bank: Some(bank),
+                    bic: Some(bic),
+                    iban_last4: Some(iban_last4),
+                    statement_descriptor: Some(statement_descriptor),
+                } => Some(Self::Out { bank, bic, iban_last4, statement_descriptor }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

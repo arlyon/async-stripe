@@ -72,12 +72,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(event_payload_key), Some(type_)) =
-                (self.event_payload_key.take(), self.type_.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { event_payload_key, type_ })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { event_payload_key: Some(event_payload_key), type_: Some(type_) } => {
+                    Some(Self::Out { event_payload_key, type_ })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

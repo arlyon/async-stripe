@@ -108,41 +108,33 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(account_holder_address),
-                Some(account_holder_name),
-                Some(account_number),
-                Some(account_type),
-                Some(bank_address),
-                Some(bank_code),
-                Some(bank_name),
-                Some(branch_code),
-                Some(branch_name),
-            ) = (
-                self.account_holder_address.take(),
-                self.account_holder_name.take(),
-                self.account_number.take(),
-                self.account_type.take(),
-                self.bank_address.take(),
-                self.bank_code.take(),
-                self.bank_name.take(),
-                self.branch_code.take(),
-                self.branch_name.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                account_holder_address,
-                account_holder_name,
-                account_number,
-                account_type,
-                bank_address,
-                bank_code,
-                bank_name,
-                branch_code,
-                branch_name,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    account_holder_address: Some(account_holder_address),
+                    account_holder_name: Some(account_holder_name),
+                    account_number: Some(account_number),
+                    account_type: Some(account_type),
+                    bank_address: Some(bank_address),
+                    bank_code: Some(bank_code),
+                    bank_name: Some(bank_name),
+                    branch_code: Some(branch_code),
+                    branch_name: Some(branch_name),
+                } => Some(Self::Out {
+                    account_holder_address,
+                    account_holder_name,
+                    account_number,
+                    account_type,
+                    bank_address,
+                    bank_code,
+                    bank_name,
+                    branch_code,
+                    branch_name,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

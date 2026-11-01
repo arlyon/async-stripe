@@ -66,10 +66,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(blocked),) = (self.blocked.take(),) else {
-                return None;
-            };
-            Some(Self::Out { blocked })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { blocked: Some(blocked) } => Some(Self::Out { blocked }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

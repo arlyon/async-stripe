@@ -69,10 +69,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(bank_transfer),) = (self.bank_transfer.take(),) else {
-                return None;
-            };
-            Some(Self::Out { bank_transfer })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { bank_transfer: Some(bank_transfer) } => Some(Self::Out { bank_transfer }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -88,15 +88,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(currently_due), Some(errors), Some(past_due), Some(pending_verification)) = (
-                self.currently_due.take(),
-                self.errors.take(),
-                self.past_due.take(),
-                self.pending_verification.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { currently_due, errors, past_due, pending_verification })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    currently_due: Some(currently_due),
+                    errors: Some(errors),
+                    past_due: Some(past_due),
+                    pending_verification: Some(pending_verification),
+                } => Some(Self::Out { currently_due, errors, past_due, pending_verification }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

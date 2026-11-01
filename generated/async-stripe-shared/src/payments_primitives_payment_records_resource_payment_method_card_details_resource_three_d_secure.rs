@@ -113,24 +113,20 @@ version: Some(None),
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
-        let (Some(authentication_flow),
-Some(electronic_commerce_indicator),
-Some(exemption_indicator),
-Some(exemption_indicator_applied),
-Some(result),
-Some(result_reason),
-Some(version),
-) = (self.authentication_flow.take(),
-self.electronic_commerce_indicator.take(),
-self.exemption_indicator.take(),
-self.exemption_indicator_applied,
-self.result.take(),
-self.result_reason.take(),
-self.version.take(),
-) else {
-            return None;
-        };
-        Some(Self::Out { authentication_flow,electronic_commerce_indicator,exemption_indicator,exemption_indicator_applied,result,result_reason,version })
+        match core::mem::replace(self, Self::deser_default()) {
+                Self { authentication_flow: Some(authentication_flow),
+electronic_commerce_indicator: Some(electronic_commerce_indicator),
+exemption_indicator: Some(exemption_indicator),
+exemption_indicator_applied: Some(exemption_indicator_applied),
+result: Some(result),
+result_reason: Some(result_reason),
+version: Some(version),
+ } => Some(Self::Out { authentication_flow,electronic_commerce_indicator,exemption_indicator,exemption_indicator_applied,result,result_reason,version }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
     }
 }
 

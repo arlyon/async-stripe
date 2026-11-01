@@ -80,15 +80,18 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(failure_reason), Some(return_url), Some(status), Some(url)) = (
-                self.failure_reason.take(),
-                self.return_url.take(),
-                self.status.take(),
-                self.url.take(),
-            ) else {
-                return None;
-            };
-            Some(Self::Out { failure_reason, return_url, status, url })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    failure_reason: Some(failure_reason),
+                    return_url: Some(return_url),
+                    status: Some(status),
+                    url: Some(url),
+                } => Some(Self::Out { failure_reason, return_url, status, url }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

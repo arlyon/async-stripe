@@ -96,29 +96,26 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(capture_payments),
-                Some(destination_on_behalf_of_charge_management),
-                Some(dispute_management),
-                Some(refund_management),
-                Some(smart_disputes_management),
-            ) = (
-                self.capture_payments,
-                self.destination_on_behalf_of_charge_management,
-                self.dispute_management,
-                self.refund_management,
-                self.smart_disputes_management,
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                capture_payments,
-                destination_on_behalf_of_charge_management,
-                dispute_management,
-                refund_management,
-                smart_disputes_management,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    capture_payments: Some(capture_payments),
+                    destination_on_behalf_of_charge_management:
+                        Some(destination_on_behalf_of_charge_management),
+                    dispute_management: Some(dispute_management),
+                    refund_management: Some(refund_management),
+                    smart_disputes_management: Some(smart_disputes_management),
+                } => Some(Self::Out {
+                    capture_payments,
+                    destination_on_behalf_of_charge_management,
+                    dispute_management,
+                    refund_management,
+                    smart_disputes_management,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

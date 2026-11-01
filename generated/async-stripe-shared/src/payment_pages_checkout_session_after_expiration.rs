@@ -67,10 +67,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(recovery),) = (self.recovery.take(),) else {
-                return None;
-            };
-            Some(Self::Out { recovery })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { recovery: Some(recovery) } => Some(Self::Out { recovery }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

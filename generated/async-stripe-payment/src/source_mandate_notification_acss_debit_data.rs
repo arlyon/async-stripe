@@ -67,10 +67,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(statement_descriptor),) = (self.statement_descriptor.take(),) else {
-                return None;
-            };
-            Some(Self::Out { statement_descriptor })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { statement_descriptor: Some(statement_descriptor) } => {
+                    Some(Self::Out { statement_descriptor })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

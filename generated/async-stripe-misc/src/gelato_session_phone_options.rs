@@ -67,10 +67,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(require_verification),) = (self.require_verification,) else {
-                return None;
-            };
-            Some(Self::Out { require_verification })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { require_verification: Some(require_verification) } => {
+                    Some(Self::Out { require_verification })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

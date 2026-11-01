@@ -71,10 +71,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(active), Some(inactive)) = (self.active.take(), self.inactive.take()) else {
-                return None;
-            };
-            Some(Self::Out { active, inactive })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { active: Some(active), inactive: Some(inactive) } => {
+                    Some(Self::Out { active, inactive })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

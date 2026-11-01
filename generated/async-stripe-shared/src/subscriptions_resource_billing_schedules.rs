@@ -75,12 +75,17 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(applies_to), Some(bill_until), Some(key)) =
-                (self.applies_to.take(), self.bill_until.take(), self.key.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { applies_to, bill_until, key })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    applies_to: Some(applies_to),
+                    bill_until: Some(bill_until),
+                    key: Some(key),
+                } => Some(Self::Out { applies_to, bill_until, key }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

@@ -85,32 +85,27 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(customer_reference),
-                Some(line_items),
-                Some(merchant_reference),
-                Some(shipping_address_zip),
-                Some(shipping_amount),
-                Some(shipping_from_zip),
-            ) = (
-                self.customer_reference.take(),
-                self.line_items.take(),
-                self.merchant_reference.take(),
-                self.shipping_address_zip.take(),
-                self.shipping_amount,
-                self.shipping_from_zip.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                customer_reference,
-                line_items,
-                merchant_reference,
-                shipping_address_zip,
-                shipping_amount,
-                shipping_from_zip,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    customer_reference: Some(customer_reference),
+                    line_items: Some(line_items),
+                    merchant_reference: Some(merchant_reference),
+                    shipping_address_zip: Some(shipping_address_zip),
+                    shipping_amount: Some(shipping_amount),
+                    shipping_from_zip: Some(shipping_from_zip),
+                } => Some(Self::Out {
+                    customer_reference,
+                    line_items,
+                    merchant_reference,
+                    shipping_address_zip,
+                    shipping_amount,
+                    shipping_from_zip,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

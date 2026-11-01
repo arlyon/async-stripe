@@ -67,10 +67,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(deactivated_at),) = (self.deactivated_at,) else {
-                return None;
-            };
-            Some(Self::Out { deactivated_at })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { deactivated_at: Some(deactivated_at) } => Some(Self::Out { deactivated_at }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

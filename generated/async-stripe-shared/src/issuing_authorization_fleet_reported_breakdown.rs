@@ -75,12 +75,15 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(fuel), Some(non_fuel), Some(tax)) =
-                (self.fuel.take(), self.non_fuel.take(), self.tax.take())
-            else {
-                return None;
-            };
-            Some(Self::Out { fuel, non_fuel, tax })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self { fuel: Some(fuel), non_fuel: Some(non_fuel), tax: Some(tax) } => {
+                    Some(Self::Out { fuel, non_fuel, tax })
+                }
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 

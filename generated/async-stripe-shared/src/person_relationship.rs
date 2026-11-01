@@ -108,38 +108,31 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (
-                Some(authorizer),
-                Some(director),
-                Some(executive),
-                Some(legal_guardian),
-                Some(owner),
-                Some(percent_ownership),
-                Some(representative),
-                Some(title),
-            ) = (
-                self.authorizer,
-                self.director,
-                self.executive,
-                self.legal_guardian,
-                self.owner,
-                self.percent_ownership,
-                self.representative,
-                self.title.take(),
-            )
-            else {
-                return None;
-            };
-            Some(Self::Out {
-                authorizer,
-                director,
-                executive,
-                legal_guardian,
-                owner,
-                percent_ownership,
-                representative,
-                title,
-            })
+            match core::mem::replace(self, Self::deser_default()) {
+                Self {
+                    authorizer: Some(authorizer),
+                    director: Some(director),
+                    executive: Some(executive),
+                    legal_guardian: Some(legal_guardian),
+                    owner: Some(owner),
+                    percent_ownership: Some(percent_ownership),
+                    representative: Some(representative),
+                    title: Some(title),
+                } => Some(Self::Out {
+                    authorizer,
+                    director,
+                    executive,
+                    legal_guardian,
+                    owner,
+                    percent_ownership,
+                    representative,
+                    title,
+                }),
+                builder => {
+                    *self = builder;
+                    None
+                }
+            }
         }
     }
 
