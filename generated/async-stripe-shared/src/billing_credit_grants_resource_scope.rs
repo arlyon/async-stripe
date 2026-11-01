@@ -35,9 +35,7 @@ pub struct BillingCreditGrantsResourceScopeBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -98,23 +96,6 @@ const _: () = {
 
     impl ObjectDeser for BillingCreditGrantsResourceScope {
         type Builder = BillingCreditGrantsResourceScopeBuilder;
-    }
-
-    impl FromValueOpt for BillingCreditGrantsResourceScope {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BillingCreditGrantsResourceScopeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "price_type" => b.price_type = FromValueOpt::from_value(v),
-                    "prices" => b.prices = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The price type that credit grants can apply to.
@@ -198,7 +179,6 @@ impl miniserde::de::Visitor for crate::Place<BillingCreditGrantsResourceScopePri
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(BillingCreditGrantsResourceScopePriceType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BillingCreditGrantsResourceScopePriceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

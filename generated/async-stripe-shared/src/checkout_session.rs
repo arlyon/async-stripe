@@ -287,9 +287,7 @@ pub struct CheckoutSessionBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -700,112 +698,6 @@ const _: () = {
     impl ObjectDeser for CheckoutSession {
         type Builder = CheckoutSessionBuilder;
     }
-
-    impl FromValueOpt for CheckoutSession {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CheckoutSessionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "adaptive_pricing" => b.adaptive_pricing = FromValueOpt::from_value(v),
-                    "after_expiration" => b.after_expiration = FromValueOpt::from_value(v),
-                    "allow_promotion_codes" => {
-                        b.allow_promotion_codes = FromValueOpt::from_value(v)
-                    }
-                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
-                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
-                    "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
-                    "billing_address_collection" => {
-                        b.billing_address_collection = FromValueOpt::from_value(v)
-                    }
-                    "branding_settings" => b.branding_settings = FromValueOpt::from_value(v),
-                    "cancel_url" => b.cancel_url = FromValueOpt::from_value(v),
-                    "client_reference_id" => b.client_reference_id = FromValueOpt::from_value(v),
-                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
-                    "collected_information" => {
-                        b.collected_information = FromValueOpt::from_value(v)
-                    }
-                    "consent" => b.consent = FromValueOpt::from_value(v),
-                    "consent_collection" => b.consent_collection = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "currency_conversion" => b.currency_conversion = FromValueOpt::from_value(v),
-                    "custom_fields" => b.custom_fields = FromValueOpt::from_value(v),
-                    "custom_text" => b.custom_text = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "customer_creation" => b.customer_creation = FromValueOpt::from_value(v),
-                    "customer_details" => b.customer_details = FromValueOpt::from_value(v),
-                    "customer_email" => b.customer_email = FromValueOpt::from_value(v),
-                    "discounts" => b.discounts = FromValueOpt::from_value(v),
-                    "excluded_payment_method_types" => {
-                        b.excluded_payment_method_types = FromValueOpt::from_value(v)
-                    }
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "integration_identifier" => {
-                        b.integration_identifier = FromValueOpt::from_value(v)
-                    }
-                    "invoice" => b.invoice = FromValueOpt::from_value(v),
-                    "invoice_creation" => b.invoice_creation = FromValueOpt::from_value(v),
-                    "line_items" => b.line_items = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "locale" => b.locale = FromValueOpt::from_value(v),
-                    "managed_payments" => b.managed_payments = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "mode" => b.mode = FromValueOpt::from_value(v),
-                    "name_collection" => b.name_collection = FromValueOpt::from_value(v),
-                    "optional_items" => b.optional_items = FromValueOpt::from_value(v),
-                    "origin_context" => b.origin_context = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    "payment_link" => b.payment_link = FromValueOpt::from_value(v),
-                    "payment_method_collection" => {
-                        b.payment_method_collection = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_configuration_details" => {
-                        b.payment_method_configuration_details = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_options" => {
-                        b.payment_method_options = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_types" => b.payment_method_types = FromValueOpt::from_value(v),
-                    "payment_status" => b.payment_status = FromValueOpt::from_value(v),
-                    "permissions" => b.permissions = FromValueOpt::from_value(v),
-                    "phone_number_collection" => {
-                        b.phone_number_collection = FromValueOpt::from_value(v)
-                    }
-                    "presentment_details" => b.presentment_details = FromValueOpt::from_value(v),
-                    "recovered_from" => b.recovered_from = FromValueOpt::from_value(v),
-                    "redirect_on_completion" => {
-                        b.redirect_on_completion = FromValueOpt::from_value(v)
-                    }
-                    "return_url" => b.return_url = FromValueOpt::from_value(v),
-                    "saved_payment_method_options" => {
-                        b.saved_payment_method_options = FromValueOpt::from_value(v)
-                    }
-                    "setup_intent" => b.setup_intent = FromValueOpt::from_value(v),
-                    "shipping_address_collection" => {
-                        b.shipping_address_collection = FromValueOpt::from_value(v)
-                    }
-                    "shipping_cost" => b.shipping_cost = FromValueOpt::from_value(v),
-                    "shipping_options" => b.shipping_options = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "submit_type" => b.submit_type = FromValueOpt::from_value(v),
-                    "subscription" => b.subscription = FromValueOpt::from_value(v),
-                    "success_url" => b.success_url = FromValueOpt::from_value(v),
-                    "tax_id_collection" => b.tax_id_collection = FromValueOpt::from_value(v),
-                    "total_details" => b.total_details = FromValueOpt::from_value(v),
-                    "ui_mode" => b.ui_mode = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    "wallet_options" => b.wallet_options = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for CheckoutSession {
@@ -966,7 +858,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutSessionCustomerCreation> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionCustomerCreation);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionCustomerCreation {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1055,7 +946,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutSessionPaymentMethodCollect
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionPaymentMethodCollection);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionPaymentMethodCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1147,7 +1037,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutSessionPaymentStatus> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionPaymentStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionPaymentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1244,7 +1133,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutSessionBillingAddressCollec
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionBillingAddressCollection);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionBillingAddressCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1443,7 +1331,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutSessionLocale> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionLocale);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionLocale {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1528,7 +1415,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutSessionMode> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionMode);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1614,7 +1500,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutSessionOriginContext> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionOriginContext);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionOriginContext {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1703,7 +1588,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutSessionRedirectOnCompletion
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionRedirectOnCompletion);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionRedirectOnCompletion {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1788,7 +1672,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutSessionStatus> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1879,7 +1762,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutSessionSubmitType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionSubmitType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionSubmitType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1967,7 +1849,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutSessionUiMode> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutSessionUiMode);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionUiMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

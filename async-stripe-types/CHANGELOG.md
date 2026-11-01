@@ -5,6 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [Unreleased]
+
+### Changed
+
+- Replace generated `FromValueOpt` implementations with a blanket implementation for
+  `miniserde::Deserialize`. Value parsing now follows streaming validation, rejecting
+  malformed optional values and integer overflows that previously lost data silently.
+- Custom `FromValueOpt` implementations for types that also implement
+  `miniserde::Deserialize` must be removed to avoid conflicting implementations.
+- Deprecate `impl_from_val_with_from_str!` and retain it as a no-op. Types using the
+  macro now need `miniserde::Deserialize` to retain `FromValueOpt` support.
+
 ## [1.0.0-rc.9](https://github.com/arlyon/async-stripe/compare/async-stripe-types-v1.0.0-rc.8...async-stripe-types-v1.0.0-rc.9) - 2026-09-11
 
 ### Other

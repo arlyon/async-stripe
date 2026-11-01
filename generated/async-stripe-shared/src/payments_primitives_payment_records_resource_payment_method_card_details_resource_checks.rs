@@ -39,9 +39,7 @@ cvc_check: Option<Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCa
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -125,28 +123,6 @@ const _: () = {
         type Builder =
             PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksBuilder;
     }
-
-    impl FromValueOpt
-        for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecks
-    {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address_line1_check" => b.address_line1_check = FromValueOpt::from_value(v),
-                    "address_postal_code_check" => {
-                        b.address_postal_code_check = FromValueOpt::from_value(v)
-                    }
-                    "cvc_check" => b.cvc_check = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// If you provide a value for `address.line1`, the check result is one of `pass`, `fail`, `unavailable`, or `unchecked`.
 #[derive(Clone, Eq, PartialEq)]
@@ -227,9 +203,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentsPrimitivesPaymentRecordsRes
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksAddressLine1Check
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksAddressLine1Check {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -316,7 +289,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentsPrimitivesPaymentRecordsRes
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksAddressPostalCodeCheck);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksAddressPostalCodeCheck {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -429,9 +401,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksCvcCheck
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksCvcCheck

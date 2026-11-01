@@ -67,9 +67,7 @@ pub struct DiscountBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -189,33 +187,6 @@ const _: () = {
 
     impl ObjectDeser for Discount {
         type Builder = DiscountBuilder;
-    }
-
-    impl FromValueOpt for Discount {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = DiscountBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "checkout_session" => b.checkout_session = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "end" => b.end = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "invoice" => b.invoice = FromValueOpt::from_value(v),
-                    "invoice_item" => b.invoice_item = FromValueOpt::from_value(v),
-                    "promotion_code" => b.promotion_code = FromValueOpt::from_value(v),
-                    "source" => b.source = FromValueOpt::from_value(v),
-                    "start" => b.start = FromValueOpt::from_value(v),
-                    "subscription" => b.subscription = FromValueOpt::from_value(v),
-                    "subscription_item" => b.subscription_item = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 #[cfg(feature = "serialize")]

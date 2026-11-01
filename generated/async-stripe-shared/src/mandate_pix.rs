@@ -41,9 +41,7 @@ pub struct MandatePixBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -137,27 +135,6 @@ const _: () = {
     impl ObjectDeser for MandatePix {
         type Builder = MandatePixBuilder;
     }
-
-    impl FromValueOpt for MandatePix {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = MandatePixBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_includes_iof" => b.amount_includes_iof = FromValueOpt::from_value(v),
-                    "amount_type" => b.amount_type = FromValueOpt::from_value(v),
-                    "end_date" => b.end_date = FromValueOpt::from_value(v),
-                    "payment_schedule" => b.payment_schedule = FromValueOpt::from_value(v),
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    "start_date" => b.start_date = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// Determines if the amount includes the IOF tax.
 #[derive(Clone, Eq, PartialEq)]
@@ -238,7 +215,6 @@ impl miniserde::de::Visitor for crate::Place<MandatePixAmountIncludesIof> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(MandatePixAmountIncludesIof);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for MandatePixAmountIncludesIof {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -322,7 +298,6 @@ impl miniserde::de::Visitor for crate::Place<MandatePixAmountType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(MandatePixAmountType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for MandatePixAmountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -415,7 +390,6 @@ impl miniserde::de::Visitor for crate::Place<MandatePixPaymentSchedule> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(MandatePixPaymentSchedule);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for MandatePixPaymentSchedule {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

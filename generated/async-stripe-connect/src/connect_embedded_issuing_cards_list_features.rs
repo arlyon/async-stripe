@@ -41,9 +41,7 @@ pub struct ConnectEmbeddedIssuingCardsListFeaturesBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -137,33 +135,5 @@ const _: () = {
 
     impl ObjectDeser for ConnectEmbeddedIssuingCardsListFeatures {
         type Builder = ConnectEmbeddedIssuingCardsListFeaturesBuilder;
-    }
-
-    impl FromValueOpt for ConnectEmbeddedIssuingCardsListFeatures {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ConnectEmbeddedIssuingCardsListFeaturesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "card_management" => b.card_management = FromValueOpt::from_value(v),
-                    "card_spend_dispute_management" => {
-                        b.card_spend_dispute_management = FromValueOpt::from_value(v)
-                    }
-                    "cardholder_management" => {
-                        b.cardholder_management = FromValueOpt::from_value(v)
-                    }
-                    "disable_stripe_user_authentication" => {
-                        b.disable_stripe_user_authentication = FromValueOpt::from_value(v)
-                    }
-                    "spend_control_management" => {
-                        b.spend_control_management = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

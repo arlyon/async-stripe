@@ -38,9 +38,7 @@ pub struct ClimateRemovalsOrderDeliveriesBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -122,25 +120,5 @@ const _: () = {
 
     impl ObjectDeser for ClimateRemovalsOrderDeliveries {
         type Builder = ClimateRemovalsOrderDeliveriesBuilder;
-    }
-
-    impl FromValueOpt for ClimateRemovalsOrderDeliveries {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ClimateRemovalsOrderDeliveriesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "delivered_at" => b.delivered_at = FromValueOpt::from_value(v),
-                    "location" => b.location = FromValueOpt::from_value(v),
-                    "metric_tons" => b.metric_tons = FromValueOpt::from_value(v),
-                    "registry_url" => b.registry_url = FromValueOpt::from_value(v),
-                    "supplier" => b.supplier = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

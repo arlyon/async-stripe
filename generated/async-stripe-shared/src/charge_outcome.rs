@@ -68,9 +68,7 @@ pub struct ChargeOutcomeBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -184,31 +182,6 @@ const _: () = {
     impl ObjectDeser for ChargeOutcome {
         type Builder = ChargeOutcomeBuilder;
     }
-
-    impl FromValueOpt for ChargeOutcome {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ChargeOutcomeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "advice_code" => b.advice_code = FromValueOpt::from_value(v),
-                    "network_advice_code" => b.network_advice_code = FromValueOpt::from_value(v),
-                    "network_decline_code" => b.network_decline_code = FromValueOpt::from_value(v),
-                    "network_status" => b.network_status = FromValueOpt::from_value(v),
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "risk_level" => b.risk_level = FromValueOpt::from_value(v),
-                    "risk_score" => b.risk_score = FromValueOpt::from_value(v),
-                    "rule" => b.rule = FromValueOpt::from_value(v),
-                    "seller_message" => b.seller_message = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// An enumerated value providing a more detailed explanation on [how to proceed with an error](https://docs.stripe.com/declines#retrying-issuer-declines).
 #[derive(Clone, Eq, PartialEq)]
@@ -288,7 +261,6 @@ impl miniserde::de::Visitor for crate::Place<ChargeOutcomeAdviceCode> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ChargeOutcomeAdviceCode);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ChargeOutcomeAdviceCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

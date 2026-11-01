@@ -41,9 +41,7 @@ pub struct IssuingAuthorizationFleetDataBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -126,27 +124,6 @@ const _: () = {
 
     impl ObjectDeser for IssuingAuthorizationFleetData {
         type Builder = IssuingAuthorizationFleetDataBuilder;
-    }
-
-    impl FromValueOpt for IssuingAuthorizationFleetData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingAuthorizationFleetDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "cardholder_prompt_data" => {
-                        b.cardholder_prompt_data = FromValueOpt::from_value(v)
-                    }
-                    "purchase_type" => b.purchase_type = FromValueOpt::from_value(v),
-                    "reported_breakdown" => b.reported_breakdown = FromValueOpt::from_value(v),
-                    "service_type" => b.service_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The type of purchase.
@@ -233,7 +210,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationFleetDataPurcha
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationFleetDataPurchaseType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFleetDataPurchaseType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -324,7 +300,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationFleetDataServic
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationFleetDataServiceType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFleetDataServiceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

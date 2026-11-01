@@ -64,9 +64,7 @@ pub struct TaxTransactionLineItemBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -190,33 +188,6 @@ const _: () = {
     impl ObjectDeser for TaxTransactionLineItem {
         type Builder = TaxTransactionLineItemBuilder;
     }
-
-    impl FromValueOpt for TaxTransactionLineItem {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TaxTransactionLineItemBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_tax" => b.amount_tax = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "product" => b.product = FromValueOpt::from_value(v),
-                    "quantity" => b.quantity = FromValueOpt::from_value(v),
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    "reversal" => b.reversal = FromValueOpt::from_value(v),
-                    "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
-                    "tax_code" => b.tax_code = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for TaxTransactionLineItem {
@@ -320,7 +291,6 @@ impl miniserde::de::Visitor for crate::Place<TaxTransactionLineItemTaxBehavior> 
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TaxTransactionLineItemTaxBehavior);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxTransactionLineItemTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -404,7 +374,6 @@ impl miniserde::de::Visitor for crate::Place<TaxTransactionLineItemType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TaxTransactionLineItemType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxTransactionLineItemType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -61,9 +61,7 @@ pub struct BillingMeterBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -187,33 +185,6 @@ const _: () = {
     impl ObjectDeser for BillingMeter {
         type Builder = BillingMeterBuilder;
     }
-
-    impl FromValueOpt for BillingMeter {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BillingMeterBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "customer_mapping" => b.customer_mapping = FromValueOpt::from_value(v),
-                    "default_aggregation" => b.default_aggregation = FromValueOpt::from_value(v),
-                    "display_name" => b.display_name = FromValueOpt::from_value(v),
-                    "event_name" => b.event_name = FromValueOpt::from_value(v),
-                    "event_time_window" => b.event_time_window = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
-                    "updated" => b.updated = FromValueOpt::from_value(v),
-                    "value_settings" => b.value_settings = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for BillingMeter {
@@ -325,7 +296,6 @@ impl miniserde::de::Visitor for crate::Place<BillingMeterEventTimeWindow> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(BillingMeterEventTimeWindow);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BillingMeterEventTimeWindow {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -407,7 +377,6 @@ impl miniserde::de::Visitor for crate::Place<BillingMeterStatus> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(BillingMeterStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BillingMeterStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

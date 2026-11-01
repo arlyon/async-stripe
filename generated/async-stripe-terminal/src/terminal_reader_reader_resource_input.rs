@@ -52,9 +52,7 @@ pub struct TerminalReaderReaderResourceInputBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -173,32 +171,6 @@ const _: () = {
     impl ObjectDeser for TerminalReaderReaderResourceInput {
         type Builder = TerminalReaderReaderResourceInputBuilder;
     }
-
-    impl FromValueOpt for TerminalReaderReaderResourceInput {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TerminalReaderReaderResourceInputBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "custom_text" => b.custom_text = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "numeric" => b.numeric = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    "required" => b.required = FromValueOpt::from_value(v),
-                    "selection" => b.selection = FromValueOpt::from_value(v),
-                    "signature" => b.signature = FromValueOpt::from_value(v),
-                    "skipped" => b.skipped = FromValueOpt::from_value(v),
-                    "text" => b.text = FromValueOpt::from_value(v),
-                    "toggles" => b.toggles = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// Type of input being collected.
 #[derive(Clone, Eq, PartialEq)]
@@ -291,7 +263,6 @@ impl miniserde::de::Visitor for crate::Place<TerminalReaderReaderResourceInputTy
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TerminalReaderReaderResourceInputType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceInputType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

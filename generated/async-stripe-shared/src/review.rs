@@ -71,9 +71,7 @@ pub struct ReviewBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -199,34 +197,6 @@ const _: () = {
     impl ObjectDeser for Review {
         type Builder = ReviewBuilder;
     }
-
-    impl FromValueOpt for Review {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ReviewBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "billing_zip" => b.billing_zip = FromValueOpt::from_value(v),
-                    "charge" => b.charge = FromValueOpt::from_value(v),
-                    "closed_reason" => b.closed_reason = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "ip_address" => b.ip_address = FromValueOpt::from_value(v),
-                    "ip_address_location" => b.ip_address_location = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "open" => b.open = FromValueOpt::from_value(v),
-                    "opened_reason" => b.opened_reason = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "session" => b.session = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for Review {
@@ -345,7 +315,6 @@ impl miniserde::de::Visitor for crate::Place<ReviewClosedReason> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ReviewClosedReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ReviewClosedReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -429,7 +398,6 @@ impl miniserde::de::Visitor for crate::Place<ReviewOpenedReason> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ReviewOpenedReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ReviewOpenedReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

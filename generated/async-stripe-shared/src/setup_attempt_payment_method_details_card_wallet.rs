@@ -33,9 +33,7 @@ pub struct SetupAttemptPaymentMethodDetailsCardWalletBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -98,24 +96,6 @@ const _: () = {
 
     impl ObjectDeser for SetupAttemptPaymentMethodDetailsCardWallet {
         type Builder = SetupAttemptPaymentMethodDetailsCardWalletBuilder;
-    }
-
-    impl FromValueOpt for SetupAttemptPaymentMethodDetailsCardWallet {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SetupAttemptPaymentMethodDetailsCardWalletBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "apple_pay" => b.apple_pay = FromValueOpt::from_value(v),
-                    "google_pay" => b.google_pay = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The type of the card wallet, one of `apple_pay`, `google_pay`, or `link`.
@@ -204,7 +184,6 @@ impl miniserde::de::Visitor for crate::Place<SetupAttemptPaymentMethodDetailsCar
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SetupAttemptPaymentMethodDetailsCardWalletType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupAttemptPaymentMethodDetailsCardWalletType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

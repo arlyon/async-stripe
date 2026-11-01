@@ -30,9 +30,7 @@ pub struct TreasuryFinancialAccountsResourceOutboundPaymentsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -94,22 +92,5 @@ const _: () = {
 
     impl ObjectDeser for TreasuryFinancialAccountsResourceOutboundPayments {
         type Builder = TreasuryFinancialAccountsResourceOutboundPaymentsBuilder;
-    }
-
-    impl FromValueOpt for TreasuryFinancialAccountsResourceOutboundPayments {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryFinancialAccountsResourceOutboundPaymentsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "ach" => b.ach = FromValueOpt::from_value(v),
-                    "us_domestic_wire" => b.us_domestic_wire = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

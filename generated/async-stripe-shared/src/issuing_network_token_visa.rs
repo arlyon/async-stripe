@@ -36,9 +36,7 @@ pub struct IssuingNetworkTokenVisaBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -121,24 +119,5 @@ const _: () = {
 
     impl ObjectDeser for IssuingNetworkTokenVisa {
         type Builder = IssuingNetworkTokenVisaBuilder;
-    }
-
-    impl FromValueOpt for IssuingNetworkTokenVisa {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingNetworkTokenVisaBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "card_reference_id" => b.card_reference_id = FromValueOpt::from_value(v),
-                    "token_reference_id" => b.token_reference_id = FromValueOpt::from_value(v),
-                    "token_requestor_id" => b.token_requestor_id = FromValueOpt::from_value(v),
-                    "token_risk_score" => b.token_risk_score = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

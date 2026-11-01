@@ -43,9 +43,7 @@ us_bank_transfer: Option<Option<stripe_shared::CustomerBalanceResourceCashBalanc
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -127,27 +125,6 @@ self.us_bank_transfer.take(),
 
     impl ObjectDeser for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransfer {
     type Builder = CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferBuilder;
-}
-
-    impl FromValueOpt for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransfer {
-    fn from_value(v: Value) -> Option<Self> {
-        let Value::Object(obj) = v else {
-            return None;
-        };
-        let mut b = CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferBuilder::deser_default();
-        for (k, v) in obj {
-            match k.as_str() {
-            "eu_bank_transfer" => b.eu_bank_transfer = FromValueOpt::from_value(v),
-            "gb_bank_transfer" => b.gb_bank_transfer = FromValueOpt::from_value(v),
-            "jp_bank_transfer" => b.jp_bank_transfer = FromValueOpt::from_value(v),
-            "reference" => b.reference = FromValueOpt::from_value(v),
-            "type" => b.type_ = FromValueOpt::from_value(v),
-            "us_bank_transfer" => b.us_bank_transfer = FromValueOpt::from_value(v),
-                _ => {}
-            }
-        }
-        b.take_out()
-    }
 }
 };
 /// The funding method type used to fund the customer balance.
@@ -233,9 +210,6 @@ impl miniserde::de::Visitor for crate::Place<CustomerBalanceResourceCashBalanceT
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

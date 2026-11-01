@@ -35,9 +35,7 @@ paypal: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsPaypalAmou
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -111,24 +109,5 @@ self.paypal.take(),
 
     impl ObjectDeser for PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourcePaymentMethodOptions {
     type Builder = PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourcePaymentMethodOptionsBuilder;
-}
-
-    impl FromValueOpt for PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourcePaymentMethodOptions {
-    fn from_value(v: Value) -> Option<Self> {
-        let Value::Object(obj) = v else {
-            return None;
-        };
-        let mut b = PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourcePaymentMethodOptionsBuilder::deser_default();
-        for (k, v) in obj {
-            match k.as_str() {
-            "card" => b.card = FromValueOpt::from_value(v),
-            "card_present" => b.card_present = FromValueOpt::from_value(v),
-            "klarna" => b.klarna = FromValueOpt::from_value(v),
-            "paypal" => b.paypal = FromValueOpt::from_value(v),
-                _ => {}
-            }
-        }
-        b.take_out()
-    }
 }
 };

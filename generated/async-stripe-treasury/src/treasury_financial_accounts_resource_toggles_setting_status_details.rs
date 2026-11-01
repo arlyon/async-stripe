@@ -37,9 +37,7 @@ pub struct TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -102,26 +100,6 @@ const _: () = {
 
     impl ObjectDeser for TreasuryFinancialAccountsResourceTogglesSettingStatusDetails {
         type Builder = TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsBuilder;
-    }
-
-    impl FromValueOpt for TreasuryFinancialAccountsResourceTogglesSettingStatusDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsBuilder::deser_default(
-                );
-            for (k, v) in obj {
-                match k.as_str() {
-                    "code" => b.code = FromValueOpt::from_value(v),
-                    "resolution" => b.resolution = FromValueOpt::from_value(v),
-                    "restriction" => b.restriction = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Represents the reason why the status is `pending` or `restricted`.
@@ -230,9 +208,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode
@@ -335,9 +310,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution
@@ -437,9 +409,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction

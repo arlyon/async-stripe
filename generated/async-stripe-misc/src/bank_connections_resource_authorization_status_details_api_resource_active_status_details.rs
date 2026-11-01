@@ -37,9 +37,7 @@ pub struct BankConnectionsResourceAuthorizationStatusDetailsApiResourceActiveSta
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -115,27 +113,6 @@ const _: () = {
     {
         type Builder =
             BankConnectionsResourceAuthorizationStatusDetailsApiResourceActiveStatusDetailsBuilder;
-    }
-
-    impl FromValueOpt
-        for BankConnectionsResourceAuthorizationStatusDetailsApiResourceActiveStatusDetails
-    {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BankConnectionsResourceAuthorizationStatusDetailsApiResourceActiveStatusDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "action" => b.action = FromValueOpt::from_value(v),
-                    "expected_deactivation_date" => {
-                        b.expected_deactivation_date = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The action (if any) to proactively relink the Authorization.
@@ -236,9 +213,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    BankConnectionsResourceAuthorizationStatusDetailsApiResourceActiveStatusDetailsAction
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for BankConnectionsResourceAuthorizationStatusDetailsApiResourceActiveStatusDetailsAction

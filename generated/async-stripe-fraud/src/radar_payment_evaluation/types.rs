@@ -60,9 +60,7 @@ pub struct RadarPaymentEvaluationBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -183,34 +181,6 @@ const _: () = {
     impl ObjectDeser for RadarPaymentEvaluation {
         type Builder = RadarPaymentEvaluationBuilder;
     }
-
-    impl FromValueOpt for RadarPaymentEvaluation {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = RadarPaymentEvaluationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "client_device_metadata_details" => {
-                        b.client_device_metadata_details = FromValueOpt::from_value(v)
-                    }
-                    "created_at" => b.created_at = FromValueOpt::from_value(v),
-                    "customer_details" => b.customer_details = FromValueOpt::from_value(v),
-                    "events" => b.events = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "outcome" => b.outcome = FromValueOpt::from_value(v),
-                    "payment_details" => b.payment_details = FromValueOpt::from_value(v),
-                    "recommended_action" => b.recommended_action = FromValueOpt::from_value(v),
-                    "signals" => b.signals = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for RadarPaymentEvaluation {
@@ -313,7 +283,6 @@ impl miniserde::de::Visitor for crate::Place<RadarPaymentEvaluationRecommendedAc
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(RadarPaymentEvaluationRecommendedAction);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for RadarPaymentEvaluationRecommendedAction {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

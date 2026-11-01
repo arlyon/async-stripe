@@ -31,9 +31,7 @@ status: Option<PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterprise
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -99,23 +97,6 @@ self.status.take(),
 
     impl ObjectDeser for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercapture {
     type Builder = PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercaptureBuilder;
-}
-
-    impl FromValueOpt for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercapture {
-    fn from_value(v: Value) -> Option<Self> {
-        let Value::Object(obj) = v else {
-            return None;
-        };
-        let mut b = PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercaptureBuilder::deser_default();
-        for (k, v) in obj {
-            match k.as_str() {
-            "maximum_amount_capturable" => b.maximum_amount_capturable = FromValueOpt::from_value(v),
-            "status" => b.status = FromValueOpt::from_value(v),
-                _ => {}
-            }
-        }
-        b.take_out()
-    }
 }
 };
 /// Indicates whether or not the authorized amount can be over-captured.
@@ -190,7 +171,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentFlowsPrivatePaymentMethodsCa
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercaptureStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercaptureStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

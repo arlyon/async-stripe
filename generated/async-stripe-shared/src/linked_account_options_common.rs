@@ -37,9 +37,7 @@ return_url: Option<Option<String>>,
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -111,25 +109,6 @@ const _: () = {
 
     impl ObjectDeser for LinkedAccountOptionsCommon {
         type Builder = LinkedAccountOptionsCommonBuilder;
-    }
-
-    impl FromValueOpt for LinkedAccountOptionsCommon {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = LinkedAccountOptionsCommonBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "filters" => b.filters = FromValueOpt::from_value(v),
-                    "permissions" => b.permissions = FromValueOpt::from_value(v),
-                    "prefetch" => b.prefetch = FromValueOpt::from_value(v),
-                    "return_url" => b.return_url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The list of permissions to request. The `payment_method` permission must be included.
@@ -217,7 +196,6 @@ impl miniserde::de::Visitor for crate::Place<LinkedAccountOptionsCommonPermissio
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(LinkedAccountOptionsCommonPermissions);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for LinkedAccountOptionsCommonPermissions {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -308,7 +286,6 @@ impl miniserde::de::Visitor for crate::Place<LinkedAccountOptionsCommonPrefetch>
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(LinkedAccountOptionsCommonPrefetch);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for LinkedAccountOptionsCommonPrefetch {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

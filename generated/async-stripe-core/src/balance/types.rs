@@ -53,9 +53,7 @@ pub struct BalanceBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -152,30 +150,6 @@ const _: () = {
 
     impl ObjectDeser for Balance {
         type Builder = BalanceBuilder;
-    }
-
-    impl FromValueOpt for Balance {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BalanceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "available" => b.available = FromValueOpt::from_value(v),
-                    "connect_reserved" => b.connect_reserved = FromValueOpt::from_value(v),
-                    "instant_available" => b.instant_available = FromValueOpt::from_value(v),
-                    "issuing" => b.issuing = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "pending" => b.pending = FromValueOpt::from_value(v),
-                    "refund_and_dispute_prefunding" => {
-                        b.refund_and_dispute_prefunding = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 #[cfg(feature = "serialize")]

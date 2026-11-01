@@ -36,9 +36,7 @@ pub struct InsightsResourcesPaymentEvaluationSignalV2Builder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -101,24 +99,6 @@ const _: () = {
 
     impl ObjectDeser for InsightsResourcesPaymentEvaluationSignalV2 {
         type Builder = InsightsResourcesPaymentEvaluationSignalV2Builder;
-    }
-
-    impl FromValueOpt for InsightsResourcesPaymentEvaluationSignalV2 {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InsightsResourcesPaymentEvaluationSignalV2Builder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "evaluated_at" => b.evaluated_at = FromValueOpt::from_value(v),
-                    "risk_level" => b.risk_level = FromValueOpt::from_value(v),
-                    "score" => b.score = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Risk level of this signal, based on the score.
@@ -216,7 +196,6 @@ impl miniserde::de::Visitor for crate::Place<InsightsResourcesPaymentEvaluationS
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(InsightsResourcesPaymentEvaluationSignalV2RiskLevel);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InsightsResourcesPaymentEvaluationSignalV2RiskLevel {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

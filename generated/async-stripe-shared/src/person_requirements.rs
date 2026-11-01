@@ -48,9 +48,7 @@ pub struct PersonRequirementsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -143,26 +141,5 @@ const _: () = {
 
     impl ObjectDeser for PersonRequirements {
         type Builder = PersonRequirementsBuilder;
-    }
-
-    impl FromValueOpt for PersonRequirements {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PersonRequirementsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "alternatives" => b.alternatives = FromValueOpt::from_value(v),
-                    "currently_due" => b.currently_due = FromValueOpt::from_value(v),
-                    "errors" => b.errors = FromValueOpt::from_value(v),
-                    "eventually_due" => b.eventually_due = FromValueOpt::from_value(v),
-                    "past_due" => b.past_due = FromValueOpt::from_value(v),
-                    "pending_verification" => b.pending_verification = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

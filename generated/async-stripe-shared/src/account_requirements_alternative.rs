@@ -29,9 +29,7 @@ pub struct AccountRequirementsAlternativeBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -93,24 +91,5 @@ const _: () = {
 
     impl ObjectDeser for AccountRequirementsAlternative {
         type Builder = AccountRequirementsAlternativeBuilder;
-    }
-
-    impl FromValueOpt for AccountRequirementsAlternative {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = AccountRequirementsAlternativeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "alternative_fields_due" => {
-                        b.alternative_fields_due = FromValueOpt::from_value(v)
-                    }
-                    "original_fields_due" => b.original_fields_due = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

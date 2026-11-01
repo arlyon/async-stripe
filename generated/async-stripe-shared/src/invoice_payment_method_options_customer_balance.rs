@@ -31,9 +31,7 @@ pub struct InvoicePaymentMethodOptionsCustomerBalanceBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -95,23 +93,6 @@ const _: () = {
 
     impl ObjectDeser for InvoicePaymentMethodOptionsCustomerBalance {
         type Builder = InvoicePaymentMethodOptionsCustomerBalanceBuilder;
-    }
-
-    impl FromValueOpt for InvoicePaymentMethodOptionsCustomerBalance {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InvoicePaymentMethodOptionsCustomerBalanceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank_transfer" => b.bank_transfer = FromValueOpt::from_value(v),
-                    "funding_type" => b.funding_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The funding method type to be used when there are not enough funds in the customer balance.
@@ -196,7 +177,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(InvoicePaymentMethodOptionsCustomerBalanceFundingType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InvoicePaymentMethodOptionsCustomerBalanceFundingType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

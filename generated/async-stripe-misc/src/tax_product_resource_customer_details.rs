@@ -38,9 +38,7 @@ pub struct TaxProductResourceCustomerDetailsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -122,26 +120,6 @@ const _: () = {
 
     impl ObjectDeser for TaxProductResourceCustomerDetails {
         type Builder = TaxProductResourceCustomerDetailsBuilder;
-    }
-
-    impl FromValueOpt for TaxProductResourceCustomerDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TaxProductResourceCustomerDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "address_source" => b.address_source = FromValueOpt::from_value(v),
-                    "ip_address" => b.ip_address = FromValueOpt::from_value(v),
-                    "tax_ids" => b.tax_ids = FromValueOpt::from_value(v),
-                    "taxability_override" => b.taxability_override = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The type of customer address provided.
@@ -225,7 +203,6 @@ impl miniserde::de::Visitor for crate::Place<TaxProductResourceCustomerDetailsAd
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TaxProductResourceCustomerDetailsAddressSource);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxProductResourceCustomerDetailsAddressSource {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -319,7 +296,6 @@ impl miniserde::de::Visitor for crate::Place<TaxProductResourceCustomerDetailsTa
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TaxProductResourceCustomerDetailsTaxabilityOverride);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxProductResourceCustomerDetailsTaxabilityOverride {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

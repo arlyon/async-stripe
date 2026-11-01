@@ -59,9 +59,7 @@ pub struct FinancialConnectionsSessionBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -185,33 +183,6 @@ const _: () = {
     impl ObjectDeser for FinancialConnectionsSession {
         type Builder = FinancialConnectionsSessionBuilder;
     }
-
-    impl FromValueOpt for FinancialConnectionsSession {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = FinancialConnectionsSessionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_holder" => b.account_holder = FromValueOpt::from_value(v),
-                    "accounts" => b.accounts = FromValueOpt::from_value(v),
-                    "bank_account_token" => b.bank_account_token = FromValueOpt::from_value(v),
-                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
-                    "filters" => b.filters = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "limits" => b.limits = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "manual_entry" => b.manual_entry = FromValueOpt::from_value(v),
-                    "permissions" => b.permissions = FromValueOpt::from_value(v),
-                    "prefetch" => b.prefetch = FromValueOpt::from_value(v),
-                    "return_url" => b.return_url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for FinancialConnectionsSession {
@@ -329,7 +300,6 @@ impl miniserde::de::Visitor for crate::Place<FinancialConnectionsSessionPermissi
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(FinancialConnectionsSessionPermissions);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for FinancialConnectionsSessionPermissions {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -418,7 +388,6 @@ impl miniserde::de::Visitor for crate::Place<FinancialConnectionsSessionPrefetch
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(FinancialConnectionsSessionPrefetch);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for FinancialConnectionsSessionPrefetch {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

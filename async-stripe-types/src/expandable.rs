@@ -73,10 +73,8 @@ impl<T: Object> Expandable<T> {
 #[doc(hidden)]
 mod miniserde {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, make_place};
 
-    use crate::miniserde_helpers::FromValueOpt;
     use crate::{Expandable, FromCursor, Object};
     make_place!(Place);
 
@@ -148,18 +146,6 @@ mod miniserde {
                 out: &mut self.out,
                 builder: T::Builder::deser_default(),
             }))
-        }
-    }
-
-    impl<T: FromValueOpt + Object> FromValueOpt for Expandable<T> {
-        fn from_value(v: Value) -> Option<Self> {
-            match v {
-                Value::String(id) => Some(Self::Id(T::Id::from_cursor(&id)?)),
-                Value::Object(obj) => {
-                    Some(Self::Object(Box::new(T::from_value(Value::Object(obj))?)))
-                }
-                _ => None,
-            }
         }
     }
 }

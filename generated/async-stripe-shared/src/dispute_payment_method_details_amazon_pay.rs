@@ -26,9 +26,7 @@ pub struct DisputePaymentMethodDetailsAmazonPayBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -87,22 +85,6 @@ const _: () = {
 
     impl ObjectDeser for DisputePaymentMethodDetailsAmazonPay {
         type Builder = DisputePaymentMethodDetailsAmazonPayBuilder;
-    }
-
-    impl FromValueOpt for DisputePaymentMethodDetailsAmazonPay {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = DisputePaymentMethodDetailsAmazonPayBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "dispute_type" => b.dispute_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The AmazonPay dispute type, chargeback or claim
@@ -186,7 +168,6 @@ impl miniserde::de::Visitor for crate::Place<DisputePaymentMethodDetailsAmazonPa
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(DisputePaymentMethodDetailsAmazonPayDisputeType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for DisputePaymentMethodDetailsAmazonPayDisputeType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

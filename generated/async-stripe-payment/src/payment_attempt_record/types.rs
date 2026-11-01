@@ -89,9 +89,7 @@ pub struct PaymentAttemptRecordBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -255,43 +253,6 @@ const _: () = {
     impl ObjectDeser for PaymentAttemptRecord {
         type Builder = PaymentAttemptRecordBuilder;
     }
-
-    impl FromValueOpt for PaymentAttemptRecord {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentAttemptRecordBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_authorized" => b.amount_authorized = FromValueOpt::from_value(v),
-                    "amount_canceled" => b.amount_canceled = FromValueOpt::from_value(v),
-                    "amount_failed" => b.amount_failed = FromValueOpt::from_value(v),
-                    "amount_guaranteed" => b.amount_guaranteed = FromValueOpt::from_value(v),
-                    "amount_refunded" => b.amount_refunded = FromValueOpt::from_value(v),
-                    "amount_requested" => b.amount_requested = FromValueOpt::from_value(v),
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "customer_details" => b.customer_details = FromValueOpt::from_value(v),
-                    "customer_presence" => b.customer_presence = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "payment_method_details" => {
-                        b.payment_method_details = FromValueOpt::from_value(v)
-                    }
-                    "payment_record" => b.payment_record = FromValueOpt::from_value(v),
-                    "processor_details" => b.processor_details = FromValueOpt::from_value(v),
-                    "reported_by" => b.reported_by = FromValueOpt::from_value(v),
-                    "shipping_details" => b.shipping_details = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for PaymentAttemptRecord {
@@ -402,7 +363,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentAttemptRecordCustomerPresenc
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentAttemptRecordCustomerPresence);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentAttemptRecordCustomerPresence {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -490,7 +450,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentAttemptRecordReportedBy> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentAttemptRecordReportedBy);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentAttemptRecordReportedBy {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

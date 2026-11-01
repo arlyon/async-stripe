@@ -38,9 +38,7 @@ pub struct SubscriptionsResourceSubscriptionInvoiceSettingsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -122,25 +120,5 @@ const _: () = {
 
     impl ObjectDeser for SubscriptionsResourceSubscriptionInvoiceSettings {
         type Builder = SubscriptionsResourceSubscriptionInvoiceSettingsBuilder;
-    }
-
-    impl FromValueOpt for SubscriptionsResourceSubscriptionInvoiceSettings {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SubscriptionsResourceSubscriptionInvoiceSettingsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_tax_ids" => b.account_tax_ids = FromValueOpt::from_value(v),
-                    "custom_fields" => b.custom_fields = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "footer" => b.footer = FromValueOpt::from_value(v),
-                    "issuer" => b.issuer = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

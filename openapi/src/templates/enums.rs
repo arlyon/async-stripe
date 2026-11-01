@@ -268,7 +268,6 @@ impl ObjectWriter<'_> {
                 }}
             }}
 
-            stripe_types::impl_from_val_with_from_str!({enum_name});
            "#
             );
         }

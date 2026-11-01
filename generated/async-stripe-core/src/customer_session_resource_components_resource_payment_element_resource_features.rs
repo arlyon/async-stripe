@@ -61,9 +61,7 @@ payment_method_save_usage: Option<Option<CustomerSessionResourceComponentsResour
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -167,37 +165,6 @@ const _: () = {
         type Builder =
             CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesBuilder;
     }
-
-    impl FromValueOpt for CustomerSessionResourceComponentsResourcePaymentElementResourceFeatures {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "payment_method_allow_redisplay_filters" => {
-                        b.payment_method_allow_redisplay_filters = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_redisplay" => {
-                        b.payment_method_redisplay = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_redisplay_limit" => {
-                        b.payment_method_redisplay_limit = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_remove" => {
-                        b.payment_method_remove = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_save" => b.payment_method_save = FromValueOpt::from_value(v),
-                    "payment_method_save_usage" => {
-                        b.payment_method_save_usage = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// A list of [`allow_redisplay`](https://docs.stripe.com/api/payment_methods/object#payment_method_object-allow_redisplay) values that controls which saved payment methods the Payment Element displays by filtering to only show payment methods with an `allow_redisplay` value that is present in this list.
 ///
@@ -277,7 +244,6 @@ impl miniserde::de::Visitor for crate::Place<CustomerSessionResourceComponentsRe
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -358,9 +324,6 @@ impl miniserde::de::Visitor for crate::Place<CustomerSessionResourceComponentsRe
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -469,9 +432,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove
@@ -581,9 +541,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave
@@ -667,9 +624,6 @@ impl miniserde::de::Visitor for crate::Place<CustomerSessionResourceComponentsRe
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

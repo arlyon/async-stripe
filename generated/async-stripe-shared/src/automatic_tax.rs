@@ -41,9 +41,7 @@ pub struct AutomaticTaxBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -126,26 +124,6 @@ const _: () = {
     impl ObjectDeser for AutomaticTax {
         type Builder = AutomaticTaxBuilder;
     }
-
-    impl FromValueOpt for AutomaticTax {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = AutomaticTaxBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "disabled_reason" => b.disabled_reason = FromValueOpt::from_value(v),
-                    "enabled" => b.enabled = FromValueOpt::from_value(v),
-                    "liability" => b.liability = FromValueOpt::from_value(v),
-                    "provider" => b.provider = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// If Stripe disabled automatic tax, this enum describes why.
 #[derive(Clone, Eq, PartialEq)]
@@ -222,7 +200,6 @@ impl miniserde::de::Visitor for crate::Place<AutomaticTaxDisabledReason> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(AutomaticTaxDisabledReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for AutomaticTaxDisabledReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -309,7 +286,6 @@ impl miniserde::de::Visitor for crate::Place<AutomaticTaxStatus> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(AutomaticTaxStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for AutomaticTaxStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

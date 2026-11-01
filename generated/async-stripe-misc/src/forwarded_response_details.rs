@@ -33,9 +33,7 @@ pub struct ForwardedResponseDetailsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -98,23 +96,5 @@ const _: () = {
 
     impl ObjectDeser for ForwardedResponseDetails {
         type Builder = ForwardedResponseDetailsBuilder;
-    }
-
-    impl FromValueOpt for ForwardedResponseDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ForwardedResponseDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "body" => b.body = FromValueOpt::from_value(v),
-                    "headers" => b.headers = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

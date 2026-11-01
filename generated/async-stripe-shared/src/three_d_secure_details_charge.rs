@@ -53,9 +53,7 @@ pub struct ThreeDSecureDetailsChargeBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -163,33 +161,6 @@ const _: () = {
     impl ObjectDeser for ThreeDSecureDetailsCharge {
         type Builder = ThreeDSecureDetailsChargeBuilder;
     }
-
-    impl FromValueOpt for ThreeDSecureDetailsCharge {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ThreeDSecureDetailsChargeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "authentication_flow" => b.authentication_flow = FromValueOpt::from_value(v),
-                    "electronic_commerce_indicator" => {
-                        b.electronic_commerce_indicator = FromValueOpt::from_value(v)
-                    }
-                    "exemption_indicator" => b.exemption_indicator = FromValueOpt::from_value(v),
-                    "exemption_indicator_applied" => {
-                        b.exemption_indicator_applied = FromValueOpt::from_value(v)
-                    }
-                    "result" => b.result = FromValueOpt::from_value(v),
-                    "result_reason" => b.result_reason = FromValueOpt::from_value(v),
-                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
-                    "version" => b.version = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// For authenticated transactions: how the customer was authenticated by
 /// the issuing bank.
@@ -273,7 +244,6 @@ impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeAuthentica
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsChargeAuthenticationFlow);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsChargeAuthenticationFlow {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -374,7 +344,6 @@ impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeElectronic
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsChargeElectronicCommerceIndicator);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsChargeElectronicCommerceIndicator {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -464,7 +433,6 @@ impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeExemptionI
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsChargeExemptionIndicator);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsChargeExemptionIndicator {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -567,7 +535,6 @@ impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeResult> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsChargeResult);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsChargeResult {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -671,7 +638,6 @@ impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeResultReas
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsChargeResultReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsChargeResultReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -768,7 +734,6 @@ impl miniserde::de::Visitor for crate::Place<ThreeDSecureDetailsChargeVersion> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ThreeDSecureDetailsChargeVersion);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsChargeVersion {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -66,9 +66,7 @@ pub struct InvoicePaymentBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -186,32 +184,6 @@ const _: () = {
 
     impl ObjectDeser for InvoicePayment {
         type Builder = InvoicePaymentBuilder;
-    }
-
-    impl FromValueOpt for InvoicePayment {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InvoicePaymentBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_paid" => b.amount_paid = FromValueOpt::from_value(v),
-                    "amount_requested" => b.amount_requested = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "invoice" => b.invoice = FromValueOpt::from_value(v),
-                    "is_default" => b.is_default = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "payment" => b.payment = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 #[cfg(feature = "serialize")]

@@ -59,9 +59,7 @@ pub struct TerminalLocationBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -179,34 +177,6 @@ const _: () = {
 
     impl ObjectDeser for TerminalLocation {
         type Builder = TerminalLocationBuilder;
-    }
-
-    impl FromValueOpt for TerminalLocation {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TerminalLocationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "address_kana" => b.address_kana = FromValueOpt::from_value(v),
-                    "address_kanji" => b.address_kanji = FromValueOpt::from_value(v),
-                    "configuration_overrides" => {
-                        b.configuration_overrides = FromValueOpt::from_value(v)
-                    }
-                    "display_name" => b.display_name = FromValueOpt::from_value(v),
-                    "display_name_kana" => b.display_name_kana = FromValueOpt::from_value(v),
-                    "display_name_kanji" => b.display_name_kanji = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 #[cfg(feature = "serialize")]

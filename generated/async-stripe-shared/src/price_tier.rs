@@ -38,9 +38,7 @@ pub struct PriceTierBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -125,25 +123,5 @@ const _: () = {
 
     impl ObjectDeser for PriceTier {
         type Builder = PriceTierBuilder;
-    }
-
-    impl FromValueOpt for PriceTier {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PriceTierBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "flat_amount" => b.flat_amount = FromValueOpt::from_value(v),
-                    "flat_amount_decimal" => b.flat_amount_decimal = FromValueOpt::from_value(v),
-                    "unit_amount" => b.unit_amount = FromValueOpt::from_value(v),
-                    "unit_amount_decimal" => b.unit_amount_decimal = FromValueOpt::from_value(v),
-                    "up_to" => b.up_to = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

@@ -70,9 +70,7 @@ pub struct IssuingAuthorizationRequestBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -195,33 +193,6 @@ const _: () = {
 
     impl ObjectDeser for IssuingAuthorizationRequest {
         type Builder = IssuingAuthorizationRequestBuilder;
-    }
-
-    impl FromValueOpt for IssuingAuthorizationRequest {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingAuthorizationRequestBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_details" => b.amount_details = FromValueOpt::from_value(v),
-                    "approved" => b.approved = FromValueOpt::from_value(v),
-                    "authorization_code" => b.authorization_code = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "merchant_amount" => b.merchant_amount = FromValueOpt::from_value(v),
-                    "merchant_currency" => b.merchant_currency = FromValueOpt::from_value(v),
-                    "network_risk_score" => b.network_risk_score = FromValueOpt::from_value(v),
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "reason_message" => b.reason_message = FromValueOpt::from_value(v),
-                    "requested_at" => b.requested_at = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// When an authorization is approved or declined by you or by Stripe, this field provides additional detail on the reason for the outcome.
@@ -360,7 +331,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationRequestReason> 
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationRequestReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationRequestReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

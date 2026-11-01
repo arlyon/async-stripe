@@ -26,9 +26,7 @@ pub struct PaymentMethodP24Builder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -87,22 +85,6 @@ const _: () = {
 
     impl ObjectDeser for PaymentMethodP24 {
         type Builder = PaymentMethodP24Builder;
-    }
-
-    impl FromValueOpt for PaymentMethodP24 {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodP24Builder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank" => b.bank = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The customer's bank, if provided.
@@ -252,7 +234,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodP24Bank> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodP24Bank);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodP24Bank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

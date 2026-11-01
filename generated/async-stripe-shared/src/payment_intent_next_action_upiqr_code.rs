@@ -32,9 +32,7 @@ pub struct PaymentIntentNextActionUpiqrCodeBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -97,23 +95,5 @@ const _: () = {
 
     impl ObjectDeser for PaymentIntentNextActionUpiqrCode {
         type Builder = PaymentIntentNextActionUpiqrCodeBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentNextActionUpiqrCode {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentIntentNextActionUpiqrCodeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "image_url_png" => b.image_url_png = FromValueOpt::from_value(v),
-                    "image_url_svg" => b.image_url_svg = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

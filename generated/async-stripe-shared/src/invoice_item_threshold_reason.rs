@@ -29,9 +29,7 @@ pub struct InvoiceItemThresholdReasonBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -93,22 +91,5 @@ const _: () = {
 
     impl ObjectDeser for InvoiceItemThresholdReason {
         type Builder = InvoiceItemThresholdReasonBuilder;
-    }
-
-    impl FromValueOpt for InvoiceItemThresholdReason {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InvoiceItemThresholdReasonBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "line_item_ids" => b.line_item_ids = FromValueOpt::from_value(v),
-                    "usage_gte" => b.usage_gte = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

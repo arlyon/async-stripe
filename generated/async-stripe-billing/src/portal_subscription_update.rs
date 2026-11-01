@@ -51,9 +51,7 @@ pub struct PortalSubscriptionUpdateBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -152,34 +150,6 @@ const _: () = {
     impl ObjectDeser for PortalSubscriptionUpdate {
         type Builder = PortalSubscriptionUpdateBuilder;
     }
-
-    impl FromValueOpt for PortalSubscriptionUpdate {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PortalSubscriptionUpdateBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "billing_cycle_anchor" => b.billing_cycle_anchor = FromValueOpt::from_value(v),
-                    "default_allowed_updates" => {
-                        b.default_allowed_updates = FromValueOpt::from_value(v)
-                    }
-                    "enabled" => b.enabled = FromValueOpt::from_value(v),
-                    "products" => b.products = FromValueOpt::from_value(v),
-                    "proration_behavior" => b.proration_behavior = FromValueOpt::from_value(v),
-                    "schedule_at_period_end" => {
-                        b.schedule_at_period_end = FromValueOpt::from_value(v)
-                    }
-                    "trial_update_behavior" => {
-                        b.trial_update_behavior = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// Determines the value to use for the billing cycle anchor on subscription updates.
 /// Valid values are `now` or `unchanged`, and the default value is `unchanged`.
@@ -265,7 +235,6 @@ impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateBillingCycl
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PortalSubscriptionUpdateBillingCycleAnchor);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateBillingCycleAnchor {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -359,7 +328,6 @@ impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateDefaultAllo
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PortalSubscriptionUpdateDefaultAllowedUpdates);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateDefaultAllowedUpdates {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -454,7 +422,6 @@ impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateProrationBe
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PortalSubscriptionUpdateProrationBehavior);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateProrationBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -546,7 +513,6 @@ impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateTrialUpdate
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PortalSubscriptionUpdateTrialUpdateBehavior);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateTrialUpdateBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

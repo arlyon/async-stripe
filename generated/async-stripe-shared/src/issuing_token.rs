@@ -60,9 +60,7 @@ pub struct IssuingTokenBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -181,32 +179,6 @@ const _: () = {
     impl ObjectDeser for IssuingToken {
         type Builder = IssuingTokenBuilder;
     }
-
-    impl FromValueOpt for IssuingToken {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingTokenBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "card" => b.card = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "device_fingerprint" => b.device_fingerprint = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "network" => b.network = FromValueOpt::from_value(v),
-                    "network_data" => b.network_data = FromValueOpt::from_value(v),
-                    "network_updated_at" => b.network_updated_at = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "wallet_provider" => b.wallet_provider = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for IssuingToken {
@@ -304,7 +276,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingTokenNetwork> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingTokenNetwork);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingTokenNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -391,7 +362,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingTokenWalletProvider> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingTokenWalletProvider);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingTokenWalletProvider {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -490,7 +460,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingTokenStatus> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingTokenStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingTokenStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

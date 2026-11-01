@@ -43,9 +43,7 @@ pub struct SetupAttemptPaymentMethodDetailsIdealBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -140,29 +138,6 @@ const _: () = {
 
     impl ObjectDeser for SetupAttemptPaymentMethodDetailsIdeal {
         type Builder = SetupAttemptPaymentMethodDetailsIdealBuilder;
-    }
-
-    impl FromValueOpt for SetupAttemptPaymentMethodDetailsIdeal {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SetupAttemptPaymentMethodDetailsIdealBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank" => b.bank = FromValueOpt::from_value(v),
-                    "bic" => b.bic = FromValueOpt::from_value(v),
-                    "generated_sepa_debit" => b.generated_sepa_debit = FromValueOpt::from_value(v),
-                    "generated_sepa_debit_mandate" => {
-                        b.generated_sepa_debit_mandate = FromValueOpt::from_value(v)
-                    }
-                    "iban_last4" => b.iban_last4 = FromValueOpt::from_value(v),
-                    "verified_name" => b.verified_name = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The customer's bank.
@@ -301,7 +276,6 @@ impl miniserde::de::Visitor for crate::Place<SetupAttemptPaymentMethodDetailsIde
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SetupAttemptPaymentMethodDetailsIdealBank);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupAttemptPaymentMethodDetailsIdealBank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -446,7 +420,6 @@ impl miniserde::de::Visitor for crate::Place<SetupAttemptPaymentMethodDetailsIde
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SetupAttemptPaymentMethodDetailsIdealBic);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupAttemptPaymentMethodDetailsIdealBic {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

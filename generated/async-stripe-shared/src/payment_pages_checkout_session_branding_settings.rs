@@ -45,9 +45,7 @@ pub struct PaymentPagesCheckoutSessionBrandingSettingsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -146,28 +144,6 @@ const _: () = {
     impl ObjectDeser for PaymentPagesCheckoutSessionBrandingSettings {
         type Builder = PaymentPagesCheckoutSessionBrandingSettingsBuilder;
     }
-
-    impl FromValueOpt for PaymentPagesCheckoutSessionBrandingSettings {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentPagesCheckoutSessionBrandingSettingsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "background_color" => b.background_color = FromValueOpt::from_value(v),
-                    "border_style" => b.border_style = FromValueOpt::from_value(v),
-                    "button_color" => b.button_color = FromValueOpt::from_value(v),
-                    "display_name" => b.display_name = FromValueOpt::from_value(v),
-                    "font_family" => b.font_family = FromValueOpt::from_value(v),
-                    "icon" => b.icon = FromValueOpt::from_value(v),
-                    "logo" => b.logo = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// The border style for the Checkout Session. Must be one of `rounded`, `rectangular`, or `pill`.
 #[derive(Clone, Eq, PartialEq)]
@@ -257,7 +233,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentPagesCheckoutSessionBrandingSettingsBorderStyle);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionBrandingSettingsBorderStyle {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

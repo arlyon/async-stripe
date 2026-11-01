@@ -36,9 +36,7 @@ type_: Option<BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType>
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -109,28 +107,6 @@ const _: () = {
 
     impl ObjectDeser for BillingBillResourceInvoicingLinesParentsInvoiceLineItemParent {
         type Builder = BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentBuilder;
-    }
-
-    impl FromValueOpt for BillingBillResourceInvoicingLinesParentsInvoiceLineItemParent {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentBuilder::deser_default(
-                );
-            for (k, v) in obj {
-                match k.as_str() {
-                    "invoice_item_details" => b.invoice_item_details = FromValueOpt::from_value(v),
-                    "subscription_item_details" => {
-                        b.subscription_item_details = FromValueOpt::from_value(v)
-                    }
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The type of parent that generated this line item
@@ -220,9 +196,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType

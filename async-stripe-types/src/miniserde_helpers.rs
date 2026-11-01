@@ -1,13 +1,9 @@
 #![allow(missing_debug_implementations)]
-use std::collections::HashMap;
 use std::mem;
-use std::str::FromStr;
 
 use miniserde::Deserialize;
 use miniserde::de::Visitor;
 use miniserde::json::{Number, Object, Value};
-
-use crate::Currency;
 
 #[derive(Default)]
 pub struct ObjectBuilderInner {
@@ -75,137 +71,50 @@ impl MaybeDeletedBuilderInner {
     }
 }
 
+/// Deserialize a parsed JSON value using the type's miniserde visitor.
+///
+/// All `miniserde::Deserialize` types implement this trait automatically.
 pub trait FromValueOpt {
     fn from_value(v: Value) -> Option<Self>
     where
         Self: Sized;
 }
 
-impl FromValueOpt for bool {
-    fn from_value(v: Value) -> Option<Self> {
-        match v {
-            Value::Bool(b) => Some(b),
-            _ => None,
+/// Replay a parsed JSON value through miniserde's streaming deserializer.
+///
+/// This uses the same visitors as JSON text deserialization, including their
+/// validation of optional fields and numeric ranges.
+pub fn drive(value: &Value, visitor: &mut dyn Visitor) -> miniserde::Result<()> {
+    match value {
+        Value::Null => visitor.null(),
+        Value::Bool(b) => visitor.boolean(*b),
+        Value::Number(Number::U64(n)) => visitor.nonnegative(*n),
+        Value::Number(Number::I64(n)) if *n >= 0 => visitor.nonnegative(*n as u64),
+        Value::Number(Number::I64(n)) => visitor.negative(*n),
+        Value::Number(Number::F64(n)) => visitor.float(*n),
+        Value::String(s) => visitor.string(s),
+        Value::Array(items) => {
+            let mut seq = visitor.seq()?;
+            for item in items {
+                drive(item, seq.element()?)?;
+            }
+            seq.finish()
+        }
+        Value::Object(obj) => {
+            let mut map = visitor.map()?;
+            for (k, v) in obj {
+                drive(v, map.key(k)?)?;
+            }
+            map.finish()
         }
     }
 }
 
-impl FromValueOpt for i64 {
+impl<T: Deserialize> FromValueOpt for T {
     fn from_value(v: Value) -> Option<Self> {
-        match v {
-            Value::Number(num) => match num {
-                Number::U64(u) => Some(u as i64),
-                Number::I64(i) => Some(i),
-                Number::F64(_) => None,
-            },
-            _ => None,
-        }
-    }
-}
-
-impl FromValueOpt for u64 {
-    fn from_value(v: Value) -> Option<Self> {
-        match v {
-            Value::Number(num) => match num {
-                Number::U64(u) => Some(u),
-                Number::I64(i) => Some(i.try_into().ok()?),
-                Number::F64(_) => None,
-            },
-            _ => None,
-        }
-    }
-}
-
-impl FromValueOpt for f64 {
-    fn from_value(v: Value) -> Option<Self> {
-        match v {
-            Value::Number(num) => match num {
-                Number::U64(u) => Some(u as f64),
-                Number::I64(i) => Some(i as f64),
-                Number::F64(f) => Some(f),
-            },
-            _ => None,
-        }
-    }
-}
-impl FromValueOpt for u32 {
-    fn from_value(v: Value) -> Option<Self> {
-        match v {
-            Value::Number(num) => match num {
-                Number::U64(u) => Some(u.try_into().ok()?),
-                Number::I64(i) => Some(i.try_into().ok()?),
-                Number::F64(_) => None,
-            },
-            _ => None,
-        }
-    }
-}
-impl FromValueOpt for u8 {
-    fn from_value(v: Value) -> Option<Self> {
-        match v {
-            Value::Number(num) => match num {
-                Number::U64(u) => Some(u.try_into().ok()?),
-                Number::I64(i) => Some(i.try_into().ok()?),
-                Number::F64(_) => None,
-            },
-            _ => None,
-        }
-    }
-}
-
-impl FromValueOpt for String {
-    fn from_value(v: Value) -> Option<Self> {
-        match v {
-            Value::String(str) => Some(str),
-            _ => None,
-        }
-    }
-}
-
-impl<T: FromValueOpt> FromValueOpt for Option<T> {
-    fn from_value(v: Value) -> Option<Self> {
-        match v {
-            Value::Null => Some(None),
-            val => Some(T::from_value(val)),
-        }
-    }
-}
-
-impl<T: FromValueOpt> FromValueOpt for Vec<T> {
-    fn from_value(v: Value) -> Option<Self> {
-        match v {
-            Value::Array(items) => items.into_iter().map(|i| T::from_value(i)).collect(),
-            _ => None,
-        }
-    }
-}
-
-impl<V: FromValueOpt> FromValueOpt for HashMap<String, V> {
-    fn from_value(v: Value) -> Option<Self> {
-        let Value::Object(obj) = v else {
-            return None;
-        };
-        obj.into_iter()
-            .map(|(k, v)| {
-                let v = V::from_value(v)?;
-                Some((k, v))
-            })
-            .collect::<Option<HashMap<_, _>>>()
-    }
-}
-
-impl<V: FromValueOpt> FromValueOpt for HashMap<Currency, V> {
-    fn from_value(v: Value) -> Option<Self> {
-        let Value::Object(obj) = v else {
-            return None;
-        };
-        obj.into_iter()
-            .map(|(k, v)| {
-                let k = Currency::from_str(&k).ok()?;
-                let v = V::from_value(v)?;
-                Some((k, v))
-            })
-            .collect::<Option<HashMap<_, _>>>()
+        let mut out = None;
+        drive(&v, T::begin(&mut out)).ok()?;
+        out
     }
 }
 
@@ -219,30 +128,99 @@ pub fn extract_object_discr(value: Value) -> Option<(String, Object)> {
     Some((obj_str, obj))
 }
 
-impl FromValueOpt for Value {
-    fn from_value(v: Value) -> Option<Self> {
-        Some(v)
-    }
-}
-
-impl<T: FromValueOpt> FromValueOpt for Box<T> {
-    fn from_value(v: Value) -> Option<Self> {
-        Some(Box::new(T::from_value(v)?))
-    }
-}
-
+/// Retained for compatibility; implement `miniserde::Deserialize` instead.
 #[macro_export]
+#[deprecated(note = "FromValueOpt is now implemented for all miniserde::Deserialize types")]
 macro_rules! impl_from_val_with_from_str {
-    ($struct_name:ident) => {
-        impl $crate::miniserde_helpers::FromValueOpt for $struct_name {
-            fn from_value(v: miniserde::json::Value) -> Option<Self> {
-                match v {
-                    miniserde::json::Value::String(str) => std::str::FromStr::from_str(&str).ok(),
-                    _ => None,
-                }
-            }
-        }
-    };
+    ($struct_name:ident) => {};
 }
 
-impl_from_val_with_from_str!(Currency);
+#[cfg(test)]
+#[allow(deprecated)] // Exercise the compatibility macro without warning at every test build.
+mod tests {
+    use std::collections::HashMap;
+
+    use super::*;
+    use crate::{AlwaysTrue, Currency, List};
+
+    fn parse<T: FromValueOpt>(json: &str) -> Option<T> {
+        T::from_value(miniserde::json::from_str(json).unwrap())
+    }
+
+    #[test]
+    fn numeric_ranges_match_streaming() {
+        assert_eq!(parse::<i64>("9223372036854775807"), Some(i64::MAX));
+        assert_eq!(parse::<i64>("-9223372036854775808"), Some(i64::MIN));
+        assert_eq!(parse::<i64>("18446744073709551615"), None);
+        assert_eq!(parse::<u64>("18446744073709551615"), Some(u64::MAX));
+        assert_eq!(parse::<u64>("-1"), None);
+        assert_eq!(parse::<u32>("4294967296"), None);
+        assert_eq!(parse::<u8>("256"), None);
+        assert_eq!(parse::<f64>("42"), Some(42.0));
+        assert_eq!(parse::<f64>("-42"), Some(-42.0));
+        assert_eq!(parse::<f64>("1.5"), Some(1.5));
+        assert_eq!(parse::<i64>("1.5"), None);
+        // Values constructed by callers can contain nonnegative signed numbers.
+        assert_eq!(u64::from_value(Value::Number(Number::I64(42))), Some(42));
+        assert_eq!(u64::from_value(Value::Number(Number::I64(0))), Some(0));
+    }
+
+    #[test]
+    fn containers_and_currency_use_existing_visitors() {
+        assert_eq!(parse::<Option<bool>>("null"), Some(None));
+        assert_eq!(parse::<Option<bool>>("true"), Some(Some(true)));
+        assert_eq!(parse::<Option<bool>>(r#""invalid""#), None);
+        assert_eq!(parse::<Vec<Box<u8>>>("[1,2]"), Some(vec![Box::new(1), Box::new(2)]));
+        assert_eq!(parse::<Vec<Option<u8>>>("[1,null]"), Some(vec![Some(1), None]));
+        assert_eq!(parse::<Vec<Option<u8>>>(r#"[1,"invalid"]"#), None);
+        let map = parse::<HashMap<Currency, i64>>(r#"{"usd":12,"new_currency":-3}"#).unwrap();
+        assert_eq!(map.get(&Currency::USD), Some(&12));
+        assert_eq!(map.get(&"new_currency".parse().unwrap()), Some(&-3));
+        assert_eq!(parse::<HashMap<String, Option<bool>>>(r#"{"x":123}"#), None);
+        let json = r#"{"a":[null,true,-1,2,1.5,"x"],"b":{}}"#;
+        let value: Value = miniserde::json::from_str(json).unwrap();
+        assert_eq!(
+            miniserde::json::to_string(&parse::<Value>(json).unwrap()),
+            miniserde::json::to_string(&value)
+        );
+        assert!(parse::<AlwaysTrue>("true").is_some());
+        assert!(parse::<AlwaysTrue>("false").is_none());
+    }
+
+    #[derive(Debug, PartialEq, Deserialize)]
+    struct OptionalField {
+        value: Option<u8>,
+    }
+
+    // An old external macro invocation remains valid alongside Deserialize.
+    crate::impl_from_val_with_from_str!(OptionalField);
+
+    #[test]
+    fn blanket_impl_supports_derived_types_and_rejects_bad_optional_fields() {
+        assert_eq!(parse::<OptionalField>("{}"), Some(OptionalField { value: None }));
+        assert_eq!(
+            parse::<OptionalField>(r#"{"value":null}"#),
+            Some(OptionalField { value: None })
+        );
+        assert_eq!(
+            parse::<OptionalField>(r#"{"value":3}"#),
+            Some(OptionalField { value: Some(3) })
+        );
+        assert_eq!(parse::<OptionalField>(r#"{"value":"invalid"}"#), None);
+        assert_eq!(
+            parse::<OptionalField>(r#"{"ignored":[{},null]}"#),
+            Some(OptionalField { value: None })
+        );
+        let list = parse::<List<OptionalField>>(
+            r#"{"data":[{"value":3}],"has_more":false,"url":"/test"}"#,
+        )
+        .unwrap();
+        assert_eq!(list.data, vec![OptionalField { value: Some(3) }]);
+        assert!(
+            parse::<List<OptionalField>>(
+                r#"{"data":[{"value":"invalid"}],"has_more":false,"url":"/test"}"#,
+            )
+            .is_none()
+        );
+    }
+}

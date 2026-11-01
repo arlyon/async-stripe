@@ -64,9 +64,7 @@ pub struct BillingPortalConfigurationBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -194,34 +192,6 @@ const _: () = {
 
     impl ObjectDeser for BillingPortalConfiguration {
         type Builder = BillingPortalConfigurationBuilder;
-    }
-
-    impl FromValueOpt for BillingPortalConfiguration {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BillingPortalConfigurationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "active" => b.active = FromValueOpt::from_value(v),
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "business_profile" => b.business_profile = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "default_return_url" => b.default_return_url = FromValueOpt::from_value(v),
-                    "features" => b.features = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "is_default" => b.is_default = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "login_page" => b.login_page = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "updated" => b.updated = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 #[cfg(feature = "serialize")]

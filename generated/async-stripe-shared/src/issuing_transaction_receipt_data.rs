@@ -35,9 +35,7 @@ pub struct IssuingTransactionReceiptDataBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -106,24 +104,5 @@ const _: () = {
 
     impl ObjectDeser for IssuingTransactionReceiptData {
         type Builder = IssuingTransactionReceiptDataBuilder;
-    }
-
-    impl FromValueOpt for IssuingTransactionReceiptData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingTransactionReceiptDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "quantity" => b.quantity = FromValueOpt::from_value(v),
-                    "total" => b.total = FromValueOpt::from_value(v),
-                    "unit_cost" => b.unit_cost = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

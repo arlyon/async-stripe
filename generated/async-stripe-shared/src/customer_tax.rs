@@ -36,9 +36,7 @@ pub struct CustomerTaxBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -110,25 +108,6 @@ const _: () = {
 
     impl ObjectDeser for CustomerTax {
         type Builder = CustomerTaxBuilder;
-    }
-
-    impl FromValueOpt for CustomerTax {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CustomerTaxBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
-                    "ip_address" => b.ip_address = FromValueOpt::from_value(v),
-                    "location" => b.location = FromValueOpt::from_value(v),
-                    "provider" => b.provider = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Surfaces if automatic tax computation is possible given the current customer location information.
@@ -212,7 +191,6 @@ impl miniserde::de::Visitor for crate::Place<CustomerTaxAutomaticTax> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CustomerTaxAutomaticTax);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CustomerTaxAutomaticTax {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -303,7 +281,6 @@ impl miniserde::de::Visitor for crate::Place<CustomerTaxProvider> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CustomerTaxProvider);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CustomerTaxProvider {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

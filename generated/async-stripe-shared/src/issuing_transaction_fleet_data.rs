@@ -37,9 +37,7 @@ pub struct IssuingTransactionFleetDataBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -122,26 +120,5 @@ const _: () = {
 
     impl ObjectDeser for IssuingTransactionFleetData {
         type Builder = IssuingTransactionFleetDataBuilder;
-    }
-
-    impl FromValueOpt for IssuingTransactionFleetData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingTransactionFleetDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "cardholder_prompt_data" => {
-                        b.cardholder_prompt_data = FromValueOpt::from_value(v)
-                    }
-                    "purchase_type" => b.purchase_type = FromValueOpt::from_value(v),
-                    "reported_breakdown" => b.reported_breakdown = FromValueOpt::from_value(v),
-                    "service_type" => b.service_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

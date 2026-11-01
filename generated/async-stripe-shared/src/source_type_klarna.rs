@@ -75,9 +75,7 @@ pub struct SourceTypeKlarnaBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -286,64 +284,5 @@ const _: () = {
 
     impl ObjectDeser for SourceTypeKlarna {
         type Builder = SourceTypeKlarnaBuilder;
-    }
-
-    impl FromValueOpt for SourceTypeKlarna {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceTypeKlarnaBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "background_image_url" => b.background_image_url = FromValueOpt::from_value(v),
-                    "client_token" => b.client_token = FromValueOpt::from_value(v),
-                    "first_name" => b.first_name = FromValueOpt::from_value(v),
-                    "last_name" => b.last_name = FromValueOpt::from_value(v),
-                    "locale" => b.locale = FromValueOpt::from_value(v),
-                    "logo_url" => b.logo_url = FromValueOpt::from_value(v),
-                    "page_title" => b.page_title = FromValueOpt::from_value(v),
-                    "pay_later_asset_urls_descriptive" => {
-                        b.pay_later_asset_urls_descriptive = FromValueOpt::from_value(v)
-                    }
-                    "pay_later_asset_urls_standard" => {
-                        b.pay_later_asset_urls_standard = FromValueOpt::from_value(v)
-                    }
-                    "pay_later_name" => b.pay_later_name = FromValueOpt::from_value(v),
-                    "pay_later_redirect_url" => {
-                        b.pay_later_redirect_url = FromValueOpt::from_value(v)
-                    }
-                    "pay_now_asset_urls_descriptive" => {
-                        b.pay_now_asset_urls_descriptive = FromValueOpt::from_value(v)
-                    }
-                    "pay_now_asset_urls_standard" => {
-                        b.pay_now_asset_urls_standard = FromValueOpt::from_value(v)
-                    }
-                    "pay_now_name" => b.pay_now_name = FromValueOpt::from_value(v),
-                    "pay_now_redirect_url" => b.pay_now_redirect_url = FromValueOpt::from_value(v),
-                    "pay_over_time_asset_urls_descriptive" => {
-                        b.pay_over_time_asset_urls_descriptive = FromValueOpt::from_value(v)
-                    }
-                    "pay_over_time_asset_urls_standard" => {
-                        b.pay_over_time_asset_urls_standard = FromValueOpt::from_value(v)
-                    }
-                    "pay_over_time_name" => b.pay_over_time_name = FromValueOpt::from_value(v),
-                    "pay_over_time_redirect_url" => {
-                        b.pay_over_time_redirect_url = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_categories" => {
-                        b.payment_method_categories = FromValueOpt::from_value(v)
-                    }
-                    "purchase_country" => b.purchase_country = FromValueOpt::from_value(v),
-                    "purchase_type" => b.purchase_type = FromValueOpt::from_value(v),
-                    "redirect_url" => b.redirect_url = FromValueOpt::from_value(v),
-                    "shipping_delay" => b.shipping_delay = FromValueOpt::from_value(v),
-                    "shipping_first_name" => b.shipping_first_name = FromValueOpt::from_value(v),
-                    "shipping_last_name" => b.shipping_last_name = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

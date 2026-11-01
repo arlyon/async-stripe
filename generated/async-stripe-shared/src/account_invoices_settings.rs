@@ -30,9 +30,7 @@ pub struct AccountInvoicesSettingsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -96,27 +94,6 @@ const _: () = {
 
     impl ObjectDeser for AccountInvoicesSettings {
         type Builder = AccountInvoicesSettingsBuilder;
-    }
-
-    impl FromValueOpt for AccountInvoicesSettings {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = AccountInvoicesSettingsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "default_account_tax_ids" => {
-                        b.default_account_tax_ids = FromValueOpt::from_value(v)
-                    }
-                    "hosted_payment_method_save" => {
-                        b.hosted_payment_method_save = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Whether to save the payment method after a payment is completed for a one-time invoice or a subscription invoice when the customer already has a default payment method on the hosted invoice page.
@@ -203,7 +180,6 @@ impl miniserde::de::Visitor for crate::Place<AccountInvoicesSettingsHostedPaymen
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(AccountInvoicesSettingsHostedPaymentMethodSave);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for AccountInvoicesSettingsHostedPaymentMethodSave {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

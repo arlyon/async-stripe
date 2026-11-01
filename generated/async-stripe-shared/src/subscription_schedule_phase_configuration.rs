@@ -101,9 +101,7 @@ pub struct SubscriptionSchedulePhaseConfigurationBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -272,46 +270,6 @@ const _: () = {
     impl ObjectDeser for SubscriptionSchedulePhaseConfiguration {
         type Builder = SubscriptionSchedulePhaseConfigurationBuilder;
     }
-
-    impl FromValueOpt for SubscriptionSchedulePhaseConfiguration {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SubscriptionSchedulePhaseConfigurationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "add_invoice_items" => b.add_invoice_items = FromValueOpt::from_value(v),
-                    "application_fee_percent" => {
-                        b.application_fee_percent = FromValueOpt::from_value(v)
-                    }
-                    "automatic_tax" => b.automatic_tax = FromValueOpt::from_value(v),
-                    "billing_cycle_anchor" => b.billing_cycle_anchor = FromValueOpt::from_value(v),
-                    "billing_thresholds" => b.billing_thresholds = FromValueOpt::from_value(v),
-                    "collection_method" => b.collection_method = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "default_payment_method" => {
-                        b.default_payment_method = FromValueOpt::from_value(v)
-                    }
-                    "default_tax_rates" => b.default_tax_rates = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "discounts" => b.discounts = FromValueOpt::from_value(v),
-                    "end_date" => b.end_date = FromValueOpt::from_value(v),
-                    "invoice_settings" => b.invoice_settings = FromValueOpt::from_value(v),
-                    "items" => b.items = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "proration_behavior" => b.proration_behavior = FromValueOpt::from_value(v),
-                    "start_date" => b.start_date = FromValueOpt::from_value(v),
-                    "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
-                    "trial" => b.trial = FromValueOpt::from_value(v),
-                    "trial_end" => b.trial_end = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// Possible values are `phase_start` or `automatic`.
 /// If `phase_start` then billing cycle anchor of the subscription is set to the start of the phase when entering the phase.
@@ -401,9 +359,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    SubscriptionSchedulePhaseConfigurationBillingCycleAnchor
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SubscriptionSchedulePhaseConfigurationBillingCycleAnchor {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -499,7 +454,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SubscriptionSchedulePhaseConfigurationCollectionMethod);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SubscriptionSchedulePhaseConfigurationCollectionMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -597,7 +551,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SubscriptionSchedulePhaseConfigurationProrationBehavior);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SubscriptionSchedulePhaseConfigurationProrationBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

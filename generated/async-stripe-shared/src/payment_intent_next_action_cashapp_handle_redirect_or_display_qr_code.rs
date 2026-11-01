@@ -32,9 +32,7 @@ pub struct PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCodeBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -99,26 +97,5 @@ const _: () = {
 
     impl ObjectDeser for PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode {
         type Builder = PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCodeBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCodeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "hosted_instructions_url" => {
-                        b.hosted_instructions_url = FromValueOpt::from_value(v)
-                    }
-                    "mobile_auth_url" => b.mobile_auth_url = FromValueOpt::from_value(v),
-                    "qr_code" => b.qr_code = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

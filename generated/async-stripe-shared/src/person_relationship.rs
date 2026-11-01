@@ -51,9 +51,7 @@ pub struct PersonRelationshipBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -156,28 +154,5 @@ const _: () = {
 
     impl ObjectDeser for PersonRelationship {
         type Builder = PersonRelationshipBuilder;
-    }
-
-    impl FromValueOpt for PersonRelationship {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PersonRelationshipBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "authorizer" => b.authorizer = FromValueOpt::from_value(v),
-                    "director" => b.director = FromValueOpt::from_value(v),
-                    "executive" => b.executive = FromValueOpt::from_value(v),
-                    "legal_guardian" => b.legal_guardian = FromValueOpt::from_value(v),
-                    "owner" => b.owner = FromValueOpt::from_value(v),
-                    "percent_ownership" => b.percent_ownership = FromValueOpt::from_value(v),
-                    "representative" => b.representative = FromValueOpt::from_value(v),
-                    "title" => b.title = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

@@ -63,9 +63,7 @@ pub struct ReportingReportRunBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -173,30 +171,6 @@ const _: () = {
 
     impl ObjectDeser for ReportingReportRun {
         type Builder = ReportingReportRunBuilder;
-    }
-
-    impl FromValueOpt for ReportingReportRun {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ReportingReportRunBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "error" => b.error = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "parameters" => b.parameters = FromValueOpt::from_value(v),
-                    "report_type" => b.report_type = FromValueOpt::from_value(v),
-                    "result" => b.result = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "succeeded_at" => b.succeeded_at = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 #[cfg(feature = "serialize")]

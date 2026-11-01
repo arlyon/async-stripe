@@ -33,9 +33,7 @@ pub struct TerminalReaderReaderResourceSelectionBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -98,23 +96,5 @@ const _: () = {
 
     impl ObjectDeser for TerminalReaderReaderResourceSelection {
         type Builder = TerminalReaderReaderResourceSelectionBuilder;
-    }
-
-    impl FromValueOpt for TerminalReaderReaderResourceSelection {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TerminalReaderReaderResourceSelectionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "choices" => b.choices = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "text" => b.text = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

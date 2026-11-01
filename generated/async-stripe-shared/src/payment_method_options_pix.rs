@@ -44,9 +44,7 @@ pub struct PaymentMethodOptionsPixBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -135,28 +133,6 @@ const _: () = {
     impl ObjectDeser for PaymentMethodOptionsPix {
         type Builder = PaymentMethodOptionsPixBuilder;
     }
-
-    impl FromValueOpt for PaymentMethodOptionsPix {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodOptionsPixBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_includes_iof" => b.amount_includes_iof = FromValueOpt::from_value(v),
-                    "expires_after_seconds" => {
-                        b.expires_after_seconds = FromValueOpt::from_value(v)
-                    }
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
-                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// Determines if the amount includes the IOF tax.
 #[derive(Clone, Eq, PartialEq)]
@@ -237,7 +213,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsPixAmountInclud
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsPixAmountIncludesIof);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsPixAmountIncludesIof {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -332,7 +307,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsPixSetupFutureU
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsPixSetupFutureUsage);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsPixSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

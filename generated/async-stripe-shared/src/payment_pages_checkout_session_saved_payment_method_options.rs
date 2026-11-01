@@ -42,9 +42,7 @@ pub struct PaymentPagesCheckoutSessionSavedPaymentMethodOptionsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -119,29 +117,6 @@ const _: () = {
 
     impl ObjectDeser for PaymentPagesCheckoutSessionSavedPaymentMethodOptions {
         type Builder = PaymentPagesCheckoutSessionSavedPaymentMethodOptionsBuilder;
-    }
-
-    impl FromValueOpt for PaymentPagesCheckoutSessionSavedPaymentMethodOptions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                PaymentPagesCheckoutSessionSavedPaymentMethodOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "allow_redisplay_filters" => {
-                        b.allow_redisplay_filters = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_remove" => {
-                        b.payment_method_remove = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_save" => b.payment_method_save = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Uses the `allow_redisplay` value of each saved payment method to filter the set presented to a returning customer.
@@ -243,9 +218,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentPagesCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentPagesCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters
@@ -345,9 +317,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove
@@ -448,9 +417,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave

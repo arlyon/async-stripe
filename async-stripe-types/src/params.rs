@@ -35,9 +35,7 @@ impl<'de> serde::Deserialize<'de> for AlwaysTrue {
 mod miniserde_deser {
     use miniserde::Deserialize;
     use miniserde::de::Visitor;
-    use miniserde::json::Value;
 
-    use crate::miniserde_helpers::FromValueOpt;
     use crate::{AlwaysTrue, Place};
 
     impl Deserialize for AlwaysTrue {
@@ -54,13 +52,6 @@ mod miniserde_deser {
             } else {
                 Err(miniserde::Error)
             }
-        }
-    }
-
-    impl FromValueOpt for AlwaysTrue {
-        fn from_value(v: Value) -> Option<Self> {
-            let b = bool::from_value(v)?;
-            if b { Some(AlwaysTrue) } else { None }
         }
     }
 }

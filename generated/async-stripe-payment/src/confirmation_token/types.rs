@@ -80,9 +80,7 @@ pub struct ConfirmationTokenBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -216,39 +214,6 @@ const _: () = {
     impl ObjectDeser for ConfirmationToken {
         type Builder = ConfirmationTokenBuilder;
     }
-
-    impl FromValueOpt for ConfirmationToken {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ConfirmationTokenBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "mandate_data" => b.mandate_data = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    "payment_method_options" => {
-                        b.payment_method_options = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_preview" => {
-                        b.payment_method_preview = FromValueOpt::from_value(v)
-                    }
-                    "return_url" => b.return_url = FromValueOpt::from_value(v),
-                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-                    "setup_intent" => b.setup_intent = FromValueOpt::from_value(v),
-                    "shipping" => b.shipping = FromValueOpt::from_value(v),
-                    "use_stripe_sdk" => b.use_stripe_sdk = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for ConfirmationToken {
@@ -362,7 +327,6 @@ impl miniserde::de::Visitor for crate::Place<ConfirmationTokenSetupFutureUsage> 
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ConfirmationTokenSetupFutureUsage);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ConfirmationTokenSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

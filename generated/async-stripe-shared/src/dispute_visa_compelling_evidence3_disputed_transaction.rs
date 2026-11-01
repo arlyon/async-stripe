@@ -52,9 +52,7 @@ pub struct DisputeVisaCompellingEvidence3DisputedTransactionBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -160,35 +158,6 @@ const _: () = {
     impl ObjectDeser for DisputeVisaCompellingEvidence3DisputedTransaction {
         type Builder = DisputeVisaCompellingEvidence3DisputedTransactionBuilder;
     }
-
-    impl FromValueOpt for DisputeVisaCompellingEvidence3DisputedTransaction {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = DisputeVisaCompellingEvidence3DisputedTransactionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "customer_account_id" => b.customer_account_id = FromValueOpt::from_value(v),
-                    "customer_device_fingerprint" => {
-                        b.customer_device_fingerprint = FromValueOpt::from_value(v)
-                    }
-                    "customer_device_id" => b.customer_device_id = FromValueOpt::from_value(v),
-                    "customer_email_address" => {
-                        b.customer_email_address = FromValueOpt::from_value(v)
-                    }
-                    "customer_purchase_ip" => b.customer_purchase_ip = FromValueOpt::from_value(v),
-                    "merchandise_or_services" => {
-                        b.merchandise_or_services = FromValueOpt::from_value(v)
-                    }
-                    "product_description" => b.product_description = FromValueOpt::from_value(v),
-                    "shipping_address" => b.shipping_address = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// Categorization of disputed payment.
 #[derive(Clone, Eq, PartialEq)]
@@ -279,9 +248,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices

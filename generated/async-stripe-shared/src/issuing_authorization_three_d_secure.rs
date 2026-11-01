@@ -26,9 +26,7 @@ pub struct IssuingAuthorizationThreeDSecureBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -87,22 +85,6 @@ const _: () = {
 
     impl ObjectDeser for IssuingAuthorizationThreeDSecure {
         type Builder = IssuingAuthorizationThreeDSecureBuilder;
-    }
-
-    impl FromValueOpt for IssuingAuthorizationThreeDSecure {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingAuthorizationThreeDSecureBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "result" => b.result = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The outcome of the 3D Secure authentication request.
@@ -190,7 +172,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationThreeDSecureRes
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationThreeDSecureResult);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationThreeDSecureResult {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

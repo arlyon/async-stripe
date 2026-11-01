@@ -84,9 +84,7 @@ pub struct BalanceTransactionBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -225,36 +223,6 @@ const _: () = {
     impl ObjectDeser for BalanceTransaction {
         type Builder = BalanceTransactionBuilder;
     }
-
-    impl FromValueOpt for BalanceTransaction {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BalanceTransactionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "available_on" => b.available_on = FromValueOpt::from_value(v),
-                    "balance_type" => b.balance_type = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "exchange_rate" => b.exchange_rate = FromValueOpt::from_value(v),
-                    "fee" => b.fee = FromValueOpt::from_value(v),
-                    "fee_details" => b.fee_details = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "net" => b.net = FromValueOpt::from_value(v),
-                    "reporting_category" => b.reporting_category = FromValueOpt::from_value(v),
-                    "source" => b.source = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for BalanceTransaction {
@@ -366,7 +334,6 @@ impl miniserde::de::Visitor for crate::Place<BalanceTransactionBalanceType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(BalanceTransactionBalanceType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BalanceTransactionBalanceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -596,7 +563,6 @@ impl miniserde::de::Visitor for crate::Place<BalanceTransactionType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(BalanceTransactionType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BalanceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

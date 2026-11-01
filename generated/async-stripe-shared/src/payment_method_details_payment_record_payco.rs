@@ -29,9 +29,7 @@ pub struct PaymentMethodDetailsPaymentRecordPaycoBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -93,22 +91,5 @@ const _: () = {
 
     impl ObjectDeser for PaymentMethodDetailsPaymentRecordPayco {
         type Builder = PaymentMethodDetailsPaymentRecordPaycoBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsPaymentRecordPayco {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDetailsPaymentRecordPaycoBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "buyer_id" => b.buyer_id = FromValueOpt::from_value(v),
-                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

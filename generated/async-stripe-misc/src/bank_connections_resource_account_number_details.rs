@@ -35,9 +35,7 @@ pub struct BankConnectionsResourceAccountNumberDetailsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -115,25 +113,6 @@ const _: () = {
 
     impl ObjectDeser for BankConnectionsResourceAccountNumberDetails {
         type Builder = BankConnectionsResourceAccountNumberDetailsBuilder;
-    }
-
-    impl FromValueOpt for BankConnectionsResourceAccountNumberDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BankConnectionsResourceAccountNumberDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "expected_expiry_date" => b.expected_expiry_date = FromValueOpt::from_value(v),
-                    "identifier_type" => b.identifier_type = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "supported_networks" => b.supported_networks = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The type of account number associated with the account.
@@ -221,9 +200,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    BankConnectionsResourceAccountNumberDetailsIdentifierType
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BankConnectionsResourceAccountNumberDetailsIdentifierType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -314,7 +290,6 @@ impl miniserde::de::Visitor for crate::Place<BankConnectionsResourceAccountNumbe
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(BankConnectionsResourceAccountNumberDetailsStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BankConnectionsResourceAccountNumberDetailsStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -405,9 +380,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    BankConnectionsResourceAccountNumberDetailsSupportedNetworks
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BankConnectionsResourceAccountNumberDetailsSupportedNetworks {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -57,9 +57,7 @@ pub struct PaymentMethodOptionsCardMandateOptionsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -168,30 +166,6 @@ const _: () = {
     impl ObjectDeser for PaymentMethodOptionsCardMandateOptions {
         type Builder = PaymentMethodOptionsCardMandateOptionsBuilder;
     }
-
-    impl FromValueOpt for PaymentMethodOptionsCardMandateOptions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodOptionsCardMandateOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_type" => b.amount_type = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "end_date" => b.end_date = FromValueOpt::from_value(v),
-                    "interval" => b.interval = FromValueOpt::from_value(v),
-                    "interval_count" => b.interval_count = FromValueOpt::from_value(v),
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    "start_date" => b.start_date = FromValueOpt::from_value(v),
-                    "supported_types" => b.supported_types = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// One of `fixed` or `maximum`.
 /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
@@ -277,7 +251,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardMandateOpti
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsCardMandateOptionsAmountType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardMandateOptionsAmountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -376,7 +349,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardMandateOpti
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsCardMandateOptionsInterval);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardMandateOptionsInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -464,7 +436,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardMandateOpti
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsCardMandateOptionsSupportedTypes);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardMandateOptionsSupportedTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -55,9 +55,7 @@ pub struct TaxRegistrationBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -161,29 +159,6 @@ const _: () = {
     impl ObjectDeser for TaxRegistration {
         type Builder = TaxRegistrationBuilder;
     }
-
-    impl FromValueOpt for TaxRegistration {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TaxRegistrationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "active_from" => b.active_from = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "country_options" => b.country_options = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for TaxRegistration {
@@ -282,7 +257,6 @@ impl miniserde::de::Visitor for crate::Place<TaxRegistrationStatus> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TaxRegistrationStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxRegistrationStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -30,9 +30,7 @@ pub struct IssuingAuthorizationAuthenticationExemptionBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -93,23 +91,6 @@ const _: () = {
 
     impl ObjectDeser for IssuingAuthorizationAuthenticationExemption {
         type Builder = IssuingAuthorizationAuthenticationExemptionBuilder;
-    }
-
-    impl FromValueOpt for IssuingAuthorizationAuthenticationExemption {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingAuthorizationAuthenticationExemptionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "claimed_by" => b.claimed_by = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The entity that requested the exemption, either the acquiring merchant or the Issuing user.
@@ -194,7 +175,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationAuthenticationE
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationAuthenticationExemptionClaimedBy);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationAuthenticationExemptionClaimedBy {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -288,7 +268,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationAuthenticationE
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationAuthenticationExemptionType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationAuthenticationExemptionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

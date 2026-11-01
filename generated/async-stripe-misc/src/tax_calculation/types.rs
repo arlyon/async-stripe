@@ -73,9 +73,7 @@ pub struct TaxCalculationBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -208,35 +206,6 @@ const _: () = {
 
     impl ObjectDeser for TaxCalculation {
         type Builder = TaxCalculationBuilder;
-    }
-
-    impl FromValueOpt for TaxCalculation {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TaxCalculationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_details" => b.customer_details = FromValueOpt::from_value(v),
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "line_items" => b.line_items = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "ship_from_details" => b.ship_from_details = FromValueOpt::from_value(v),
-                    "shipping_cost" => b.shipping_cost = FromValueOpt::from_value(v),
-                    "tax_amount_exclusive" => b.tax_amount_exclusive = FromValueOpt::from_value(v),
-                    "tax_amount_inclusive" => b.tax_amount_inclusive = FromValueOpt::from_value(v),
-                    "tax_breakdown" => b.tax_breakdown = FromValueOpt::from_value(v),
-                    "tax_date" => b.tax_date = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 #[cfg(feature = "serialize")]

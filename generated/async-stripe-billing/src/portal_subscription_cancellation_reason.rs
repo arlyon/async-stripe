@@ -34,9 +34,7 @@ pub struct PortalSubscriptionCancellationReasonBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -99,24 +97,6 @@ const _: () = {
 
     impl ObjectDeser for PortalSubscriptionCancellationReason {
         type Builder = PortalSubscriptionCancellationReasonBuilder;
-    }
-
-    impl FromValueOpt for PortalSubscriptionCancellationReason {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PortalSubscriptionCancellationReasonBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "enabled" => b.enabled = FromValueOpt::from_value(v),
-                    "feedback_options" => b.feedback_options = FromValueOpt::from_value(v),
-                    "options" => b.options = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Which cancellation reasons will be given as options to the customer.
@@ -218,7 +198,6 @@ impl miniserde::de::Visitor for crate::Place<PortalSubscriptionCancellationReaso
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PortalSubscriptionCancellationReasonOptions);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PortalSubscriptionCancellationReasonOptions {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

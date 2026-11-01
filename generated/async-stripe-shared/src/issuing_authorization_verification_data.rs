@@ -46,9 +46,7 @@ pub struct IssuingAuthorizationVerificationDataBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -151,32 +149,6 @@ const _: () = {
     impl ObjectDeser for IssuingAuthorizationVerificationData {
         type Builder = IssuingAuthorizationVerificationDataBuilder;
     }
-
-    impl FromValueOpt for IssuingAuthorizationVerificationData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingAuthorizationVerificationDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address_line1_check" => b.address_line1_check = FromValueOpt::from_value(v),
-                    "address_postal_code_check" => {
-                        b.address_postal_code_check = FromValueOpt::from_value(v)
-                    }
-                    "authentication_exemption" => {
-                        b.authentication_exemption = FromValueOpt::from_value(v)
-                    }
-                    "cvc_check" => b.cvc_check = FromValueOpt::from_value(v),
-                    "expiry_check" => b.expiry_check = FromValueOpt::from_value(v),
-                    "postal_code" => b.postal_code = FromValueOpt::from_value(v),
-                    "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// Whether the cardholder provided an address first line and if it matched the cardholder’s `billing.address.line1`.
 #[derive(Clone, Eq, PartialEq)]
@@ -265,7 +237,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationVerificationDataAddressLine1Check);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataAddressLine1Check {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -362,9 +333,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    IssuingAuthorizationVerificationDataAddressPostalCodeCheck
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataAddressPostalCodeCheck {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -457,7 +425,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationVerificationDat
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationVerificationDataCvcCheck);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataCvcCheck {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -550,7 +517,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationVerificationDat
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationVerificationDataExpiryCheck);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataExpiryCheck {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

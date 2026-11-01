@@ -31,9 +31,7 @@ pub struct PaymentPagesCheckoutSessionShippingAddressCollectionBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -93,23 +91,6 @@ const _: () = {
 
     impl ObjectDeser for PaymentPagesCheckoutSessionShippingAddressCollection {
         type Builder = PaymentPagesCheckoutSessionShippingAddressCollectionBuilder;
-    }
-
-    impl FromValueOpt for PaymentPagesCheckoutSessionShippingAddressCollection {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                PaymentPagesCheckoutSessionShippingAddressCollectionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "allowed_countries" => b.allowed_countries = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
@@ -911,9 +892,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries

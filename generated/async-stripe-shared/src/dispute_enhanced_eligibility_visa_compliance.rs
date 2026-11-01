@@ -26,9 +26,7 @@ pub struct DisputeEnhancedEligibilityVisaComplianceBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -87,22 +85,6 @@ const _: () = {
 
     impl ObjectDeser for DisputeEnhancedEligibilityVisaCompliance {
         type Builder = DisputeEnhancedEligibilityVisaComplianceBuilder;
-    }
-
-    impl FromValueOpt for DisputeEnhancedEligibilityVisaCompliance {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = DisputeEnhancedEligibilityVisaComplianceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Visa compliance eligibility status.
@@ -186,7 +168,6 @@ impl miniserde::de::Visitor for crate::Place<DisputeEnhancedEligibilityVisaCompl
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(DisputeEnhancedEligibilityVisaComplianceStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for DisputeEnhancedEligibilityVisaComplianceStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

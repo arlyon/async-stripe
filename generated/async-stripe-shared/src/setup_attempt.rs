@@ -80,9 +80,7 @@ pub struct SetupAttemptBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -221,38 +219,6 @@ const _: () = {
     impl ObjectDeser for SetupAttempt {
         type Builder = SetupAttemptBuilder;
     }
-
-    impl FromValueOpt for SetupAttempt {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SetupAttemptBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "attach_to_self" => b.attach_to_self = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "flow_directions" => b.flow_directions = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
-                    "payment_method_details" => {
-                        b.payment_method_details = FromValueOpt::from_value(v)
-                    }
-                    "setup_error" => b.setup_error = FromValueOpt::from_value(v),
-                    "setup_intent" => b.setup_intent = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "usage" => b.usage = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for SetupAttempt {
@@ -358,7 +324,6 @@ impl miniserde::de::Visitor for crate::Place<SetupAttemptFlowDirections> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SetupAttemptFlowDirections);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupAttemptFlowDirections {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

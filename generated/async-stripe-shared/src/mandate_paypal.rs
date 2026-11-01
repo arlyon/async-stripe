@@ -30,9 +30,7 @@ pub struct MandatePaypalBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -94,22 +92,5 @@ const _: () = {
 
     impl ObjectDeser for MandatePaypal {
         type Builder = MandatePaypalBuilder;
-    }
-
-    impl FromValueOpt for MandatePaypal {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = MandatePaypalBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "billing_agreement_id" => b.billing_agreement_id = FromValueOpt::from_value(v),
-                    "payer_id" => b.payer_id = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

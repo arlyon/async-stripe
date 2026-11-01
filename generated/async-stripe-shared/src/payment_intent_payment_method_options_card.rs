@@ -88,9 +88,7 @@ pub struct PaymentIntentPaymentMethodOptionsCardBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -229,46 +227,6 @@ const _: () = {
     impl ObjectDeser for PaymentIntentPaymentMethodOptionsCard {
         type Builder = PaymentIntentPaymentMethodOptionsCardBuilder;
     }
-
-    impl FromValueOpt for PaymentIntentPaymentMethodOptionsCard {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentIntentPaymentMethodOptionsCardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "capture_method" => b.capture_method = FromValueOpt::from_value(v),
-                    "installments" => b.installments = FromValueOpt::from_value(v),
-                    "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
-                    "network" => b.network = FromValueOpt::from_value(v),
-                    "request_extended_authorization" => {
-                        b.request_extended_authorization = FromValueOpt::from_value(v)
-                    }
-                    "request_incremental_authorization" => {
-                        b.request_incremental_authorization = FromValueOpt::from_value(v)
-                    }
-                    "request_multicapture" => b.request_multicapture = FromValueOpt::from_value(v),
-                    "request_overcapture" => b.request_overcapture = FromValueOpt::from_value(v),
-                    "request_three_d_secure" => {
-                        b.request_three_d_secure = FromValueOpt::from_value(v)
-                    }
-                    "require_cvc_recollection" => {
-                        b.require_cvc_recollection = FromValueOpt::from_value(v)
-                    }
-                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-                    "statement_descriptor_suffix_kana" => {
-                        b.statement_descriptor_suffix_kana = FromValueOpt::from_value(v)
-                    }
-                    "statement_descriptor_suffix_kanji" => {
-                        b.statement_descriptor_suffix_kanji = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// Controls when the funds will be captured from the customer's account.
 #[derive(Clone, Eq, PartialEq)]
@@ -349,7 +307,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentIntentPaymentMethodOptionsCa
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentIntentPaymentMethodOptionsCardCaptureMethod);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardCaptureMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -475,7 +432,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentIntentPaymentMethodOptionsCa
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentIntentPaymentMethodOptionsCardNetwork);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -571,9 +527,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization
@@ -673,9 +626,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization
@@ -771,9 +721,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentIntentPaymentMethodOptionsCardRequestMulticapture
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardRequestMulticapture {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -867,7 +814,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentIntentPaymentMethodOptionsCardRequestOvercapture);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardRequestOvercapture {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -967,9 +913,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1072,7 +1015,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentIntentPaymentMethodOptionsCardSetupFutureUsage);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

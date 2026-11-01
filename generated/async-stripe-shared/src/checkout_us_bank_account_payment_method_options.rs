@@ -46,9 +46,7 @@ pub struct CheckoutUsBankAccountPaymentMethodOptionsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -131,27 +129,6 @@ const _: () = {
 
     impl ObjectDeser for CheckoutUsBankAccountPaymentMethodOptions {
         type Builder = CheckoutUsBankAccountPaymentMethodOptionsBuilder;
-    }
-
-    impl FromValueOpt for CheckoutUsBankAccountPaymentMethodOptions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CheckoutUsBankAccountPaymentMethodOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "financial_connections" => {
-                        b.financial_connections = FromValueOpt::from_value(v)
-                    }
-                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-                    "target_date" => b.target_date = FromValueOpt::from_value(v),
-                    "verification_method" => b.verification_method = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -249,9 +226,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -345,9 +319,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

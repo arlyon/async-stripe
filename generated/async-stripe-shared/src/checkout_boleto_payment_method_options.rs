@@ -37,9 +37,7 @@ pub struct CheckoutBoletoPaymentMethodOptionsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -101,23 +99,6 @@ const _: () = {
 
     impl ObjectDeser for CheckoutBoletoPaymentMethodOptions {
         type Builder = CheckoutBoletoPaymentMethodOptionsBuilder;
-    }
-
-    impl FromValueOpt for CheckoutBoletoPaymentMethodOptions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CheckoutBoletoPaymentMethodOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "expires_after_days" => b.expires_after_days = FromValueOpt::from_value(v),
-                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -212,7 +193,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutBoletoPaymentMethodOptionsS
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutBoletoPaymentMethodOptionsSetupFutureUsage);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutBoletoPaymentMethodOptionsSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

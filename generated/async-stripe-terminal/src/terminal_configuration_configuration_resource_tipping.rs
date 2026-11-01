@@ -128,9 +128,7 @@ pub struct TerminalConfigurationConfigurationResourceTippingBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -298,41 +296,5 @@ const _: () = {
 
     impl ObjectDeser for TerminalConfigurationConfigurationResourceTipping {
         type Builder = TerminalConfigurationConfigurationResourceTippingBuilder;
-    }
-
-    impl FromValueOpt for TerminalConfigurationConfigurationResourceTipping {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TerminalConfigurationConfigurationResourceTippingBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "aed" => b.aed = FromValueOpt::from_value(v),
-                    "aud" => b.aud = FromValueOpt::from_value(v),
-                    "cad" => b.cad = FromValueOpt::from_value(v),
-                    "chf" => b.chf = FromValueOpt::from_value(v),
-                    "czk" => b.czk = FromValueOpt::from_value(v),
-                    "dkk" => b.dkk = FromValueOpt::from_value(v),
-                    "eur" => b.eur = FromValueOpt::from_value(v),
-                    "gbp" => b.gbp = FromValueOpt::from_value(v),
-                    "gip" => b.gip = FromValueOpt::from_value(v),
-                    "hkd" => b.hkd = FromValueOpt::from_value(v),
-                    "huf" => b.huf = FromValueOpt::from_value(v),
-                    "jpy" => b.jpy = FromValueOpt::from_value(v),
-                    "mxn" => b.mxn = FromValueOpt::from_value(v),
-                    "myr" => b.myr = FromValueOpt::from_value(v),
-                    "nok" => b.nok = FromValueOpt::from_value(v),
-                    "nzd" => b.nzd = FromValueOpt::from_value(v),
-                    "pln" => b.pln = FromValueOpt::from_value(v),
-                    "ron" => b.ron = FromValueOpt::from_value(v),
-                    "sek" => b.sek = FromValueOpt::from_value(v),
-                    "sgd" => b.sgd = FromValueOpt::from_value(v),
-                    "usd" => b.usd = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

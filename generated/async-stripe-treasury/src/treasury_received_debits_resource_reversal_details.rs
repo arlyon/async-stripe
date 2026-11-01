@@ -30,9 +30,7 @@ pub struct TreasuryReceivedDebitsResourceReversalDetailsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -94,23 +92,6 @@ const _: () = {
 
     impl ObjectDeser for TreasuryReceivedDebitsResourceReversalDetails {
         type Builder = TreasuryReceivedDebitsResourceReversalDetailsBuilder;
-    }
-
-    impl FromValueOpt for TreasuryReceivedDebitsResourceReversalDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryReceivedDebitsResourceReversalDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "deadline" => b.deadline = FromValueOpt::from_value(v),
-                    "restricted_reason" => b.restricted_reason = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Set if a ReceivedDebit can't be reversed.
@@ -207,9 +188,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason

@@ -29,9 +29,7 @@ pub struct IssuingCardholderRequirementsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -93,23 +91,6 @@ const _: () = {
 
     impl ObjectDeser for IssuingCardholderRequirements {
         type Builder = IssuingCardholderRequirementsBuilder;
-    }
-
-    impl FromValueOpt for IssuingCardholderRequirements {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingCardholderRequirementsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "disabled_reason" => b.disabled_reason = FromValueOpt::from_value(v),
-                    "past_due" => b.past_due = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// If `disabled_reason` is present, all cards will decline authorizations with `cardholder_verification_required` reason.
@@ -199,7 +180,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingCardholderRequirementsDisabl
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingCardholderRequirementsDisabledReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardholderRequirementsDisabledReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -316,7 +296,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingCardholderRequirementsPastDu
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingCardholderRequirementsPastDue);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardholderRequirementsPastDue {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

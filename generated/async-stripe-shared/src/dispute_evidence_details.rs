@@ -40,9 +40,7 @@ pub struct DisputeEvidenceDetailsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -130,25 +128,5 @@ const _: () = {
 
     impl ObjectDeser for DisputeEvidenceDetails {
         type Builder = DisputeEvidenceDetailsBuilder;
-    }
-
-    impl FromValueOpt for DisputeEvidenceDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = DisputeEvidenceDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "due_by" => b.due_by = FromValueOpt::from_value(v),
-                    "enhanced_eligibility" => b.enhanced_eligibility = FromValueOpt::from_value(v),
-                    "has_evidence" => b.has_evidence = FromValueOpt::from_value(v),
-                    "past_due" => b.past_due = FromValueOpt::from_value(v),
-                    "submission_count" => b.submission_count = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

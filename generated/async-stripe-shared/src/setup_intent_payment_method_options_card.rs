@@ -38,9 +38,7 @@ pub struct SetupIntentPaymentMethodOptionsCardBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -109,26 +107,6 @@ const _: () = {
 
     impl ObjectDeser for SetupIntentPaymentMethodOptionsCard {
         type Builder = SetupIntentPaymentMethodOptionsCardBuilder;
-    }
-
-    impl FromValueOpt for SetupIntentPaymentMethodOptionsCard {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SetupIntentPaymentMethodOptionsCardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
-                    "network" => b.network = FromValueOpt::from_value(v),
-                    "request_three_d_secure" => {
-                        b.request_three_d_secure = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Selected network to process this SetupIntent on.
@@ -248,7 +226,6 @@ impl miniserde::de::Visitor for crate::Place<SetupIntentPaymentMethodOptionsCard
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SetupIntentPaymentMethodOptionsCardNetwork);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsCardNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -348,7 +325,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SetupIntentPaymentMethodOptionsCardRequestThreeDSecure);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

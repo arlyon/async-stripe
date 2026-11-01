@@ -34,9 +34,7 @@ pub struct PaymentMethodDetailsCardInstallmentsPlanBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -99,24 +97,6 @@ const _: () = {
 
     impl ObjectDeser for PaymentMethodDetailsCardInstallmentsPlan {
         type Builder = PaymentMethodDetailsCardInstallmentsPlanBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsCardInstallmentsPlan {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDetailsCardInstallmentsPlanBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "count" => b.count = FromValueOpt::from_value(v),
-                    "interval" => b.interval = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// For `fixed_count` installment plans, this is the interval between installment payments your customer will make to their credit card.
@@ -199,7 +179,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsCardInstallment
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsCardInstallmentsPlanInterval);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardInstallmentsPlanInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -292,7 +271,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsCardInstallment
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsCardInstallmentsPlanType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardInstallmentsPlanType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

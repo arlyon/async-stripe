@@ -32,9 +32,7 @@ pub struct InvoiceItemProrationCreditedItemsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -101,26 +99,6 @@ const _: () = {
 
     impl ObjectDeser for InvoiceItemProrationCreditedItems {
         type Builder = InvoiceItemProrationCreditedItemsBuilder;
-    }
-
-    impl FromValueOpt for InvoiceItemProrationCreditedItems {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InvoiceItemProrationCreditedItemsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "invoice_item" => b.invoice_item = FromValueOpt::from_value(v),
-                    "invoice_line_item_details" => {
-                        b.invoice_line_item_details = FromValueOpt::from_value(v)
-                    }
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Whether the credit references a pending invoice item or one or more invoice line items on an invoice.
@@ -202,7 +180,6 @@ impl miniserde::de::Visitor for crate::Place<InvoiceItemProrationCreditedItemsTy
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(InvoiceItemProrationCreditedItemsType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InvoiceItemProrationCreditedItemsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -89,9 +89,7 @@ pub struct SubscriptionScheduleBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -250,42 +248,6 @@ const _: () = {
     impl ObjectDeser for SubscriptionSchedule {
         type Builder = SubscriptionScheduleBuilder;
     }
-
-    impl FromValueOpt for SubscriptionSchedule {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SubscriptionScheduleBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "billing_mode" => b.billing_mode = FromValueOpt::from_value(v),
-                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
-                    "completed_at" => b.completed_at = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "current_phase" => b.current_phase = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "default_settings" => b.default_settings = FromValueOpt::from_value(v),
-                    "end_behavior" => b.end_behavior = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "phases" => b.phases = FromValueOpt::from_value(v),
-                    "released_at" => b.released_at = FromValueOpt::from_value(v),
-                    "released_subscription" => {
-                        b.released_subscription = FromValueOpt::from_value(v)
-                    }
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "subscription" => b.subscription = FromValueOpt::from_value(v),
-                    "test_clock" => b.test_clock = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for SubscriptionSchedule {
@@ -402,7 +364,6 @@ impl miniserde::de::Visitor for crate::Place<SubscriptionScheduleStatus> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SubscriptionScheduleStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SubscriptionScheduleStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -505,7 +466,6 @@ impl miniserde::de::Visitor for crate::Place<SubscriptionScheduleEndBehavior> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SubscriptionScheduleEndBehavior);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SubscriptionScheduleEndBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

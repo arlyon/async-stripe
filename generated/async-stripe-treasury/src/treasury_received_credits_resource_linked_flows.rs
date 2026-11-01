@@ -45,9 +45,7 @@ pub struct TreasuryReceivedCreditsResourceLinkedFlowsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -140,28 +138,5 @@ const _: () = {
 
     impl ObjectDeser for TreasuryReceivedCreditsResourceLinkedFlows {
         type Builder = TreasuryReceivedCreditsResourceLinkedFlowsBuilder;
-    }
-
-    impl FromValueOpt for TreasuryReceivedCreditsResourceLinkedFlows {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryReceivedCreditsResourceLinkedFlowsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "credit_reversal" => b.credit_reversal = FromValueOpt::from_value(v),
-                    "issuing_authorization" => {
-                        b.issuing_authorization = FromValueOpt::from_value(v)
-                    }
-                    "issuing_transaction" => b.issuing_transaction = FromValueOpt::from_value(v),
-                    "source_flow" => b.source_flow = FromValueOpt::from_value(v),
-                    "source_flow_details" => b.source_flow_details = FromValueOpt::from_value(v),
-                    "source_flow_type" => b.source_flow_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

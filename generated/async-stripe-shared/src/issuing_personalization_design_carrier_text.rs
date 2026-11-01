@@ -35,9 +35,7 @@ pub struct IssuingPersonalizationDesignCarrierTextBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -109,24 +107,5 @@ const _: () = {
 
     impl ObjectDeser for IssuingPersonalizationDesignCarrierText {
         type Builder = IssuingPersonalizationDesignCarrierTextBuilder;
-    }
-
-    impl FromValueOpt for IssuingPersonalizationDesignCarrierText {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingPersonalizationDesignCarrierTextBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "footer_body" => b.footer_body = FromValueOpt::from_value(v),
-                    "footer_title" => b.footer_title = FromValueOpt::from_value(v),
-                    "header_body" => b.header_body = FromValueOpt::from_value(v),
-                    "header_title" => b.header_title = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

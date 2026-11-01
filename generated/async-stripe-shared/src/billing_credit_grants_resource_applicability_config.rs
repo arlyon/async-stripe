@@ -25,9 +25,7 @@ pub struct BillingCreditGrantsResourceApplicabilityConfigBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -86,21 +84,5 @@ const _: () = {
 
     impl ObjectDeser for BillingCreditGrantsResourceApplicabilityConfig {
         type Builder = BillingCreditGrantsResourceApplicabilityConfigBuilder;
-    }
-
-    impl FromValueOpt for BillingCreditGrantsResourceApplicabilityConfig {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BillingCreditGrantsResourceApplicabilityConfigBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "scope" => b.scope = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

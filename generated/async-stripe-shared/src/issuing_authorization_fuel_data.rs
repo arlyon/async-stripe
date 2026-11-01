@@ -39,9 +39,7 @@ pub struct IssuingAuthorizationFuelDataBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -129,28 +127,6 @@ const _: () = {
 
     impl ObjectDeser for IssuingAuthorizationFuelData {
         type Builder = IssuingAuthorizationFuelDataBuilder;
-    }
-
-    impl FromValueOpt for IssuingAuthorizationFuelData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingAuthorizationFuelDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "industry_product_code" => {
-                        b.industry_product_code = FromValueOpt::from_value(v)
-                    }
-                    "quantity_decimal" => b.quantity_decimal = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "unit" => b.unit = FromValueOpt::from_value(v),
-                    "unit_cost_decimal" => b.unit_cost_decimal = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The type of fuel that was purchased.
@@ -241,7 +217,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationFuelDataType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationFuelDataType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFuelDataType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -347,7 +322,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationFuelDataUnit> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationFuelDataUnit);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFuelDataUnit {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

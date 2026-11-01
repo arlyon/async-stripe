@@ -41,9 +41,7 @@ pub struct IssuingTransactionFlightDataLegBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -136,28 +134,5 @@ const _: () = {
 
     impl ObjectDeser for IssuingTransactionFlightDataLeg {
         type Builder = IssuingTransactionFlightDataLegBuilder;
-    }
-
-    impl FromValueOpt for IssuingTransactionFlightDataLeg {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingTransactionFlightDataLegBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "arrival_airport_code" => b.arrival_airport_code = FromValueOpt::from_value(v),
-                    "carrier" => b.carrier = FromValueOpt::from_value(v),
-                    "departure_airport_code" => {
-                        b.departure_airport_code = FromValueOpt::from_value(v)
-                    }
-                    "flight_number" => b.flight_number = FromValueOpt::from_value(v),
-                    "service_class" => b.service_class = FromValueOpt::from_value(v),
-                    "stopover_allowed" => b.stopover_allowed = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

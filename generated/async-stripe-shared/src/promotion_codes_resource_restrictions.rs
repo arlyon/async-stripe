@@ -48,9 +48,7 @@ pub struct PromotionCodesResourceRestrictionsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -133,28 +131,5 @@ const _: () = {
 
     impl ObjectDeser for PromotionCodesResourceRestrictions {
         type Builder = PromotionCodesResourceRestrictionsBuilder;
-    }
-
-    impl FromValueOpt for PromotionCodesResourceRestrictions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PromotionCodesResourceRestrictionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "currency_options" => b.currency_options = FromValueOpt::from_value(v),
-                    "first_time_transaction" => {
-                        b.first_time_transaction = FromValueOpt::from_value(v)
-                    }
-                    "minimum_amount" => b.minimum_amount = FromValueOpt::from_value(v),
-                    "minimum_amount_currency" => {
-                        b.minimum_amount_currency = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

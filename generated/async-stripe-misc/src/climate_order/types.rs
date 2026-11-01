@@ -91,9 +91,7 @@ pub struct ClimateOrderBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -262,46 +260,6 @@ const _: () = {
     impl ObjectDeser for ClimateOrder {
         type Builder = ClimateOrderBuilder;
     }
-
-    impl FromValueOpt for ClimateOrder {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ClimateOrderBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_fees" => b.amount_fees = FromValueOpt::from_value(v),
-                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
-                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
-                    "beneficiary" => b.beneficiary = FromValueOpt::from_value(v),
-                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
-                    "cancellation_reason" => b.cancellation_reason = FromValueOpt::from_value(v),
-                    "certificate" => b.certificate = FromValueOpt::from_value(v),
-                    "confirmed_at" => b.confirmed_at = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "delayed_at" => b.delayed_at = FromValueOpt::from_value(v),
-                    "delivered_at" => b.delivered_at = FromValueOpt::from_value(v),
-                    "delivery_details" => b.delivery_details = FromValueOpt::from_value(v),
-                    "expected_delivery_year" => {
-                        b.expected_delivery_year = FromValueOpt::from_value(v)
-                    }
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "metric_tons" => b.metric_tons = FromValueOpt::from_value(v),
-                    "product" => b.product = FromValueOpt::from_value(v),
-                    "product_substituted_at" => {
-                        b.product_substituted_at = FromValueOpt::from_value(v)
-                    }
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for ClimateOrder {
@@ -416,7 +374,6 @@ impl miniserde::de::Visitor for crate::Place<ClimateOrderCancellationReason> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ClimateOrderCancellationReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ClimateOrderCancellationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -509,7 +466,6 @@ impl miniserde::de::Visitor for crate::Place<ClimateOrderStatus> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ClimateOrderStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ClimateOrderStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

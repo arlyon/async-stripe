@@ -47,9 +47,7 @@ pub struct PaymentMethodOptionsMandateOptionsPixBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -153,29 +151,6 @@ const _: () = {
     impl ObjectDeser for PaymentMethodOptionsMandateOptionsPix {
         type Builder = PaymentMethodOptionsMandateOptionsPixBuilder;
     }
-
-    impl FromValueOpt for PaymentMethodOptionsMandateOptionsPix {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodOptionsMandateOptionsPixBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_includes_iof" => b.amount_includes_iof = FromValueOpt::from_value(v),
-                    "amount_type" => b.amount_type = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "end_date" => b.end_date = FromValueOpt::from_value(v),
-                    "payment_schedule" => b.payment_schedule = FromValueOpt::from_value(v),
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    "start_date" => b.start_date = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// Determines if the amount includes the IOF tax.
 #[derive(Clone, Eq, PartialEq)]
@@ -262,7 +237,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsMandateOptionsPixAmountIncludesIof);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsMandateOptionsPixAmountIncludesIof {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -352,7 +326,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsMandateOptionsP
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsMandateOptionsPixAmountType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsMandateOptionsPixAmountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -452,7 +425,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsMandateOptionsP
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsMandateOptionsPixPaymentSchedule);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsMandateOptionsPixPaymentSchedule {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -94,9 +94,7 @@ transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransactio
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -261,48 +259,6 @@ const _: () = {
     impl ObjectDeser for TreasuryOutboundTransfer {
         type Builder = TreasuryOutboundTransferBuilder;
     }
-
-    impl FromValueOpt for TreasuryOutboundTransfer {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryOutboundTransferBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "cancelable" => b.cancelable = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "destination_payment_method" => {
-                        b.destination_payment_method = FromValueOpt::from_value(v)
-                    }
-                    "destination_payment_method_details" => {
-                        b.destination_payment_method_details = FromValueOpt::from_value(v)
-                    }
-                    "expected_arrival_date" => {
-                        b.expected_arrival_date = FromValueOpt::from_value(v)
-                    }
-                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
-                    "hosted_regulatory_receipt_url" => {
-                        b.hosted_regulatory_receipt_url = FromValueOpt::from_value(v)
-                    }
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "returned_details" => b.returned_details = FromValueOpt::from_value(v),
-                    "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
-                    "tracking_details" => b.tracking_details = FromValueOpt::from_value(v),
-                    "transaction" => b.transaction = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for TreasuryOutboundTransfer {
@@ -433,7 +389,6 @@ impl miniserde::de::Visitor for crate::Place<TreasuryOutboundTransferStatus> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TreasuryOutboundTransferStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TreasuryOutboundTransferStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

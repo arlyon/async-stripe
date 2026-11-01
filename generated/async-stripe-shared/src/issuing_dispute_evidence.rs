@@ -47,9 +47,7 @@ pub struct IssuingDisputeEvidenceBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -162,36 +160,6 @@ const _: () = {
     impl ObjectDeser for IssuingDisputeEvidence {
         type Builder = IssuingDisputeEvidenceBuilder;
     }
-
-    impl FromValueOpt for IssuingDisputeEvidence {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingDisputeEvidenceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "canceled" => b.canceled = FromValueOpt::from_value(v),
-                    "duplicate" => b.duplicate = FromValueOpt::from_value(v),
-                    "fraudulent" => b.fraudulent = FromValueOpt::from_value(v),
-                    "merchandise_not_as_described" => {
-                        b.merchandise_not_as_described = FromValueOpt::from_value(v)
-                    }
-                    "no_valid_authorization" => {
-                        b.no_valid_authorization = FromValueOpt::from_value(v)
-                    }
-                    "not_received" => b.not_received = FromValueOpt::from_value(v),
-                    "other" => b.other = FromValueOpt::from_value(v),
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "service_not_as_described" => {
-                        b.service_not_as_described = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// The reason for filing the dispute. Its value will match the field containing the evidence.
 #[derive(Clone, Eq, PartialEq)]
@@ -290,7 +258,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingDisputeEvidenceReason> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingDisputeEvidenceReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingDisputeEvidenceReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

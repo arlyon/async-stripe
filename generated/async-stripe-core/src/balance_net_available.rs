@@ -31,9 +31,7 @@ pub struct BalanceNetAvailableBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -96,23 +94,5 @@ const _: () = {
 
     impl ObjectDeser for BalanceNetAvailable {
         type Builder = BalanceNetAvailableBuilder;
-    }
-
-    impl FromValueOpt for BalanceNetAvailable {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BalanceNetAvailableBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "destination" => b.destination = FromValueOpt::from_value(v),
-                    "source_types" => b.source_types = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

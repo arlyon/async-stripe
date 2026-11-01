@@ -37,9 +37,7 @@ pub struct TaxAssociationBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -113,27 +111,6 @@ const _: () = {
 
     impl ObjectDeser for TaxAssociation {
         type Builder = TaxAssociationBuilder;
-    }
-
-    impl FromValueOpt for TaxAssociation {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TaxAssociationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "calculation" => b.calculation = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    "tax_transaction_attempts" => {
-                        b.tax_transaction_attempts = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 #[cfg(feature = "serialize")]

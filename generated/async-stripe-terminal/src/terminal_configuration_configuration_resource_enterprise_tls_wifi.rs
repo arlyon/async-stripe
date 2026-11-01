@@ -39,9 +39,7 @@ pub struct TerminalConfigurationConfigurationResourceEnterpriseTlsWifiBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -131,30 +129,5 @@ const _: () = {
 
     impl ObjectDeser for TerminalConfigurationConfigurationResourceEnterpriseTlsWifi {
         type Builder = TerminalConfigurationConfigurationResourceEnterpriseTlsWifiBuilder;
-    }
-
-    impl FromValueOpt for TerminalConfigurationConfigurationResourceEnterpriseTlsWifi {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                TerminalConfigurationConfigurationResourceEnterpriseTlsWifiBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "ca_certificate_file" => b.ca_certificate_file = FromValueOpt::from_value(v),
-                    "client_certificate_file" => {
-                        b.client_certificate_file = FromValueOpt::from_value(v)
-                    }
-                    "private_key_file" => b.private_key_file = FromValueOpt::from_value(v),
-                    "private_key_file_password" => {
-                        b.private_key_file_password = FromValueOpt::from_value(v)
-                    }
-                    "ssid" => b.ssid = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

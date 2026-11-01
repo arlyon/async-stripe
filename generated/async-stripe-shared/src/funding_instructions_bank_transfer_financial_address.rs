@@ -45,9 +45,7 @@ pub struct FundingInstructionsBankTransferFinancialAddressBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -141,29 +139,6 @@ const _: () = {
 
     impl ObjectDeser for FundingInstructionsBankTransferFinancialAddress {
         type Builder = FundingInstructionsBankTransferFinancialAddressBuilder;
-    }
-
-    impl FromValueOpt for FundingInstructionsBankTransferFinancialAddress {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = FundingInstructionsBankTransferFinancialAddressBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "aba" => b.aba = FromValueOpt::from_value(v),
-                    "iban" => b.iban = FromValueOpt::from_value(v),
-                    "sort_code" => b.sort_code = FromValueOpt::from_value(v),
-                    "spei" => b.spei = FromValueOpt::from_value(v),
-                    "supported_networks" => b.supported_networks = FromValueOpt::from_value(v),
-                    "swift" => b.swift = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "zengin" => b.zengin = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The payment networks supported by this FinancialAddress
@@ -272,9 +247,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    FundingInstructionsBankTransferFinancialAddressSupportedNetworks
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for FundingInstructionsBankTransferFinancialAddressSupportedNetworks
@@ -379,7 +351,6 @@ impl miniserde::de::Visitor for crate::Place<FundingInstructionsBankTransferFina
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(FundingInstructionsBankTransferFinancialAddressType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for FundingInstructionsBankTransferFinancialAddressType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

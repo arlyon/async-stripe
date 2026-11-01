@@ -33,9 +33,7 @@ pub struct TreasuryInboundTransfersResourceInboundTransferResourceStatusTransiti
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -103,23 +101,5 @@ const _: () = {
     impl ObjectDeser for TreasuryInboundTransfersResourceInboundTransferResourceStatusTransitions {
         type Builder =
             TreasuryInboundTransfersResourceInboundTransferResourceStatusTransitionsBuilder;
-    }
-
-    impl FromValueOpt for TreasuryInboundTransfersResourceInboundTransferResourceStatusTransitions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryInboundTransfersResourceInboundTransferResourceStatusTransitionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "canceled_at" => b.canceled_at = FromValueOpt::from_value(v),
-                    "failed_at" => b.failed_at = FromValueOpt::from_value(v),
-                    "succeeded_at" => b.succeeded_at = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

@@ -35,9 +35,7 @@ pub struct PaymentIntentNextActionKonbiniStoresBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -109,24 +107,5 @@ const _: () = {
 
     impl ObjectDeser for PaymentIntentNextActionKonbiniStores {
         type Builder = PaymentIntentNextActionKonbiniStoresBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentNextActionKonbiniStores {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentIntentNextActionKonbiniStoresBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "familymart" => b.familymart = FromValueOpt::from_value(v),
-                    "lawson" => b.lawson = FromValueOpt::from_value(v),
-                    "ministop" => b.ministop = FromValueOpt::from_value(v),
-                    "seicomart" => b.seicomart = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

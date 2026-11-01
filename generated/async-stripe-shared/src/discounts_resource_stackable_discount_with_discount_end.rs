@@ -32,9 +32,7 @@ pub struct DiscountsResourceStackableDiscountWithDiscountEndBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -97,23 +95,5 @@ const _: () = {
 
     impl ObjectDeser for DiscountsResourceStackableDiscountWithDiscountEnd {
         type Builder = DiscountsResourceStackableDiscountWithDiscountEndBuilder;
-    }
-
-    impl FromValueOpt for DiscountsResourceStackableDiscountWithDiscountEnd {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = DiscountsResourceStackableDiscountWithDiscountEndBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "coupon" => b.coupon = FromValueOpt::from_value(v),
-                    "discount" => b.discount = FromValueOpt::from_value(v),
-                    "promotion_code" => b.promotion_code = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

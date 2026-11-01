@@ -32,9 +32,7 @@ pub struct LegalEntityDobBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -95,23 +93,5 @@ const _: () = {
 
     impl ObjectDeser for LegalEntityDob {
         type Builder = LegalEntityDobBuilder;
-    }
-
-    impl FromValueOpt for LegalEntityDob {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = LegalEntityDobBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "day" => b.day = FromValueOpt::from_value(v),
-                    "month" => b.month = FromValueOpt::from_value(v),
-                    "year" => b.year = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

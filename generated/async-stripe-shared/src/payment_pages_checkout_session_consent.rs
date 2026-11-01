@@ -30,9 +30,7 @@ pub struct PaymentPagesCheckoutSessionConsentBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -94,23 +92,6 @@ const _: () = {
 
     impl ObjectDeser for PaymentPagesCheckoutSessionConsent {
         type Builder = PaymentPagesCheckoutSessionConsentBuilder;
-    }
-
-    impl FromValueOpt for PaymentPagesCheckoutSessionConsent {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentPagesCheckoutSessionConsentBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "promotions" => b.promotions = FromValueOpt::from_value(v),
-                    "terms_of_service" => b.terms_of_service = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// If `opt_in`, the customer consents to receiving promotional communications
@@ -195,7 +176,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentPagesCheckoutSessionConsentP
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentPagesCheckoutSessionConsentPromotions);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionConsentPromotions {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -283,7 +263,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentPagesCheckoutSessionConsentT
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentPagesCheckoutSessionConsentTermsOfService);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionConsentTermsOfService {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

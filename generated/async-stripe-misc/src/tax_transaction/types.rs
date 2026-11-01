@@ -78,9 +78,7 @@ pub struct TaxTransactionBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -219,36 +217,6 @@ const _: () = {
     impl ObjectDeser for TaxTransaction {
         type Builder = TaxTransactionBuilder;
     }
-
-    impl FromValueOpt for TaxTransaction {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TaxTransactionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_details" => b.customer_details = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "line_items" => b.line_items = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "posted_at" => b.posted_at = FromValueOpt::from_value(v),
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    "reversal" => b.reversal = FromValueOpt::from_value(v),
-                    "ship_from_details" => b.ship_from_details = FromValueOpt::from_value(v),
-                    "shipping_cost" => b.shipping_cost = FromValueOpt::from_value(v),
-                    "tax_date" => b.tax_date = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for TaxTransaction {
@@ -350,7 +318,6 @@ impl miniserde::de::Visitor for crate::Place<TaxTransactionType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TaxTransactionType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

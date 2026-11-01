@@ -74,9 +74,7 @@ transaction: Option<Option<stripe_types::Expandable<stripe_treasury::TreasuryTra
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -219,40 +217,6 @@ const _: () = {
     impl ObjectDeser for TreasuryReceivedCredit {
         type Builder = TreasuryReceivedCreditBuilder;
     }
-
-    impl FromValueOpt for TreasuryReceivedCredit {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryReceivedCreditBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "failure_code" => b.failure_code = FromValueOpt::from_value(v),
-                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
-                    "hosted_regulatory_receipt_url" => {
-                        b.hosted_regulatory_receipt_url = FromValueOpt::from_value(v)
-                    }
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "initiating_payment_method_details" => {
-                        b.initiating_payment_method_details = FromValueOpt::from_value(v)
-                    }
-                    "linked_flows" => b.linked_flows = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "network" => b.network = FromValueOpt::from_value(v),
-                    "reversal_details" => b.reversal_details = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "transaction" => b.transaction = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for TreasuryReceivedCredit {
@@ -368,7 +332,6 @@ impl miniserde::de::Visitor for crate::Place<TreasuryReceivedCreditFailureCode> 
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TreasuryReceivedCreditFailureCode);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TreasuryReceivedCreditFailureCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -462,7 +425,6 @@ impl miniserde::de::Visitor for crate::Place<TreasuryReceivedCreditNetwork> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TreasuryReceivedCreditNetwork);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TreasuryReceivedCreditNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -559,7 +521,6 @@ impl miniserde::de::Visitor for crate::Place<TreasuryReceivedCreditStatus> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TreasuryReceivedCreditStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TreasuryReceivedCreditStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -27,9 +27,7 @@ pub struct TreasuryOutboundTransfersResourceAchTrackingDetailsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -89,21 +87,5 @@ const _: () = {
 
     impl ObjectDeser for TreasuryOutboundTransfersResourceAchTrackingDetails {
         type Builder = TreasuryOutboundTransfersResourceAchTrackingDetailsBuilder;
-    }
-
-    impl FromValueOpt for TreasuryOutboundTransfersResourceAchTrackingDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryOutboundTransfersResourceAchTrackingDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "trace_id" => b.trace_id = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

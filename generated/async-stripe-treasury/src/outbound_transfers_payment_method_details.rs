@@ -37,9 +37,7 @@ pub struct OutboundTransfersPaymentMethodDetailsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -117,25 +115,6 @@ const _: () = {
 
     impl ObjectDeser for OutboundTransfersPaymentMethodDetails {
         type Builder = OutboundTransfersPaymentMethodDetailsBuilder;
-    }
-
-    impl FromValueOpt for OutboundTransfersPaymentMethodDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = OutboundTransfersPaymentMethodDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "billing_details" => b.billing_details = FromValueOpt::from_value(v),
-                    "financial_account" => b.financial_account = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The type of the payment method used in the OutboundTransfer.
@@ -219,7 +198,6 @@ impl miniserde::de::Visitor for crate::Place<OutboundTransfersPaymentMethodDetai
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(OutboundTransfersPaymentMethodDetailsType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for OutboundTransfersPaymentMethodDetailsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

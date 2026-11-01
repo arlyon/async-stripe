@@ -56,9 +56,7 @@ pub struct InvoicesPaymentMethodOptionsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -176,31 +174,5 @@ const _: () = {
 
     impl ObjectDeser for InvoicesPaymentMethodOptions {
         type Builder = InvoicesPaymentMethodOptionsBuilder;
-    }
-
-    impl FromValueOpt for InvoicesPaymentMethodOptions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InvoicesPaymentMethodOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "acss_debit" => b.acss_debit = FromValueOpt::from_value(v),
-                    "bancontact" => b.bancontact = FromValueOpt::from_value(v),
-                    "billie" => b.billie = FromValueOpt::from_value(v),
-                    "card" => b.card = FromValueOpt::from_value(v),
-                    "customer_balance" => b.customer_balance = FromValueOpt::from_value(v),
-                    "konbini" => b.konbini = FromValueOpt::from_value(v),
-                    "payto" => b.payto = FromValueOpt::from_value(v),
-                    "pix" => b.pix = FromValueOpt::from_value(v),
-                    "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
-                    "upi" => b.upi = FromValueOpt::from_value(v),
-                    "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

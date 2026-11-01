@@ -75,9 +75,7 @@ pub struct BillingPortalSessionBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -195,32 +193,6 @@ const _: () = {
 
     impl ObjectDeser for BillingPortalSession {
         type Builder = BillingPortalSessionBuilder;
-    }
-
-    impl FromValueOpt for BillingPortalSession {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BillingPortalSessionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "configuration" => b.configuration = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "flow" => b.flow = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "locale" => b.locale = FromValueOpt::from_value(v),
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "return_url" => b.return_url = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 #[cfg(feature = "serialize")]
@@ -463,7 +435,6 @@ impl miniserde::de::Visitor for crate::Place<BillingPortalSessionLocale> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(BillingPortalSessionLocale);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for BillingPortalSessionLocale {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

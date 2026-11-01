@@ -48,9 +48,7 @@ pub struct PaymentIntentPaymentMethodOptionsMandateOptionsPaytoBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -145,28 +143,6 @@ const _: () = {
     impl ObjectDeser for PaymentIntentPaymentMethodOptionsMandateOptionsPayto {
         type Builder = PaymentIntentPaymentMethodOptionsMandateOptionsPaytoBuilder;
     }
-
-    impl FromValueOpt for PaymentIntentPaymentMethodOptionsMandateOptionsPayto {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                PaymentIntentPaymentMethodOptionsMandateOptionsPaytoBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_type" => b.amount_type = FromValueOpt::from_value(v),
-                    "end_date" => b.end_date = FromValueOpt::from_value(v),
-                    "payment_schedule" => b.payment_schedule = FromValueOpt::from_value(v),
-                    "payments_per_period" => b.payments_per_period = FromValueOpt::from_value(v),
-                    "purpose" => b.purpose = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// The type of amount that will be collected.
 /// The amount charged must be exact or up to the value of `amount` param for `fixed` or `maximum` type respectively.
@@ -255,9 +231,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentIntentPaymentMethodOptionsMandateOptionsPaytoAmountType
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentIntentPaymentMethodOptionsMandateOptionsPaytoAmountType
@@ -375,9 +348,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentIntentPaymentMethodOptionsMandateOptionsPaytoPaymentSchedule
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentIntentPaymentMethodOptionsMandateOptionsPaytoPaymentSchedule
@@ -500,9 +470,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentIntentPaymentMethodOptionsMandateOptionsPaytoPurpose
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsMandateOptionsPaytoPurpose {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

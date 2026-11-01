@@ -65,9 +65,7 @@ pub struct ReserveReleaseBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -191,33 +189,6 @@ const _: () = {
     impl ObjectDeser for ReserveRelease {
         type Builder = ReserveReleaseBuilder;
     }
-
-    impl FromValueOpt for ReserveRelease {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ReserveReleaseBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "created_by" => b.created_by = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "released_at" => b.released_at = FromValueOpt::from_value(v),
-                    "reserve_hold" => b.reserve_hold = FromValueOpt::from_value(v),
-                    "reserve_plan" => b.reserve_plan = FromValueOpt::from_value(v),
-                    "source_transaction" => b.source_transaction = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for ReserveRelease {
@@ -316,7 +287,6 @@ impl miniserde::de::Visitor for crate::Place<ReserveReleaseCreatedBy> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ReserveReleaseCreatedBy);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ReserveReleaseCreatedBy {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -406,7 +376,6 @@ impl miniserde::de::Visitor for crate::Place<ReserveReleaseReason> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ReserveReleaseReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ReserveReleaseReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

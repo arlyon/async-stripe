@@ -32,9 +32,7 @@ pub struct IssuingAuthorizationFraudChallengeBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -97,24 +95,6 @@ const _: () = {
 
     impl ObjectDeser for IssuingAuthorizationFraudChallenge {
         type Builder = IssuingAuthorizationFraudChallengeBuilder;
-    }
-
-    impl FromValueOpt for IssuingAuthorizationFraudChallenge {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingAuthorizationFraudChallengeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "channel" => b.channel = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "undeliverable_reason" => b.undeliverable_reason = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The method by which the fraud challenge was delivered to the cardholder.
@@ -195,7 +175,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationFraudChallengeC
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationFraudChallengeChannel);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFraudChallengeChannel {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -292,7 +271,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationFraudChallengeS
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationFraudChallengeStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFraudChallengeStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -385,7 +363,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationFraudChallengeUndeliverableReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFraudChallengeUndeliverableReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

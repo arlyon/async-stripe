@@ -35,9 +35,7 @@ pub struct Level3Builder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -127,26 +125,5 @@ const _: () = {
 
     impl ObjectDeser for Level3 {
         type Builder = Level3Builder;
-    }
-
-    impl FromValueOpt for Level3 {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = Level3Builder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "customer_reference" => b.customer_reference = FromValueOpt::from_value(v),
-                    "line_items" => b.line_items = FromValueOpt::from_value(v),
-                    "merchant_reference" => b.merchant_reference = FromValueOpt::from_value(v),
-                    "shipping_address_zip" => b.shipping_address_zip = FromValueOpt::from_value(v),
-                    "shipping_amount" => b.shipping_amount = FromValueOpt::from_value(v),
-                    "shipping_from_zip" => b.shipping_from_zip = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

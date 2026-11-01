@@ -26,9 +26,7 @@ pub struct TreasuryInboundTransfersResourceFailureDetailsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -87,22 +85,6 @@ const _: () = {
 
     impl ObjectDeser for TreasuryInboundTransfersResourceFailureDetails {
         type Builder = TreasuryInboundTransfersResourceFailureDetailsBuilder;
-    }
-
-    impl FromValueOpt for TreasuryInboundTransfersResourceFailureDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TreasuryInboundTransfersResourceFailureDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "code" => b.code = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Reason for the failure.
@@ -220,7 +202,6 @@ impl miniserde::de::Visitor for crate::Place<TreasuryInboundTransfersResourceFai
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TreasuryInboundTransfersResourceFailureDetailsCode);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TreasuryInboundTransfersResourceFailureDetailsCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

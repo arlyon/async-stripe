@@ -30,9 +30,7 @@ pub struct TerminalReaderReaderResourceConfirmPaymentIntentActionBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -95,23 +93,5 @@ const _: () = {
 
     impl ObjectDeser for TerminalReaderReaderResourceConfirmPaymentIntentAction {
         type Builder = TerminalReaderReaderResourceConfirmPaymentIntentActionBuilder;
-    }
-
-    impl FromValueOpt for TerminalReaderReaderResourceConfirmPaymentIntentAction {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                TerminalReaderReaderResourceConfirmPaymentIntentActionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "confirm_config" => b.confirm_config = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

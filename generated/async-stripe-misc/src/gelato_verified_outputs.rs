@@ -56,9 +56,7 @@ pub struct GelatoVerifiedOutputsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -177,34 +175,6 @@ const _: () = {
     impl ObjectDeser for GelatoVerifiedOutputs {
         type Builder = GelatoVerifiedOutputsBuilder;
     }
-
-    impl FromValueOpt for GelatoVerifiedOutputs {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = GelatoVerifiedOutputsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "dob" => b.dob = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "first_name" => b.first_name = FromValueOpt::from_value(v),
-                    "id_number" => b.id_number = FromValueOpt::from_value(v),
-                    "id_number_type" => b.id_number_type = FromValueOpt::from_value(v),
-                    "last_name" => b.last_name = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    "sex" => b.sex = FromValueOpt::from_value(v),
-                    "unparsed_place_of_birth" => {
-                        b.unparsed_place_of_birth = FromValueOpt::from_value(v)
-                    }
-                    "unparsed_sex" => b.unparsed_sex = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// The user's verified id number type.
 #[derive(Clone, Eq, PartialEq)]
@@ -288,7 +258,6 @@ impl miniserde::de::Visitor for crate::Place<GelatoVerifiedOutputsIdNumberType> 
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(GelatoVerifiedOutputsIdNumberType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for GelatoVerifiedOutputsIdNumberType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -379,7 +348,6 @@ impl miniserde::de::Visitor for crate::Place<GelatoVerifiedOutputsSex> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(GelatoVerifiedOutputsSex);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for GelatoVerifiedOutputsSex {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

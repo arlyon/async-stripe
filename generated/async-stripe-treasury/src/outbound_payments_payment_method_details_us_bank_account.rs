@@ -51,9 +51,7 @@ pub struct OutboundPaymentsPaymentMethodDetailsUsBankAccountBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -157,29 +155,6 @@ const _: () = {
     impl ObjectDeser for OutboundPaymentsPaymentMethodDetailsUsBankAccount {
         type Builder = OutboundPaymentsPaymentMethodDetailsUsBankAccountBuilder;
     }
-
-    impl FromValueOpt for OutboundPaymentsPaymentMethodDetailsUsBankAccount {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = OutboundPaymentsPaymentMethodDetailsUsBankAccountBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_holder_type" => b.account_holder_type = FromValueOpt::from_value(v),
-                    "account_type" => b.account_type = FromValueOpt::from_value(v),
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "mandate" => b.mandate = FromValueOpt::from_value(v),
-                    "network" => b.network = FromValueOpt::from_value(v),
-                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// Account holder type: individual or company.
 #[derive(Clone, Eq, PartialEq)]
@@ -268,9 +243,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType
@@ -366,9 +338,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -463,9 +432,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

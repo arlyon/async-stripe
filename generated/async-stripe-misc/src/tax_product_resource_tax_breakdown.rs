@@ -38,9 +38,7 @@ pub struct TaxProductResourceTaxBreakdownBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -128,26 +126,6 @@ const _: () = {
 
     impl ObjectDeser for TaxProductResourceTaxBreakdown {
         type Builder = TaxProductResourceTaxBreakdownBuilder;
-    }
-
-    impl FromValueOpt for TaxProductResourceTaxBreakdown {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TaxProductResourceTaxBreakdownBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "inclusive" => b.inclusive = FromValueOpt::from_value(v),
-                    "tax_rate_details" => b.tax_rate_details = FromValueOpt::from_value(v),
-                    "taxability_reason" => b.taxability_reason = FromValueOpt::from_value(v),
-                    "taxable_amount" => b.taxable_amount = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The reasoning behind this tax, for example, if the product is tax exempt.
@@ -271,7 +249,6 @@ impl miniserde::de::Visitor for crate::Place<TaxProductResourceTaxBreakdownTaxab
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TaxProductResourceTaxBreakdownTaxabilityReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxBreakdownTaxabilityReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

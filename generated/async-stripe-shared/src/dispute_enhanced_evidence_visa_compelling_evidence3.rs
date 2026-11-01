@@ -33,9 +33,7 @@ pub struct DisputeEnhancedEvidenceVisaCompellingEvidence3Builder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -99,24 +97,5 @@ const _: () = {
 
     impl ObjectDeser for DisputeEnhancedEvidenceVisaCompellingEvidence3 {
         type Builder = DisputeEnhancedEvidenceVisaCompellingEvidence3Builder;
-    }
-
-    impl FromValueOpt for DisputeEnhancedEvidenceVisaCompellingEvidence3 {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = DisputeEnhancedEvidenceVisaCompellingEvidence3Builder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "disputed_transaction" => b.disputed_transaction = FromValueOpt::from_value(v),
-                    "prior_undisputed_transactions" => {
-                        b.prior_undisputed_transactions = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

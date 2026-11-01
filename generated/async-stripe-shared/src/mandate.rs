@@ -53,9 +53,7 @@ pub struct MandateBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -166,33 +164,6 @@ const _: () = {
     impl ObjectDeser for Mandate {
         type Builder = MandateBuilder;
     }
-
-    impl FromValueOpt for Mandate {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = MandateBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "customer_acceptance" => b.customer_acceptance = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "multi_use" => b.multi_use = FromValueOpt::from_value(v),
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
-                    "payment_method_details" => {
-                        b.payment_method_details = FromValueOpt::from_value(v)
-                    }
-                    "single_use" => b.single_use = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for Mandate {
@@ -292,7 +263,6 @@ impl miniserde::de::Visitor for crate::Place<MandateStatus> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(MandateStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for MandateStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -376,7 +346,6 @@ impl miniserde::de::Visitor for crate::Place<MandateType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(MandateType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for MandateType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

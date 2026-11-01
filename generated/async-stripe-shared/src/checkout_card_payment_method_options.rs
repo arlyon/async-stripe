@@ -77,9 +77,7 @@ pub struct CheckoutCardPaymentMethodOptionsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -206,42 +204,6 @@ const _: () = {
     impl ObjectDeser for CheckoutCardPaymentMethodOptions {
         type Builder = CheckoutCardPaymentMethodOptionsBuilder;
     }
-
-    impl FromValueOpt for CheckoutCardPaymentMethodOptions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CheckoutCardPaymentMethodOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "capture_method" => b.capture_method = FromValueOpt::from_value(v),
-                    "installments" => b.installments = FromValueOpt::from_value(v),
-                    "request_extended_authorization" => {
-                        b.request_extended_authorization = FromValueOpt::from_value(v)
-                    }
-                    "request_incremental_authorization" => {
-                        b.request_incremental_authorization = FromValueOpt::from_value(v)
-                    }
-                    "request_multicapture" => b.request_multicapture = FromValueOpt::from_value(v),
-                    "request_overcapture" => b.request_overcapture = FromValueOpt::from_value(v),
-                    "request_three_d_secure" => {
-                        b.request_three_d_secure = FromValueOpt::from_value(v)
-                    }
-                    "restrictions" => b.restrictions = FromValueOpt::from_value(v),
-                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-                    "statement_descriptor_suffix_kana" => {
-                        b.statement_descriptor_suffix_kana = FromValueOpt::from_value(v)
-                    }
-                    "statement_descriptor_suffix_kanji" => {
-                        b.statement_descriptor_suffix_kanji = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// Controls when the funds will be captured from the customer's account.
 #[derive(Clone, Eq, PartialEq)]
@@ -321,7 +283,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutCardPaymentMethodOptionsCap
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutCardPaymentMethodOptionsCaptureMethod);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutCardPaymentMethodOptionsCaptureMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -415,9 +376,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    CheckoutCardPaymentMethodOptionsRequestExtendedAuthorization
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutCardPaymentMethodOptionsRequestExtendedAuthorization {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -511,9 +469,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    CheckoutCardPaymentMethodOptionsRequestIncrementalAuthorization
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for CheckoutCardPaymentMethodOptionsRequestIncrementalAuthorization
@@ -606,7 +561,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutCardPaymentMethodOptionsReq
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutCardPaymentMethodOptionsRequestMulticapture);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutCardPaymentMethodOptionsRequestMulticapture {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -697,7 +651,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutCardPaymentMethodOptionsReq
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutCardPaymentMethodOptionsRequestOvercapture);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutCardPaymentMethodOptionsRequestOvercapture {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -794,7 +747,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutCardPaymentMethodOptionsReq
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutCardPaymentMethodOptionsRequestThreeDSecure);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutCardPaymentMethodOptionsRequestThreeDSecure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -895,7 +847,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutCardPaymentMethodOptionsSet
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutCardPaymentMethodOptionsSetupFutureUsage);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutCardPaymentMethodOptionsSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

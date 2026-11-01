@@ -74,9 +74,7 @@ pub struct CreditNoteLineItemBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -215,38 +213,6 @@ const _: () = {
     impl ObjectDeser for CreditNoteLineItem {
         type Builder = CreditNoteLineItemBuilder;
     }
-
-    impl FromValueOpt for CreditNoteLineItem {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CreditNoteLineItemBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "discount_amount" => b.discount_amount = FromValueOpt::from_value(v),
-                    "discount_amounts" => b.discount_amounts = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "invoice_line_item" => b.invoice_line_item = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "pretax_credit_amounts" => {
-                        b.pretax_credit_amounts = FromValueOpt::from_value(v)
-                    }
-                    "quantity" => b.quantity = FromValueOpt::from_value(v),
-                    "tax_rates" => b.tax_rates = FromValueOpt::from_value(v),
-                    "taxes" => b.taxes = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "unit_amount" => b.unit_amount = FromValueOpt::from_value(v),
-                    "unit_amount_decimal" => b.unit_amount_decimal = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for CreditNoteLineItem {
@@ -349,7 +315,6 @@ impl miniserde::de::Visitor for crate::Place<CreditNoteLineItemType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CreditNoteLineItemType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CreditNoteLineItemType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

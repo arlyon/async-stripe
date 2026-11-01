@@ -33,9 +33,7 @@ pub struct PortalFlowsFlowSubscriptionUpdateConfirmBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -98,23 +96,5 @@ const _: () = {
 
     impl ObjectDeser for PortalFlowsFlowSubscriptionUpdateConfirm {
         type Builder = PortalFlowsFlowSubscriptionUpdateConfirmBuilder;
-    }
-
-    impl FromValueOpt for PortalFlowsFlowSubscriptionUpdateConfirm {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PortalFlowsFlowSubscriptionUpdateConfirmBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "discounts" => b.discounts = FromValueOpt::from_value(v),
-                    "items" => b.items = FromValueOpt::from_value(v),
-                    "subscription" => b.subscription = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

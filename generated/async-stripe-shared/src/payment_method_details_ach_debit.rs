@@ -42,9 +42,7 @@ pub struct PaymentMethodDetailsAchDebitBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -138,27 +136,6 @@ const _: () = {
     impl ObjectDeser for PaymentMethodDetailsAchDebit {
         type Builder = PaymentMethodDetailsAchDebitBuilder;
     }
-
-    impl FromValueOpt for PaymentMethodDetailsAchDebit {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDetailsAchDebitBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_holder_type" => b.account_holder_type = FromValueOpt::from_value(v),
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// Type of entity that holds the account. This can be either `individual` or `company`.
 #[derive(Clone, Eq, PartialEq)]
@@ -241,7 +218,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsAchDebitAccount
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsAchDebitAccountHolderType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsAchDebitAccountHolderType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

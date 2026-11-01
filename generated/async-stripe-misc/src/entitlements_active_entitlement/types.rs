@@ -36,9 +36,7 @@ pub struct EntitlementsActiveEntitlementBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -102,25 +100,6 @@ const _: () = {
 
     impl ObjectDeser for EntitlementsActiveEntitlement {
         type Builder = EntitlementsActiveEntitlementBuilder;
-    }
-
-    impl FromValueOpt for EntitlementsActiveEntitlement {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = EntitlementsActiveEntitlementBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "feature" => b.feature = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "lookup_key" => b.lookup_key = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 #[cfg(feature = "serialize")]

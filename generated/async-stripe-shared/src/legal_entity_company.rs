@@ -101,9 +101,7 @@ pub struct LegalEntityCompanyBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -295,57 +293,6 @@ const _: () = {
     impl ObjectDeser for LegalEntityCompany {
         type Builder = LegalEntityCompanyBuilder;
     }
-
-    impl FromValueOpt for LegalEntityCompany {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = LegalEntityCompanyBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "address_kana" => b.address_kana = FromValueOpt::from_value(v),
-                    "address_kanji" => b.address_kanji = FromValueOpt::from_value(v),
-                    "administrative_address" => {
-                        b.administrative_address = FromValueOpt::from_value(v)
-                    }
-                    "directors_provided" => b.directors_provided = FromValueOpt::from_value(v),
-                    "directorship_declaration" => {
-                        b.directorship_declaration = FromValueOpt::from_value(v)
-                    }
-                    "executives_provided" => b.executives_provided = FromValueOpt::from_value(v),
-                    "export_license_id" => b.export_license_id = FromValueOpt::from_value(v),
-                    "export_purpose_code" => b.export_purpose_code = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "name_kana" => b.name_kana = FromValueOpt::from_value(v),
-                    "name_kanji" => b.name_kanji = FromValueOpt::from_value(v),
-                    "owners_provided" => b.owners_provided = FromValueOpt::from_value(v),
-                    "ownership_declaration" => {
-                        b.ownership_declaration = FromValueOpt::from_value(v)
-                    }
-                    "ownership_exemption_reason" => {
-                        b.ownership_exemption_reason = FromValueOpt::from_value(v)
-                    }
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    "principal_place_of_business" => {
-                        b.principal_place_of_business = FromValueOpt::from_value(v)
-                    }
-                    "registration_date" => b.registration_date = FromValueOpt::from_value(v),
-                    "representative_declaration" => {
-                        b.representative_declaration = FromValueOpt::from_value(v)
-                    }
-                    "structure" => b.structure = FromValueOpt::from_value(v),
-                    "tax_id_provided" => b.tax_id_provided = FromValueOpt::from_value(v),
-                    "tax_id_registrar" => b.tax_id_registrar = FromValueOpt::from_value(v),
-                    "vat_id_provided" => b.vat_id_provided = FromValueOpt::from_value(v),
-                    "verification" => b.verification = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// This value is used to determine if a business is exempt from providing ultimate beneficial owners.
 /// See [this support article](https://support.stripe.com/questions/exemption-from-providing-ownership-details) and [changelog](https://docs.stripe.com/changelog/acacia/2025-01-27/ownership-exemption-reason-accounts-api) for more details.
@@ -433,7 +380,6 @@ impl miniserde::de::Visitor for crate::Place<LegalEntityCompanyOwnershipExemptio
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(LegalEntityCompanyOwnershipExemptionReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for LegalEntityCompanyOwnershipExemptionReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -586,7 +532,6 @@ impl miniserde::de::Visitor for crate::Place<LegalEntityCompanyStructure> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(LegalEntityCompanyStructure);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for LegalEntityCompanyStructure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

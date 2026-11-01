@@ -446,7 +446,6 @@ impl miniserde::de::Visitor for crate::Place<ApiVersion> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ApiVersion);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ApiVersion {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

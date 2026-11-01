@@ -70,9 +70,7 @@ pub struct IssuingCardShippingBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -206,35 +204,6 @@ const _: () = {
     impl ObjectDeser for IssuingCardShipping {
         type Builder = IssuingCardShippingBuilder;
     }
-
-    impl FromValueOpt for IssuingCardShipping {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingCardShippingBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "address_validation" => b.address_validation = FromValueOpt::from_value(v),
-                    "business_name" => b.business_name = FromValueOpt::from_value(v),
-                    "carrier" => b.carrier = FromValueOpt::from_value(v),
-                    "customs" => b.customs = FromValueOpt::from_value(v),
-                    "eta" => b.eta = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "phone_number" => b.phone_number = FromValueOpt::from_value(v),
-                    "require_signature" => b.require_signature = FromValueOpt::from_value(v),
-                    "service" => b.service = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "tracking_number" => b.tracking_number = FromValueOpt::from_value(v),
-                    "tracking_url" => b.tracking_url = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// The delivery company that shipped a card.
 #[derive(Clone, Eq, PartialEq)]
@@ -320,7 +289,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingCardShippingCarrier> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingCardShippingCarrier);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardShippingCarrier {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -407,7 +375,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingCardShippingService> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingCardShippingService);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardShippingService {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -506,7 +473,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingCardShippingStatus> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingCardShippingStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardShippingStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -590,7 +556,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingCardShippingType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingCardShippingType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardShippingType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

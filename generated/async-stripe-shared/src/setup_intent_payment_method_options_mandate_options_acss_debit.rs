@@ -45,9 +45,7 @@ pub struct SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -137,27 +135,6 @@ const _: () = {
     impl ObjectDeser for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit {
         type Builder = SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitBuilder;
     }
-
-    impl FromValueOpt for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "custom_mandate_url" => b.custom_mandate_url = FromValueOpt::from_value(v),
-                    "default_for" => b.default_for = FromValueOpt::from_value(v),
-                    "interval_description" => b.interval_description = FromValueOpt::from_value(v),
-                    "payment_schedule" => b.payment_schedule = FromValueOpt::from_value(v),
-                    "transaction_type" => b.transaction_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// List of Stripe products where this mandate can be selected automatically.
 #[derive(Clone, Eq, PartialEq)]
@@ -244,9 +221,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor
@@ -349,9 +323,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule
@@ -451,9 +422,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType

@@ -43,9 +43,7 @@ pub struct SourceTypeAcssDebitBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -160,32 +158,5 @@ const _: () = {
 
     impl ObjectDeser for SourceTypeAcssDebit {
         type Builder = SourceTypeAcssDebitBuilder;
-    }
-
-    impl FromValueOpt for SourceTypeAcssDebit {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceTypeAcssDebitBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank_address_city" => b.bank_address_city = FromValueOpt::from_value(v),
-                    "bank_address_line_1" => b.bank_address_line_1 = FromValueOpt::from_value(v),
-                    "bank_address_line_2" => b.bank_address_line_2 = FromValueOpt::from_value(v),
-                    "bank_address_postal_code" => {
-                        b.bank_address_postal_code = FromValueOpt::from_value(v)
-                    }
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "category" => b.category = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "routing_number" => b.routing_number = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

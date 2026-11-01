@@ -35,9 +35,7 @@ pub struct InsightsResourcesPaymentEvaluationSucceededCardBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -104,26 +102,6 @@ const _: () = {
 
     impl ObjectDeser for InsightsResourcesPaymentEvaluationSucceededCard {
         type Builder = InsightsResourcesPaymentEvaluationSucceededCardBuilder;
-    }
-
-    impl FromValueOpt for InsightsResourcesPaymentEvaluationSucceededCard {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InsightsResourcesPaymentEvaluationSucceededCardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address_line1_check" => b.address_line1_check = FromValueOpt::from_value(v),
-                    "address_postal_code_check" => {
-                        b.address_postal_code_check = FromValueOpt::from_value(v)
-                    }
-                    "cvc_check" => b.cvc_check = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Result of the address line 1 check.
@@ -217,9 +195,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check
@@ -325,9 +300,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck
@@ -429,7 +401,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(InsightsResourcesPaymentEvaluationSucceededCardCvcCheck);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InsightsResourcesPaymentEvaluationSucceededCardCvcCheck {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

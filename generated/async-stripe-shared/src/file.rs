@@ -62,9 +62,7 @@ pub struct FileBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -174,31 +172,6 @@ const _: () = {
 
     impl ObjectDeser for File {
         type Builder = FileBuilder;
-    }
-
-    impl FromValueOpt for File {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = FileBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "filename" => b.filename = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "links" => b.links = FromValueOpt::from_value(v),
-                    "purpose" => b.purpose = FromValueOpt::from_value(v),
-                    "size" => b.size = FromValueOpt::from_value(v),
-                    "title" => b.title = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 #[cfg(feature = "serialize")]
@@ -362,7 +335,6 @@ impl miniserde::de::Visitor for crate::Place<FilePurpose> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(FilePurpose);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for FilePurpose {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -32,9 +32,7 @@ pub struct PaymentFlowsAutomaticPaymentMethodsPaymentIntentBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -96,23 +94,6 @@ const _: () = {
 
     impl ObjectDeser for PaymentFlowsAutomaticPaymentMethodsPaymentIntent {
         type Builder = PaymentFlowsAutomaticPaymentMethodsPaymentIntentBuilder;
-    }
-
-    impl FromValueOpt for PaymentFlowsAutomaticPaymentMethodsPaymentIntent {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentFlowsAutomaticPaymentMethodsPaymentIntentBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "allow_redirects" => b.allow_redirects = FromValueOpt::from_value(v),
-                    "enabled" => b.enabled = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Controls whether this PaymentIntent will accept redirect-based payment methods.
@@ -203,9 +184,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects

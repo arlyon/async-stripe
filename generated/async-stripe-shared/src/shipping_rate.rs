@@ -66,9 +66,7 @@ pub struct ShippingRateBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -187,32 +185,6 @@ const _: () = {
     impl ObjectDeser for ShippingRate {
         type Builder = ShippingRateBuilder;
     }
-
-    impl FromValueOpt for ShippingRate {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ShippingRateBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "active" => b.active = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "delivery_estimate" => b.delivery_estimate = FromValueOpt::from_value(v),
-                    "display_name" => b.display_name = FromValueOpt::from_value(v),
-                    "fixed_amount" => b.fixed_amount = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "tax_behavior" => b.tax_behavior = FromValueOpt::from_value(v),
-                    "tax_code" => b.tax_code = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for ShippingRate {
@@ -322,7 +294,6 @@ impl miniserde::de::Visitor for crate::Place<ShippingRateTaxBehavior> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ShippingRateTaxBehavior);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ShippingRateTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -401,7 +372,6 @@ impl miniserde::de::Visitor for crate::Place<ShippingRateType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ShippingRateType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ShippingRateType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -163,9 +163,7 @@ pub struct SetupIntentBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -377,59 +375,6 @@ const _: () = {
     impl ObjectDeser for SetupIntent {
         type Builder = SetupIntentBuilder;
     }
-
-    impl FromValueOpt for SetupIntent {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SetupIntentBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "allowed_payment_method_types" => {
-                        b.allowed_payment_method_types = FromValueOpt::from_value(v)
-                    }
-                    "application" => b.application = FromValueOpt::from_value(v),
-                    "attach_to_self" => b.attach_to_self = FromValueOpt::from_value(v),
-                    "automatic_payment_methods" => {
-                        b.automatic_payment_methods = FromValueOpt::from_value(v)
-                    }
-                    "cancellation_reason" => b.cancellation_reason = FromValueOpt::from_value(v),
-                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "customer" => b.customer = FromValueOpt::from_value(v),
-                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "excluded_payment_method_types" => {
-                        b.excluded_payment_method_types = FromValueOpt::from_value(v)
-                    }
-                    "flow_directions" => b.flow_directions = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "last_setup_error" => b.last_setup_error = FromValueOpt::from_value(v),
-                    "latest_attempt" => b.latest_attempt = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "managed_payments" => b.managed_payments = FromValueOpt::from_value(v),
-                    "mandate" => b.mandate = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "next_action" => b.next_action = FromValueOpt::from_value(v),
-                    "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
-                    "payment_method" => b.payment_method = FromValueOpt::from_value(v),
-                    "payment_method_configuration_details" => {
-                        b.payment_method_configuration_details = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_options" => {
-                        b.payment_method_options = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_types" => b.payment_method_types = FromValueOpt::from_value(v),
-                    "single_use_mandate" => b.single_use_mandate = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "usage" => b.usage = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for SetupIntent {
@@ -559,7 +504,6 @@ impl miniserde::de::Visitor for crate::Place<SetupIntentStatus> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SetupIntentStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -941,7 +885,6 @@ impl miniserde::de::Visitor for crate::Place<SetupIntentAllowedPaymentMethodType
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SetupIntentAllowedPaymentMethodTypes);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentAllowedPaymentMethodTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1030,7 +973,6 @@ impl miniserde::de::Visitor for crate::Place<SetupIntentCancellationReason> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SetupIntentCancellationReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentCancellationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1269,7 +1211,6 @@ impl miniserde::de::Visitor for crate::Place<SetupIntentExcludedPaymentMethodTyp
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SetupIntentExcludedPaymentMethodTypes);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentExcludedPaymentMethodTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -1351,7 +1292,6 @@ impl miniserde::de::Visitor for crate::Place<SetupIntentFlowDirections> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SetupIntentFlowDirections);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SetupIntentFlowDirections {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

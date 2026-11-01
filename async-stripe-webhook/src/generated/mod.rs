@@ -51,7 +51,7 @@ const _: () = {
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
             Ok(())
         }
     }
@@ -91,13 +91,6 @@ const _: () = {
                     return None;
                 }
             })
-        }
-    }
-
-    impl FromValueOpt for AccountExternalAccountCreated {
-        fn from_value(v: Value) -> Option<Self> {
-            let (typ, obj) = stripe_types::miniserde_helpers::extract_object_discr(v)?;
-            Self::construct(&typ, obj)
         }
     }
 };
@@ -161,7 +154,7 @@ const _: () = {
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
             Ok(())
         }
     }
@@ -201,13 +194,6 @@ const _: () = {
                     return None;
                 }
             })
-        }
-    }
-
-    impl FromValueOpt for AccountExternalAccountDeleted {
-        fn from_value(v: Value) -> Option<Self> {
-            let (typ, obj) = stripe_types::miniserde_helpers::extract_object_discr(v)?;
-            Self::construct(&typ, obj)
         }
     }
 };
@@ -271,7 +257,7 @@ const _: () = {
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
             Ok(())
         }
     }
@@ -311,13 +297,6 @@ const _: () = {
                     return None;
                 }
             })
-        }
-    }
-
-    impl FromValueOpt for AccountExternalAccountUpdated {
-        fn from_value(v: Value) -> Option<Self> {
-            let (typ, obj) = stripe_types::miniserde_helpers::extract_object_discr(v)?;
-            Self::construct(&typ, obj)
         }
     }
 };
@@ -381,7 +360,7 @@ const _: () = {
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
             Ok(())
         }
     }
@@ -421,13 +400,6 @@ const _: () = {
                     return None;
                 }
             })
-        }
-    }
-
-    impl FromValueOpt for CustomerSourceCreated {
-        fn from_value(v: Value) -> Option<Self> {
-            let (typ, obj) = stripe_types::miniserde_helpers::extract_object_discr(v)?;
-            Self::construct(&typ, obj)
         }
     }
 };
@@ -491,7 +463,7 @@ const _: () = {
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
             Ok(())
         }
     }
@@ -531,13 +503,6 @@ const _: () = {
                     return None;
                 }
             })
-        }
-    }
-
-    impl FromValueOpt for CustomerSourceDeleted {
-        fn from_value(v: Value) -> Option<Self> {
-            let (typ, obj) = stripe_types::miniserde_helpers::extract_object_discr(v)?;
-            Self::construct(&typ, obj)
         }
     }
 };
@@ -599,7 +564,7 @@ const _: () = {
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
             Ok(())
         }
     }
@@ -638,13 +603,6 @@ const _: () = {
                     return None;
                 }
             })
-        }
-    }
-
-    impl FromValueOpt for CustomerSourceExpiring {
-        fn from_value(v: Value) -> Option<Self> {
-            let (typ, obj) = stripe_types::miniserde_helpers::extract_object_discr(v)?;
-            Self::construct(&typ, obj)
         }
     }
 };
@@ -708,7 +666,7 @@ const _: () = {
         }
 
         fn finish(&mut self) -> Result<()> {
-            *self.out = self.builder.take_out();
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
             Ok(())
         }
     }
@@ -748,13 +706,6 @@ const _: () = {
                     return None;
                 }
             })
-        }
-    }
-
-    impl FromValueOpt for CustomerSourceUpdated {
-        fn from_value(v: Value) -> Option<Self> {
-            let (typ, obj) = stripe_types::miniserde_helpers::extract_object_discr(v)?;
-            Self::construct(&typ, obj)
         }
     }
 };

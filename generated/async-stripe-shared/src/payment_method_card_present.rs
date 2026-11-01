@@ -86,9 +86,7 @@ pub struct PaymentMethodCardPresentBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -237,38 +235,6 @@ const _: () = {
     impl ObjectDeser for PaymentMethodCardPresent {
         type Builder = PaymentMethodCardPresentBuilder;
     }
-
-    impl FromValueOpt for PaymentMethodCardPresent {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodCardPresentBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "brand" => b.brand = FromValueOpt::from_value(v),
-                    "brand_product" => b.brand_product = FromValueOpt::from_value(v),
-                    "cardholder_name" => b.cardholder_name = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
-                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "funding" => b.funding = FromValueOpt::from_value(v),
-                    "iin" => b.iin = FromValueOpt::from_value(v),
-                    "issuer" => b.issuer = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "networks" => b.networks = FromValueOpt::from_value(v),
-                    "offline" => b.offline = FromValueOpt::from_value(v),
-                    "preferred_locales" => b.preferred_locales = FromValueOpt::from_value(v),
-                    "read_method" => b.read_method = FromValueOpt::from_value(v),
-                    "wallet" => b.wallet = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// How card details were read in this transaction.
 #[derive(Clone, Eq, PartialEq)]
@@ -358,7 +324,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodCardPresentReadMethod>
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodCardPresentReadMethod);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodCardPresentReadMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

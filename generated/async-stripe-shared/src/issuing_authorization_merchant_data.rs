@@ -58,9 +58,7 @@ pub struct IssuingAuthorizationMerchantDataBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -178,31 +176,5 @@ const _: () = {
 
     impl ObjectDeser for IssuingAuthorizationMerchantData {
         type Builder = IssuingAuthorizationMerchantDataBuilder;
-    }
-
-    impl FromValueOpt for IssuingAuthorizationMerchantData {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingAuthorizationMerchantDataBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "category" => b.category = FromValueOpt::from_value(v),
-                    "category_code" => b.category_code = FromValueOpt::from_value(v),
-                    "city" => b.city = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "network_id" => b.network_id = FromValueOpt::from_value(v),
-                    "postal_code" => b.postal_code = FromValueOpt::from_value(v),
-                    "state" => b.state = FromValueOpt::from_value(v),
-                    "tax_id" => b.tax_id = FromValueOpt::from_value(v),
-                    "terminal_id" => b.terminal_id = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

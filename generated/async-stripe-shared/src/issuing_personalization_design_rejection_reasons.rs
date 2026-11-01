@@ -29,9 +29,7 @@ pub struct IssuingPersonalizationDesignRejectionReasonsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -93,23 +91,6 @@ const _: () = {
 
     impl ObjectDeser for IssuingPersonalizationDesignRejectionReasons {
         type Builder = IssuingPersonalizationDesignRejectionReasonsBuilder;
-    }
-
-    impl FromValueOpt for IssuingPersonalizationDesignRejectionReasons {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingPersonalizationDesignRejectionReasonsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "card_logo" => b.card_logo = FromValueOpt::from_value(v),
-                    "carrier_text" => b.carrier_text = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The reason(s) the card logo was rejected.
@@ -212,7 +193,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingPersonalizationDesignRejecti
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingPersonalizationDesignRejectionReasonsCardLogo);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingPersonalizationDesignRejectionReasonsCardLogo {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -321,7 +301,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingPersonalizationDesignRejectionReasonsCarrierText);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingPersonalizationDesignRejectionReasonsCarrierText {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

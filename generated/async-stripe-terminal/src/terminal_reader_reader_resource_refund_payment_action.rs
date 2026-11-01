@@ -58,9 +58,7 @@ pub struct TerminalReaderReaderResourceRefundPaymentActionBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -169,34 +167,6 @@ const _: () = {
     impl ObjectDeser for TerminalReaderReaderResourceRefundPaymentAction {
         type Builder = TerminalReaderReaderResourceRefundPaymentActionBuilder;
     }
-
-    impl FromValueOpt for TerminalReaderReaderResourceRefundPaymentAction {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TerminalReaderReaderResourceRefundPaymentActionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "charge" => b.charge = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "refund" => b.refund = FromValueOpt::from_value(v),
-                    "refund_application_fee" => {
-                        b.refund_application_fee = FromValueOpt::from_value(v)
-                    }
-                    "refund_payment_config" => {
-                        b.refund_payment_config = FromValueOpt::from_value(v)
-                    }
-                    "reverse_transfer" => b.reverse_transfer = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// The reason for the refund.
 #[derive(Clone, Eq, PartialEq)]
@@ -285,7 +255,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TerminalReaderReaderResourceRefundPaymentActionReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceRefundPaymentActionReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

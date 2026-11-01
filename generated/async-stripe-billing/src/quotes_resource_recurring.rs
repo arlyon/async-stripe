@@ -38,9 +38,7 @@ pub struct QuotesResourceRecurringBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -129,26 +127,6 @@ const _: () = {
     impl ObjectDeser for QuotesResourceRecurring {
         type Builder = QuotesResourceRecurringBuilder;
     }
-
-    impl FromValueOpt for QuotesResourceRecurring {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = QuotesResourceRecurringBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
-                    "amount_total" => b.amount_total = FromValueOpt::from_value(v),
-                    "interval" => b.interval = FromValueOpt::from_value(v),
-                    "interval_count" => b.interval_count = FromValueOpt::from_value(v),
-                    "total_details" => b.total_details = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// The frequency at which a subscription is billed. One of `day`, `week`, `month` or `year`.
 #[derive(Clone, Eq, PartialEq)]
@@ -235,7 +213,6 @@ impl miniserde::de::Visitor for crate::Place<QuotesResourceRecurringInterval> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(QuotesResourceRecurringInterval);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for QuotesResourceRecurringInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

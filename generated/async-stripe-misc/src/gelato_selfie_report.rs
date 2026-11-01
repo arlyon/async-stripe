@@ -36,9 +36,7 @@ pub struct GelatoSelfieReportBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -102,25 +100,6 @@ const _: () = {
 
     impl ObjectDeser for GelatoSelfieReport {
         type Builder = GelatoSelfieReportBuilder;
-    }
-
-    impl FromValueOpt for GelatoSelfieReport {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = GelatoSelfieReportBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "document" => b.document = FromValueOpt::from_value(v),
-                    "error" => b.error = FromValueOpt::from_value(v),
-                    "selfie" => b.selfie = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Status of this `selfie` check.
@@ -198,7 +177,6 @@ impl miniserde::de::Visitor for crate::Place<GelatoSelfieReportStatus> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(GelatoSelfieReportStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for GelatoSelfieReportStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

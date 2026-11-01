@@ -74,9 +74,7 @@ pub struct ReserveHoldBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -215,36 +213,6 @@ const _: () = {
     impl ObjectDeser for ReserveHold {
         type Builder = ReserveHoldBuilder;
     }
-
-    impl FromValueOpt for ReserveHold {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ReserveHoldBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_releasable" => b.amount_releasable = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "created_by" => b.created_by = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "is_releasable" => b.is_releasable = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    "release_details" => b.release_details = FromValueOpt::from_value(v),
-                    "release_schedule" => b.release_schedule = FromValueOpt::from_value(v),
-                    "reserve_plan" => b.reserve_plan = FromValueOpt::from_value(v),
-                    "source_charge" => b.source_charge = FromValueOpt::from_value(v),
-                    "source_type" => b.source_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for ReserveHold {
@@ -346,7 +314,6 @@ impl miniserde::de::Visitor for crate::Place<ReserveHoldCreatedBy> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ReserveHoldCreatedBy);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ReserveHoldCreatedBy {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -430,7 +397,6 @@ impl miniserde::de::Visitor for crate::Place<ReserveHoldReason> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ReserveHoldReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ReserveHoldReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -518,7 +484,6 @@ impl miniserde::de::Visitor for crate::Place<ReserveHoldSourceType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ReserveHoldSourceType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ReserveHoldSourceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

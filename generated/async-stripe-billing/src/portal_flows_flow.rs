@@ -43,9 +43,7 @@ pub struct PortalFlowsFlowBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -141,29 +139,6 @@ const _: () = {
     impl ObjectDeser for PortalFlowsFlow {
         type Builder = PortalFlowsFlowBuilder;
     }
-
-    impl FromValueOpt for PortalFlowsFlow {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PortalFlowsFlowBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "after_completion" => b.after_completion = FromValueOpt::from_value(v),
-                    "customer_update" => b.customer_update = FromValueOpt::from_value(v),
-                    "subscription_cancel" => b.subscription_cancel = FromValueOpt::from_value(v),
-                    "subscription_update" => b.subscription_update = FromValueOpt::from_value(v),
-                    "subscription_update_confirm" => {
-                        b.subscription_update_confirm = FromValueOpt::from_value(v)
-                    }
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// Type of flow that the customer will go through.
 #[derive(Clone, Eq, PartialEq)]
@@ -249,7 +224,6 @@ impl miniserde::de::Visitor for crate::Place<PortalFlowsFlowType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PortalFlowsFlowType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PortalFlowsFlowType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

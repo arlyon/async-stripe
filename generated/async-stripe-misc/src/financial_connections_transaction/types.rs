@@ -59,9 +59,7 @@ pub struct FinancialConnectionsTransactionBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -180,32 +178,6 @@ const _: () = {
     impl ObjectDeser for FinancialConnectionsTransaction {
         type Builder = FinancialConnectionsTransactionBuilder;
     }
-
-    impl FromValueOpt for FinancialConnectionsTransaction {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = FinancialConnectionsTransactionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account" => b.account = FromValueOpt::from_value(v),
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
-                    "transacted_at" => b.transacted_at = FromValueOpt::from_value(v),
-                    "transaction_refresh" => b.transaction_refresh = FromValueOpt::from_value(v),
-                    "updated" => b.updated = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for FinancialConnectionsTransaction {
@@ -310,7 +282,6 @@ impl miniserde::de::Visitor for crate::Place<FinancialConnectionsTransactionStat
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(FinancialConnectionsTransactionStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for FinancialConnectionsTransactionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

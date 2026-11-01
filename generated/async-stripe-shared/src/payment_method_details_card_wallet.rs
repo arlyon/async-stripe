@@ -48,9 +48,7 @@ pub struct PaymentMethodDetailsCardWalletBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -159,32 +157,6 @@ const _: () = {
     impl ObjectDeser for PaymentMethodDetailsCardWallet {
         type Builder = PaymentMethodDetailsCardWalletBuilder;
     }
-
-    impl FromValueOpt for PaymentMethodDetailsCardWallet {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDetailsCardWalletBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amex_express_checkout" => {
-                        b.amex_express_checkout = FromValueOpt::from_value(v)
-                    }
-                    "apple_pay" => b.apple_pay = FromValueOpt::from_value(v),
-                    "dynamic_last4" => b.dynamic_last4 = FromValueOpt::from_value(v),
-                    "google_pay" => b.google_pay = FromValueOpt::from_value(v),
-                    "link" => b.link = FromValueOpt::from_value(v),
-                    "masterpass" => b.masterpass = FromValueOpt::from_value(v),
-                    "samsung_pay" => b.samsung_pay = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "visa_checkout" => b.visa_checkout = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// The type of the card wallet, one of `amex_express_checkout`, `apple_pay`, `google_pay`, `masterpass`, `samsung_pay`, `visa_checkout`, or `link`.
 /// An additional hash is included on the Wallet subhash with a name matching this value.
@@ -282,7 +254,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsCardWalletType>
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsCardWalletType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardWalletType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -26,9 +26,7 @@ pub struct PaymentMethodUpiBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -87,21 +85,5 @@ const _: () = {
 
     impl ObjectDeser for PaymentMethodUpi {
         type Builder = PaymentMethodUpiBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodUpi {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodUpiBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "vpa" => b.vpa = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

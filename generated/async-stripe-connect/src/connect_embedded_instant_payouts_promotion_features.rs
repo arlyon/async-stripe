@@ -38,9 +38,7 @@ pub struct ConnectEmbeddedInstantPayoutsPromotionFeaturesBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -122,27 +120,5 @@ const _: () = {
 
     impl ObjectDeser for ConnectEmbeddedInstantPayoutsPromotionFeatures {
         type Builder = ConnectEmbeddedInstantPayoutsPromotionFeaturesBuilder;
-    }
-
-    impl FromValueOpt for ConnectEmbeddedInstantPayoutsPromotionFeatures {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ConnectEmbeddedInstantPayoutsPromotionFeaturesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "disable_stripe_user_authentication" => {
-                        b.disable_stripe_user_authentication = FromValueOpt::from_value(v)
-                    }
-                    "external_account_collection" => {
-                        b.external_account_collection = FromValueOpt::from_value(v)
-                    }
-                    "instant_payouts" => b.instant_payouts = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

@@ -38,9 +38,7 @@ pub struct PaymentPagesCheckoutSessionConsentCollectionBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -111,26 +109,6 @@ const _: () = {
 
     impl ObjectDeser for PaymentPagesCheckoutSessionConsentCollection {
         type Builder = PaymentPagesCheckoutSessionConsentCollectionBuilder;
-    }
-
-    impl FromValueOpt for PaymentPagesCheckoutSessionConsentCollection {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentPagesCheckoutSessionConsentCollectionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "payment_method_reuse_agreement" => {
-                        b.payment_method_reuse_agreement = FromValueOpt::from_value(v)
-                    }
-                    "promotions" => b.promotions = FromValueOpt::from_value(v),
-                    "terms_of_service" => b.terms_of_service = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// If set to `auto`, enables the collection of customer consent for promotional communications.
@@ -222,7 +200,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentPagesCheckoutSessionConsentCollectionPromotions);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionConsentCollectionPromotions {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -316,9 +293,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentPagesCheckoutSessionConsentCollectionTermsOfService
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionConsentCollectionTermsOfService {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

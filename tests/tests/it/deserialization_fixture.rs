@@ -3,12 +3,31 @@ use std::fs::File;
 
 use serde_json::Value;
 
+#[path = "../../value_differential.rs"]
+mod value_differential;
+
 #[test]
 fn fixtures() {
     let data: Value =
         serde_json::from_reader(File::open("../openapi/fixtures.json").unwrap()).unwrap();
     let resources = &data["resources"];
     super::generated::check_fixtures(resources);
+}
+
+#[test]
+fn failed_union_propagates_through_optional_and_sequence_visitors() {
+    use stripe_core::PaymentSource;
+    use stripe_types::miniserde_helpers::FromValueOpt;
+
+    // The discriminator selects Card, but its required fields are missing.
+    let json = r#"{"object":"card"}"#;
+    assert!(miniserde::json::from_str::<Option<PaymentSource>>(json).is_err());
+    assert!(
+        Option::<PaymentSource>::from_value(miniserde::json::from_str(json).unwrap()).is_none()
+    );
+    let json = format!("[{json}]");
+    assert!(miniserde::json::from_str::<Vec<PaymentSource>>(&json).is_err());
+    assert!(Vec::<PaymentSource>::from_value(miniserde::json::from_str(&json).unwrap()).is_none());
 }
 
 #[track_caller]
@@ -25,6 +44,15 @@ pub fn check_object<T: miniserde::Deserialize + serde::Serialize>(resources: &Va
     let result_str = serde_json::to_string(&result).unwrap();
     let as_val: Value = serde_json::from_str(&result_str).unwrap();
     assert_json_matches(&as_val, fixture, &mut JsonKeyPath::new(key));
+
+    let (streaming, value) = value_differential::outputs::<T>(fixture);
+    assert_eq!(streaming, value, "fixture {key}: Value and streaming paths differ");
+    let mutations = value_differential::mutations(fixture);
+    for (path, input) in &mutations {
+        let (streaming, value) = value_differential::outputs::<T>(input);
+        assert_eq!(streaming, value, "fixture {key}, corruption at {path}");
+    }
+    println!("fixture {key}: both paths agree on {} corruptions", mutations.len());
 }
 
 struct JsonKeyPath {

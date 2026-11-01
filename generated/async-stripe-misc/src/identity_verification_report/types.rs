@@ -71,9 +71,7 @@ pub struct IdentityVerificationReportBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -202,34 +200,6 @@ const _: () = {
     impl ObjectDeser for IdentityVerificationReport {
         type Builder = IdentityVerificationReportBuilder;
     }
-
-    impl FromValueOpt for IdentityVerificationReport {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IdentityVerificationReportBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "client_reference_id" => b.client_reference_id = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "document" => b.document = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "id_number" => b.id_number = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "options" => b.options = FromValueOpt::from_value(v),
-                    "phone" => b.phone = FromValueOpt::from_value(v),
-                    "selfie" => b.selfie = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "verification_flow" => b.verification_flow = FromValueOpt::from_value(v),
-                    "verification_session" => b.verification_session = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for IdentityVerificationReport {
@@ -336,7 +306,6 @@ impl miniserde::de::Visitor for crate::Place<IdentityVerificationReportType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IdentityVerificationReportType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IdentityVerificationReportType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

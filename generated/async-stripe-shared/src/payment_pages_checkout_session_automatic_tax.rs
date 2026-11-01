@@ -37,9 +37,7 @@ pub struct PaymentPagesCheckoutSessionAutomaticTaxBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -103,25 +101,6 @@ const _: () = {
 
     impl ObjectDeser for PaymentPagesCheckoutSessionAutomaticTax {
         type Builder = PaymentPagesCheckoutSessionAutomaticTaxBuilder;
-    }
-
-    impl FromValueOpt for PaymentPagesCheckoutSessionAutomaticTax {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentPagesCheckoutSessionAutomaticTaxBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "enabled" => b.enabled = FromValueOpt::from_value(v),
-                    "liability" => b.liability = FromValueOpt::from_value(v),
-                    "provider" => b.provider = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The status of the most recent automated tax calculation for this session.
@@ -208,7 +187,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentPagesCheckoutSessionAutomati
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentPagesCheckoutSessionAutomaticTaxStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionAutomaticTaxStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

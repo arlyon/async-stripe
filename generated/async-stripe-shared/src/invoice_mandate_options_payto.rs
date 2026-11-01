@@ -33,9 +33,7 @@ pub struct InvoiceMandateOptionsPaytoBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -98,24 +96,6 @@ const _: () = {
 
     impl ObjectDeser for InvoiceMandateOptionsPayto {
         type Builder = InvoiceMandateOptionsPaytoBuilder;
-    }
-
-    impl FromValueOpt for InvoiceMandateOptionsPayto {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InvoiceMandateOptionsPaytoBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "amount_type" => b.amount_type = FromValueOpt::from_value(v),
-                    "purpose" => b.purpose = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Only `maximum` is supported.
@@ -197,7 +177,6 @@ impl miniserde::de::Visitor for crate::Place<InvoiceMandateOptionsPaytoAmountTyp
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(InvoiceMandateOptionsPaytoAmountType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InvoiceMandateOptionsPaytoAmountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -312,7 +291,6 @@ impl miniserde::de::Visitor for crate::Place<InvoiceMandateOptionsPaytoPurpose> 
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(InvoiceMandateOptionsPaytoPurpose);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InvoiceMandateOptionsPaytoPurpose {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

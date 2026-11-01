@@ -35,9 +35,7 @@ pub struct CancellationDetailsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -109,25 +107,6 @@ const _: () = {
 
     impl ObjectDeser for CancellationDetails {
         type Builder = CancellationDetailsBuilder;
-    }
-
-    impl FromValueOpt for CancellationDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CancellationDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "comment" => b.comment = FromValueOpt::from_value(v),
-                    "feedback" => b.feedback = FromValueOpt::from_value(v),
-                    "feedback_option" => b.feedback_option = FromValueOpt::from_value(v),
-                    "reason" => b.reason = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
@@ -227,7 +206,6 @@ impl miniserde::de::Visitor for crate::Place<CancellationDetailsFeedback> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CancellationDetailsFeedback);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CancellationDetailsFeedback {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -317,7 +295,6 @@ impl miniserde::de::Visitor for crate::Place<CancellationDetailsReason> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CancellationDetailsReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CancellationDetailsReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

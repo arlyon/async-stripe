@@ -35,9 +35,7 @@ pub struct CheckoutFinancialConnectionsPaymentMethodOptionsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -109,25 +107,6 @@ const _: () = {
 
     impl ObjectDeser for CheckoutFinancialConnectionsPaymentMethodOptions {
         type Builder = CheckoutFinancialConnectionsPaymentMethodOptionsBuilder;
-    }
-
-    impl FromValueOpt for CheckoutFinancialConnectionsPaymentMethodOptions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CheckoutFinancialConnectionsPaymentMethodOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "filters" => b.filters = FromValueOpt::from_value(v),
-                    "permissions" => b.permissions = FromValueOpt::from_value(v),
-                    "prefetch" => b.prefetch = FromValueOpt::from_value(v),
-                    "return_url" => b.return_url = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The list of permissions to request. The `payment_method` permission must be included.
@@ -221,9 +200,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    CheckoutFinancialConnectionsPaymentMethodOptionsPermissions
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutFinancialConnectionsPaymentMethodOptionsPermissions {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -320,9 +296,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutFinancialConnectionsPaymentMethodOptionsPrefetch {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

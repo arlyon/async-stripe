@@ -29,9 +29,7 @@ pub struct PaymentMethodDetailsMultibancoBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -92,22 +90,5 @@ const _: () = {
 
     impl ObjectDeser for PaymentMethodDetailsMultibanco {
         type Builder = PaymentMethodDetailsMultibancoBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsMultibanco {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDetailsMultibancoBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "entity" => b.entity = FromValueOpt::from_value(v),
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

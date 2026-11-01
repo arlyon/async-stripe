@@ -47,9 +47,7 @@ pub struct InsightsResourcesPaymentEvaluationEventBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -154,34 +152,6 @@ const _: () = {
     impl ObjectDeser for InsightsResourcesPaymentEvaluationEvent {
         type Builder = InsightsResourcesPaymentEvaluationEventBuilder;
     }
-
-    impl FromValueOpt for InsightsResourcesPaymentEvaluationEvent {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InsightsResourcesPaymentEvaluationEventBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "dispute_opened" => b.dispute_opened = FromValueOpt::from_value(v),
-                    "early_fraud_warning_received" => {
-                        b.early_fraud_warning_received = FromValueOpt::from_value(v)
-                    }
-                    "occurred_at" => b.occurred_at = FromValueOpt::from_value(v),
-                    "refunded" => b.refunded = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "user_intervention_raised" => {
-                        b.user_intervention_raised = FromValueOpt::from_value(v)
-                    }
-                    "user_intervention_resolved" => {
-                        b.user_intervention_resolved = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// Indicates the type of event attached to the payment evaluation.
 #[derive(Clone, Eq, PartialEq)]
@@ -273,7 +243,6 @@ impl miniserde::de::Visitor for crate::Place<InsightsResourcesPaymentEvaluationE
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(InsightsResourcesPaymentEvaluationEventType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InsightsResourcesPaymentEvaluationEventType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

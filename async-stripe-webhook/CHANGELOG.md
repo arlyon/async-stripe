@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [Unreleased]
+
+### Fixed
+
+- Propagate malformed union payload errors rather than silently losing their data.
+
+### Changed
+
+- Webhook payloads now follow miniserde streaming validation through `FromValueOpt`,
+  including rejection of malformed optional values.
+
 ## [1.0.0-rc.9](https://github.com/arlyon/async-stripe/compare/async-stripe-webhook-v1.0.0-rc.8...async-stripe-webhook-v1.0.0-rc.9) - 2026-09-11
 
 ### Fixed

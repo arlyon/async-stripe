@@ -40,9 +40,7 @@ pub struct CheckoutAcssDebitMandateOptionsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -131,26 +129,6 @@ const _: () = {
     impl ObjectDeser for CheckoutAcssDebitMandateOptions {
         type Builder = CheckoutAcssDebitMandateOptionsBuilder;
     }
-
-    impl FromValueOpt for CheckoutAcssDebitMandateOptions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CheckoutAcssDebitMandateOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "custom_mandate_url" => b.custom_mandate_url = FromValueOpt::from_value(v),
-                    "default_for" => b.default_for = FromValueOpt::from_value(v),
-                    "interval_description" => b.interval_description = FromValueOpt::from_value(v),
-                    "payment_schedule" => b.payment_schedule = FromValueOpt::from_value(v),
-                    "transaction_type" => b.transaction_type = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// List of Stripe products where this mandate can be selected automatically.
 /// Returned when the Session is in `setup` mode.
@@ -234,7 +212,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutAcssDebitMandateOptionsDefa
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutAcssDebitMandateOptionsDefaultFor);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutAcssDebitMandateOptionsDefaultFor {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -327,7 +304,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutAcssDebitMandateOptionsPaym
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutAcssDebitMandateOptionsPaymentSchedule);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutAcssDebitMandateOptionsPaymentSchedule {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -417,7 +393,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutAcssDebitMandateOptionsTran
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutAcssDebitMandateOptionsTransactionType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutAcssDebitMandateOptionsTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

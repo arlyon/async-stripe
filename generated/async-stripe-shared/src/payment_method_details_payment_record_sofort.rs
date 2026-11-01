@@ -53,9 +53,7 @@ pub struct PaymentMethodDetailsPaymentRecordSofortBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -166,32 +164,6 @@ const _: () = {
     impl ObjectDeser for PaymentMethodDetailsPaymentRecordSofort {
         type Builder = PaymentMethodDetailsPaymentRecordSofortBuilder;
     }
-
-    impl FromValueOpt for PaymentMethodDetailsPaymentRecordSofort {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDetailsPaymentRecordSofortBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "bank_code" => b.bank_code = FromValueOpt::from_value(v),
-                    "bank_name" => b.bank_name = FromValueOpt::from_value(v),
-                    "bic" => b.bic = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "generated_sepa_debit" => b.generated_sepa_debit = FromValueOpt::from_value(v),
-                    "generated_sepa_debit_mandate" => {
-                        b.generated_sepa_debit_mandate = FromValueOpt::from_value(v)
-                    }
-                    "iban_last4" => b.iban_last4 = FromValueOpt::from_value(v),
-                    "preferred_language" => b.preferred_language = FromValueOpt::from_value(v),
-                    "verified_name" => b.verified_name = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// Preferred language of the SOFORT authorization page that the customer is redirected to.
 /// Can be one of `de`, `en`, `es`, `fr`, `it`, `nl`, or `pl`.
@@ -294,9 +266,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentMethodDetailsPaymentRecordSofortPreferredLanguage
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsPaymentRecordSofortPreferredLanguage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

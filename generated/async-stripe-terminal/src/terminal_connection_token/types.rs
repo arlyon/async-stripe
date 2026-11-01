@@ -35,9 +35,7 @@ pub struct TerminalConnectionTokenBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -97,23 +95,6 @@ const _: () = {
 
     impl ObjectDeser for TerminalConnectionToken {
         type Builder = TerminalConnectionTokenBuilder;
-    }
-
-    impl FromValueOpt for TerminalConnectionToken {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TerminalConnectionTokenBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "location" => b.location = FromValueOpt::from_value(v),
-                    "secret" => b.secret = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 #[cfg(feature = "serialize")]

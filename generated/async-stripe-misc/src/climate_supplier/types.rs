@@ -41,9 +41,7 @@ pub struct ClimateSupplierBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -129,27 +127,6 @@ const _: () = {
 
     impl ObjectDeser for ClimateSupplier {
         type Builder = ClimateSupplierBuilder;
-    }
-
-    impl FromValueOpt for ClimateSupplier {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = ClimateSupplierBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "info_url" => b.info_url = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "locations" => b.locations = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "removal_pathway" => b.removal_pathway = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 #[cfg(feature = "serialize")]
@@ -253,7 +230,6 @@ impl miniserde::de::Visitor for crate::Place<ClimateSupplierRemovalPathway> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(ClimateSupplierRemovalPathway);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ClimateSupplierRemovalPathway {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

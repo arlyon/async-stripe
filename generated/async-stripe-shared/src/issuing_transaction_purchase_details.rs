@@ -41,9 +41,7 @@ pub struct IssuingTransactionPurchaseDetailsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -129,26 +127,5 @@ const _: () = {
 
     impl ObjectDeser for IssuingTransactionPurchaseDetails {
         type Builder = IssuingTransactionPurchaseDetailsBuilder;
-    }
-
-    impl FromValueOpt for IssuingTransactionPurchaseDetails {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingTransactionPurchaseDetailsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "fleet" => b.fleet = FromValueOpt::from_value(v),
-                    "flight" => b.flight = FromValueOpt::from_value(v),
-                    "fuel" => b.fuel = FromValueOpt::from_value(v),
-                    "lodging" => b.lodging = FromValueOpt::from_value(v),
-                    "receipt" => b.receipt = FromValueOpt::from_value(v),
-                    "reference" => b.reference = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

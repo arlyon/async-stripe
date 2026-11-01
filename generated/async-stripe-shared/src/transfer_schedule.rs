@@ -48,9 +48,7 @@ pub struct TransferScheduleBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -144,27 +142,6 @@ const _: () = {
     impl ObjectDeser for TransferSchedule {
         type Builder = TransferScheduleBuilder;
     }
-
-    impl FromValueOpt for TransferSchedule {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = TransferScheduleBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "delay_days" => b.delay_days = FromValueOpt::from_value(v),
-                    "interval" => b.interval = FromValueOpt::from_value(v),
-                    "monthly_anchor" => b.monthly_anchor = FromValueOpt::from_value(v),
-                    "monthly_payout_days" => b.monthly_payout_days = FromValueOpt::from_value(v),
-                    "weekly_anchor" => b.weekly_anchor = FromValueOpt::from_value(v),
-                    "weekly_payout_days" => b.weekly_payout_days = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// The days of the week when available funds are paid out, specified as an array, for example, [`monday`, `tuesday`].
 /// Only shown if `interval` is weekly.
@@ -255,7 +232,6 @@ impl miniserde::de::Visitor for crate::Place<TransferScheduleWeeklyPayoutDays> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(TransferScheduleWeeklyPayoutDays);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TransferScheduleWeeklyPayoutDays {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

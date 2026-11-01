@@ -34,9 +34,7 @@ pub struct PaymentPagesCheckoutSessionPermissionsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -95,24 +93,6 @@ const _: () = {
 
     impl ObjectDeser for PaymentPagesCheckoutSessionPermissions {
         type Builder = PaymentPagesCheckoutSessionPermissionsBuilder;
-    }
-
-    impl FromValueOpt for PaymentPagesCheckoutSessionPermissions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentPagesCheckoutSessionPermissionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "update_shipping_details" => {
-                        b.update_shipping_details = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Determines which entity is allowed to update the shipping details.
@@ -206,9 +186,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentPagesCheckoutSessionPermissionsUpdateShippingDetails
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionPermissionsUpdateShippingDetails {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -45,9 +45,7 @@ pub struct PaymentMethodDetailsPaypalBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -140,26 +138,5 @@ const _: () = {
 
     impl ObjectDeser for PaymentMethodDetailsPaypal {
         type Builder = PaymentMethodDetailsPaypalBuilder;
-    }
-
-    impl FromValueOpt for PaymentMethodDetailsPaypal {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDetailsPaypalBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "payer_email" => b.payer_email = FromValueOpt::from_value(v),
-                    "payer_id" => b.payer_id = FromValueOpt::from_value(v),
-                    "payer_name" => b.payer_name = FromValueOpt::from_value(v),
-                    "seller_protection" => b.seller_protection = FromValueOpt::from_value(v),
-                    "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

@@ -45,9 +45,7 @@ pub struct PaymentIntentNextActionWechatPayRedirectToAndroidAppBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -138,28 +136,5 @@ const _: () = {
 
     impl ObjectDeser for PaymentIntentNextActionWechatPayRedirectToAndroidApp {
         type Builder = PaymentIntentNextActionWechatPayRedirectToAndroidAppBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentNextActionWechatPayRedirectToAndroidApp {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b =
-                PaymentIntentNextActionWechatPayRedirectToAndroidAppBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "app_id" => b.app_id = FromValueOpt::from_value(v),
-                    "nonce_str" => b.nonce_str = FromValueOpt::from_value(v),
-                    "package" => b.package = FromValueOpt::from_value(v),
-                    "partner_id" => b.partner_id = FromValueOpt::from_value(v),
-                    "prepay_id" => b.prepay_id = FromValueOpt::from_value(v),
-                    "sign" => b.sign = FromValueOpt::from_value(v),
-                    "timestamp" => b.timestamp = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

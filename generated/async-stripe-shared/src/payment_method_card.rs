@@ -84,9 +84,7 @@ pub struct PaymentMethodCardBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -235,38 +233,6 @@ const _: () = {
     impl ObjectDeser for PaymentMethodCard {
         type Builder = PaymentMethodCardBuilder;
     }
-
-    impl FromValueOpt for PaymentMethodCard {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodCardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "brand" => b.brand = FromValueOpt::from_value(v),
-                    "checks" => b.checks = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "display_brand" => b.display_brand = FromValueOpt::from_value(v),
-                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
-                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "funding" => b.funding = FromValueOpt::from_value(v),
-                    "generated_from" => b.generated_from = FromValueOpt::from_value(v),
-                    "iin" => b.iin = FromValueOpt::from_value(v),
-                    "issuer" => b.issuer = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "networks" => b.networks = FromValueOpt::from_value(v),
-                    "regulated_status" => b.regulated_status = FromValueOpt::from_value(v),
-                    "three_d_secure_usage" => b.three_d_secure_usage = FromValueOpt::from_value(v),
-                    "wallet" => b.wallet = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// Status of a card based on the card issuer.
 #[derive(Clone, Eq, PartialEq)]
@@ -347,7 +313,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodCardRegulatedStatus> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodCardRegulatedStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodCardRegulatedStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

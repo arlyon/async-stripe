@@ -164,7 +164,6 @@ macro_rules! def_id {
                 Ok(())
             }
         }
-        $crate::impl_from_val_with_from_str!($struct_name);
     };
 }
 

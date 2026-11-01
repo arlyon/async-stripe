@@ -32,9 +32,7 @@ pub struct IssuingCardShippingAddressValidationBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -97,24 +95,6 @@ const _: () = {
 
     impl ObjectDeser for IssuingCardShippingAddressValidation {
         type Builder = IssuingCardShippingAddressValidationBuilder;
-    }
-
-    impl FromValueOpt for IssuingCardShippingAddressValidation {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingCardShippingAddressValidationBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "mode" => b.mode = FromValueOpt::from_value(v),
-                    "normalized_address" => b.normalized_address = FromValueOpt::from_value(v),
-                    "result" => b.result = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The address validation capabilities to use.
@@ -199,7 +179,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingCardShippingAddressValidatio
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingCardShippingAddressValidationMode);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardShippingAddressValidationMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -292,7 +271,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingCardShippingAddressValidatio
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingCardShippingAddressValidationResult);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardShippingAddressValidationResult {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

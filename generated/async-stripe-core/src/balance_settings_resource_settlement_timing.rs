@@ -34,9 +34,7 @@ pub struct BalanceSettingsResourceSettlementTimingBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -99,23 +97,5 @@ const _: () = {
 
     impl ObjectDeser for BalanceSettingsResourceSettlementTiming {
         type Builder = BalanceSettingsResourceSettlementTimingBuilder;
-    }
-
-    impl FromValueOpt for BalanceSettingsResourceSettlementTiming {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = BalanceSettingsResourceSettlementTimingBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "delay_days" => b.delay_days = FromValueOpt::from_value(v),
-                    "delay_days_override" => b.delay_days_override = FromValueOpt::from_value(v),
-                    "start_of_day" => b.start_of_day = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

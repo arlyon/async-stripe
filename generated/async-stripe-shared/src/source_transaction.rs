@@ -63,9 +63,7 @@ pub struct SourceTransactionBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -193,34 +191,6 @@ const _: () = {
 
     impl ObjectDeser for SourceTransaction {
         type Builder = SourceTransactionBuilder;
-    }
-
-    impl FromValueOpt for SourceTransaction {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceTransactionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "ach_credit_transfer" => b.ach_credit_transfer = FromValueOpt::from_value(v),
-                    "amount" => b.amount = FromValueOpt::from_value(v),
-                    "chf_credit_transfer" => b.chf_credit_transfer = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "currency" => b.currency = FromValueOpt::from_value(v),
-                    "gbp_credit_transfer" => b.gbp_credit_transfer = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "paper_check" => b.paper_check = FromValueOpt::from_value(v),
-                    "sepa_credit_transfer" => b.sepa_credit_transfer = FromValueOpt::from_value(v),
-                    "source" => b.source = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 #[cfg(feature = "serialize")]
@@ -363,7 +333,6 @@ impl miniserde::de::Visitor for crate::Place<SourceTransactionType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(SourceTransactionType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SourceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

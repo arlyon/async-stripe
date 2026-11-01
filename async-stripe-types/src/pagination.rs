@@ -134,10 +134,8 @@ impl<T: Clone> Clone for SearchList<T> {
 #[doc(hidden)]
 mod impl_deserialize {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Error, make_place};
 
-    use crate::miniserde_helpers::FromValueOpt;
     use crate::{List, SearchList};
     make_place!(Place);
 
@@ -181,26 +179,6 @@ mod impl_deserialize {
             let has_more = self.has_more.ok_or(Error)?;
             *self.out = Some(List { data, has_more, url });
             Ok(())
-        }
-    }
-
-    impl<T: FromValueOpt> FromValueOpt for List<T> {
-        fn from_value(v: Value) -> Option<Self> {
-            let mut data: Option<Vec<T>> = None;
-            let mut has_more: Option<bool> = None;
-            let mut url: Option<String> = None;
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            for (k, v) in obj {
-                match k.as_str() {
-                    "has_more" => has_more = Some(bool::from_value(v)?),
-                    "data" => data = Some(FromValueOpt::from_value(v)?),
-                    "url" => url = Some(FromValueOpt::from_value(v)?),
-                    _ => {}
-                }
-            }
-            Some(Self { data: data?, has_more: has_more?, url: url? })
         }
     }
 

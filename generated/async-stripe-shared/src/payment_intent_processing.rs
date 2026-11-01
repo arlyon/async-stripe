@@ -29,9 +29,7 @@ pub struct PaymentIntentProcessingBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -91,23 +89,6 @@ const _: () = {
 
     impl ObjectDeser for PaymentIntentProcessing {
         type Builder = PaymentIntentProcessingBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentProcessing {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentIntentProcessingBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "card" => b.card = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Type of the payment method for which payment is in `processing` state, one of `card`.
@@ -186,7 +167,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentIntentProcessingType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentIntentProcessingType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentIntentProcessingType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

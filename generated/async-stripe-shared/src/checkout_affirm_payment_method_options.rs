@@ -36,9 +36,7 @@ pub struct CheckoutAffirmPaymentMethodOptionsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -100,23 +98,6 @@ const _: () = {
 
     impl ObjectDeser for CheckoutAffirmPaymentMethodOptions {
         type Builder = CheckoutAffirmPaymentMethodOptionsBuilder;
-    }
-
-    impl FromValueOpt for CheckoutAffirmPaymentMethodOptions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CheckoutAffirmPaymentMethodOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "capture_method" => b.capture_method = FromValueOpt::from_value(v),
-                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Controls when the funds will be captured from the customer's account.
@@ -197,7 +178,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutAffirmPaymentMethodOptionsC
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutAffirmPaymentMethodOptionsCaptureMethod);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutAffirmPaymentMethodOptionsCaptureMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -292,7 +272,6 @@ impl miniserde::de::Visitor for crate::Place<CheckoutAffirmPaymentMethodOptionsS
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CheckoutAffirmPaymentMethodOptionsSetupFutureUsage);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutAffirmPaymentMethodOptionsSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -42,9 +42,7 @@ pub struct IssuingDisputeDuplicateEvidenceBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -139,28 +137,5 @@ const _: () = {
 
     impl ObjectDeser for IssuingDisputeDuplicateEvidence {
         type Builder = IssuingDisputeDuplicateEvidenceBuilder;
-    }
-
-    impl FromValueOpt for IssuingDisputeDuplicateEvidence {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingDisputeDuplicateEvidenceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "additional_documentation" => {
-                        b.additional_documentation = FromValueOpt::from_value(v)
-                    }
-                    "card_statement" => b.card_statement = FromValueOpt::from_value(v),
-                    "cash_receipt" => b.cash_receipt = FromValueOpt::from_value(v),
-                    "check_image" => b.check_image = FromValueOpt::from_value(v),
-                    "explanation" => b.explanation = FromValueOpt::from_value(v),
-                    "original_transaction" => b.original_transaction = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

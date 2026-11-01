@@ -53,9 +53,7 @@ version: Option<Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCard
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -150,34 +148,6 @@ self.version.take(),
     {
         type Builder = PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureBuilder;
     }
-
-    impl FromValueOpt
-        for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecure
-    {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "authentication_flow" => b.authentication_flow = FromValueOpt::from_value(v),
-                    "electronic_commerce_indicator" => {
-                        b.electronic_commerce_indicator = FromValueOpt::from_value(v)
-                    }
-                    "exemption_indicator" => b.exemption_indicator = FromValueOpt::from_value(v),
-                    "exemption_indicator_applied" => {
-                        b.exemption_indicator_applied = FromValueOpt::from_value(v)
-                    }
-                    "result" => b.result = FromValueOpt::from_value(v),
-                    "result_reason" => b.result_reason = FromValueOpt::from_value(v),
-                    "version" => b.version = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// For authenticated transactions: Indicates how the issuing bank authenticated the customer.
 #[derive(Clone, Eq, PartialEq)]
@@ -251,7 +221,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentsPrimitivesPaymentRecordsRes
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureAuthenticationFlow);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureAuthenticationFlow {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -348,7 +317,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentsPrimitivesPaymentRecordsRes
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureElectronicCommerceIndicator);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureElectronicCommerceIndicator {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -429,7 +397,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentsPrimitivesPaymentRecordsRes
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureExemptionIndicator);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureExemptionIndicator {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -549,9 +516,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureResult
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureResult
@@ -650,7 +614,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentsPrimitivesPaymentRecordsRes
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureResultReason);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureResultReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -758,9 +721,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureVersion
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureVersion

@@ -39,9 +39,7 @@ payment_method_remove: Option<Option<CustomerSessionResourceComponentsResourceCu
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -110,27 +108,6 @@ const _: () = {
     impl ObjectDeser for CustomerSessionResourceComponentsResourceCustomerSheetResourceFeatures {
         type Builder =
             CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesBuilder;
-    }
-
-    impl FromValueOpt for CustomerSessionResourceComponentsResourceCustomerSheetResourceFeatures {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "payment_method_allow_redisplay_filters" => {
-                        b.payment_method_allow_redisplay_filters = FromValueOpt::from_value(v)
-                    }
-                    "payment_method_remove" => {
-                        b.payment_method_remove = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// A list of [`allow_redisplay`](https://docs.stripe.com/api/payment_methods/object#payment_method_object-allow_redisplay) values that controls which saved payment methods the customer sheet displays by filtering to only show payment methods with an `allow_redisplay` value that is present in this list.
@@ -211,7 +188,6 @@ impl miniserde::de::Visitor for crate::Place<CustomerSessionResourceComponentsRe
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -318,9 +294,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(
-    CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove
-);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove

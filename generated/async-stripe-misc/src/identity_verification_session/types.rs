@@ -107,9 +107,7 @@ pub struct IdentityVerificationSessionBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -272,44 +270,6 @@ const _: () = {
     impl ObjectDeser for IdentityVerificationSession {
         type Builder = IdentityVerificationSessionBuilder;
     }
-
-    impl FromValueOpt for IdentityVerificationSession {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IdentityVerificationSessionBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "client_reference_id" => b.client_reference_id = FromValueOpt::from_value(v),
-                    "client_secret" => b.client_secret = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "last_error" => b.last_error = FromValueOpt::from_value(v),
-                    "last_verification_report" => {
-                        b.last_verification_report = FromValueOpt::from_value(v)
-                    }
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "options" => b.options = FromValueOpt::from_value(v),
-                    "provided_details" => b.provided_details = FromValueOpt::from_value(v),
-                    "redaction" => b.redaction = FromValueOpt::from_value(v),
-                    "related_customer" => b.related_customer = FromValueOpt::from_value(v),
-                    "related_customer_account" => {
-                        b.related_customer_account = FromValueOpt::from_value(v)
-                    }
-                    "related_person" => b.related_person = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "url" => b.url = FromValueOpt::from_value(v),
-                    "verification_flow" => b.verification_flow = FromValueOpt::from_value(v),
-                    "verified_outputs" => b.verified_outputs = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for IdentityVerificationSession {
@@ -422,7 +382,6 @@ impl miniserde::de::Visitor for crate::Place<IdentityVerificationSessionType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IdentityVerificationSessionType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IdentityVerificationSessionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -525,7 +484,6 @@ impl miniserde::de::Visitor for crate::Place<IdentityVerificationSessionStatus> 
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IdentityVerificationSessionStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IdentityVerificationSessionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

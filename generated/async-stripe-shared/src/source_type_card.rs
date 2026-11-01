@@ -57,9 +57,7 @@ pub struct SourceTypeCardBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -207,37 +205,5 @@ const _: () = {
 
     impl ObjectDeser for SourceTypeCard {
         type Builder = SourceTypeCardBuilder;
-    }
-
-    impl FromValueOpt for SourceTypeCard {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = SourceTypeCardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address_line1_check" => b.address_line1_check = FromValueOpt::from_value(v),
-                    "address_zip_check" => b.address_zip_check = FromValueOpt::from_value(v),
-                    "brand" => b.brand = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "cvc_check" => b.cvc_check = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "dynamic_last4" => b.dynamic_last4 = FromValueOpt::from_value(v),
-                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
-                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "funding" => b.funding = FromValueOpt::from_value(v),
-                    "iin" => b.iin = FromValueOpt::from_value(v),
-                    "issuer" => b.issuer = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
-                    "tokenization_method" => b.tokenization_method = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

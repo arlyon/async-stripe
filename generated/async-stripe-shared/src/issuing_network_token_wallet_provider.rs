@@ -53,9 +53,7 @@ pub struct IssuingNetworkTokenWalletProviderBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -173,35 +171,6 @@ const _: () = {
     impl ObjectDeser for IssuingNetworkTokenWalletProvider {
         type Builder = IssuingNetworkTokenWalletProviderBuilder;
     }
-
-    impl FromValueOpt for IssuingNetworkTokenWalletProvider {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingNetworkTokenWalletProviderBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "account_id" => b.account_id = FromValueOpt::from_value(v),
-                    "account_trust_score" => b.account_trust_score = FromValueOpt::from_value(v),
-                    "card_number_source" => b.card_number_source = FromValueOpt::from_value(v),
-                    "cardholder_address" => b.cardholder_address = FromValueOpt::from_value(v),
-                    "cardholder_name" => b.cardholder_name = FromValueOpt::from_value(v),
-                    "device_trust_score" => b.device_trust_score = FromValueOpt::from_value(v),
-                    "hashed_account_email_address" => {
-                        b.hashed_account_email_address = FromValueOpt::from_value(v)
-                    }
-                    "reason_codes" => b.reason_codes = FromValueOpt::from_value(v),
-                    "suggested_decision" => b.suggested_decision = FromValueOpt::from_value(v),
-                    "suggested_decision_version" => {
-                        b.suggested_decision_version = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// The method used for tokenizing a card.
 #[derive(Clone, Eq, PartialEq)]
@@ -291,7 +260,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingNetworkTokenWalletProviderCa
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingNetworkTokenWalletProviderCardNumberSource);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingNetworkTokenWalletProviderCardNumberSource {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -467,7 +435,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingNetworkTokenWalletProviderRe
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingNetworkTokenWalletProviderReasonCodes);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingNetworkTokenWalletProviderReasonCodes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -561,7 +528,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingNetworkTokenWalletProviderSu
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingNetworkTokenWalletProviderSuggestedDecision);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingNetworkTokenWalletProviderSuggestedDecision {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

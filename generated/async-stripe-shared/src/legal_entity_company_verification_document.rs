@@ -38,9 +38,7 @@ pub struct LegalEntityCompanyVerificationDocumentBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -112,24 +110,5 @@ const _: () = {
 
     impl ObjectDeser for LegalEntityCompanyVerificationDocument {
         type Builder = LegalEntityCompanyVerificationDocumentBuilder;
-    }
-
-    impl FromValueOpt for LegalEntityCompanyVerificationDocument {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = LegalEntityCompanyVerificationDocumentBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "back" => b.back = FromValueOpt::from_value(v),
-                    "details" => b.details = FromValueOpt::from_value(v),
-                    "details_code" => b.details_code = FromValueOpt::from_value(v),
-                    "front" => b.front = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

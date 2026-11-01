@@ -29,9 +29,7 @@ pub struct IssuingCardholderIdDocumentBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -91,22 +89,5 @@ const _: () = {
 
     impl ObjectDeser for IssuingCardholderIdDocument {
         type Builder = IssuingCardholderIdDocumentBuilder;
-    }
-
-    impl FromValueOpt for IssuingCardholderIdDocument {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingCardholderIdDocumentBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "back" => b.back = FromValueOpt::from_value(v),
-                    "front" => b.front = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

@@ -79,9 +79,7 @@ pub struct IssuingCardholderBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -220,36 +218,6 @@ const _: () = {
     impl ObjectDeser for IssuingCardholder {
         type Builder = IssuingCardholderBuilder;
     }
-
-    impl FromValueOpt for IssuingCardholder {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = IssuingCardholderBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "billing" => b.billing = FromValueOpt::from_value(v),
-                    "company" => b.company = FromValueOpt::from_value(v),
-                    "created" => b.created = FromValueOpt::from_value(v),
-                    "email" => b.email = FromValueOpt::from_value(v),
-                    "id" => b.id = FromValueOpt::from_value(v),
-                    "individual" => b.individual = FromValueOpt::from_value(v),
-                    "livemode" => b.livemode = FromValueOpt::from_value(v),
-                    "metadata" => b.metadata = FromValueOpt::from_value(v),
-                    "name" => b.name = FromValueOpt::from_value(v),
-                    "phone_number" => b.phone_number = FromValueOpt::from_value(v),
-                    "preferred_locales" => b.preferred_locales = FromValueOpt::from_value(v),
-                    "requirements" => b.requirements = FromValueOpt::from_value(v),
-                    "spending_controls" => b.spending_controls = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 #[cfg(feature = "serialize")]
 impl serde::Serialize for IssuingCardholder {
@@ -373,7 +341,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingCardholderPreferredLocales> 
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingCardholderPreferredLocales);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardholderPreferredLocales {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -458,7 +425,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingCardholderStatus> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingCardholderStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardholderStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -540,7 +506,6 @@ impl miniserde::de::Visitor for crate::Place<IssuingCardholderType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(IssuingCardholderType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardholderType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

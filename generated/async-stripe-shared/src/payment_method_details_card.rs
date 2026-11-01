@@ -121,9 +121,7 @@ wallet: Option<Option<stripe_shared::PaymentMethodDetailsCardWallet>>,
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -329,55 +327,6 @@ const _: () = {
     impl ObjectDeser for PaymentMethodDetailsCard {
         type Builder = PaymentMethodDetailsCardBuilder;
     }
-
-    impl FromValueOpt for PaymentMethodDetailsCard {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentMethodDetailsCardBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "amount_authorized" => b.amount_authorized = FromValueOpt::from_value(v),
-                    "authorization_code" => b.authorization_code = FromValueOpt::from_value(v),
-                    "brand" => b.brand = FromValueOpt::from_value(v),
-                    "capture_before" => b.capture_before = FromValueOpt::from_value(v),
-                    "checks" => b.checks = FromValueOpt::from_value(v),
-                    "country" => b.country = FromValueOpt::from_value(v),
-                    "description" => b.description = FromValueOpt::from_value(v),
-                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
-                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
-                    "extended_authorization" => {
-                        b.extended_authorization = FromValueOpt::from_value(v)
-                    }
-                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
-                    "funding" => b.funding = FromValueOpt::from_value(v),
-                    "iin" => b.iin = FromValueOpt::from_value(v),
-                    "incremental_authorization" => {
-                        b.incremental_authorization = FromValueOpt::from_value(v)
-                    }
-                    "installments" => b.installments = FromValueOpt::from_value(v),
-                    "issuer" => b.issuer = FromValueOpt::from_value(v),
-                    "last4" => b.last4 = FromValueOpt::from_value(v),
-                    "mandate" => b.mandate = FromValueOpt::from_value(v),
-                    "moto" => b.moto = FromValueOpt::from_value(v),
-                    "multicapture" => b.multicapture = FromValueOpt::from_value(v),
-                    "network" => b.network = FromValueOpt::from_value(v),
-                    "network_token" => b.network_token = FromValueOpt::from_value(v),
-                    "network_transaction_id" => {
-                        b.network_transaction_id = FromValueOpt::from_value(v)
-                    }
-                    "overcapture" => b.overcapture = FromValueOpt::from_value(v),
-                    "regulated_status" => b.regulated_status = FromValueOpt::from_value(v),
-                    "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
-                    "transaction_link_id" => b.transaction_link_id = FromValueOpt::from_value(v),
-                    "wallet" => b.wallet = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// Status of a card based on the card issuer.
 #[derive(Clone, Eq, PartialEq)]
@@ -458,7 +407,6 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsCardRegulatedSt
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsCardRegulatedStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardRegulatedStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

@@ -26,9 +26,7 @@ pub struct InvoicePaymentMethodOptionsBancontactBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -87,22 +85,6 @@ const _: () = {
 
     impl ObjectDeser for InvoicePaymentMethodOptionsBancontact {
         type Builder = InvoicePaymentMethodOptionsBancontactBuilder;
-    }
-
-    impl FromValueOpt for InvoicePaymentMethodOptionsBancontact {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = InvoicePaymentMethodOptionsBancontactBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "preferred_language" => b.preferred_language = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Preferred language of the Bancontact authorization page that the customer is redirected to.
@@ -196,7 +178,6 @@ impl miniserde::de::Visitor
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(InvoicePaymentMethodOptionsBancontactPreferredLanguage);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InvoicePaymentMethodOptionsBancontactPreferredLanguage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

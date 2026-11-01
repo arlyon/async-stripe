@@ -37,9 +37,7 @@ pub struct GelatoSessionDocumentOptionsBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -122,27 +120,6 @@ const _: () = {
 
     impl ObjectDeser for GelatoSessionDocumentOptions {
         type Builder = GelatoSessionDocumentOptionsBuilder;
-    }
-
-    impl FromValueOpt for GelatoSessionDocumentOptions {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = GelatoSessionDocumentOptionsBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "allowed_types" => b.allowed_types = FromValueOpt::from_value(v),
-                    "require_id_number" => b.require_id_number = FromValueOpt::from_value(v),
-                    "require_live_capture" => b.require_live_capture = FromValueOpt::from_value(v),
-                    "require_matching_selfie" => {
-                        b.require_matching_selfie = FromValueOpt::from_value(v)
-                    }
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// Array of strings of allowed identity document types.
@@ -228,7 +205,6 @@ impl miniserde::de::Visitor for crate::Place<GelatoSessionDocumentOptionsAllowed
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(GelatoSessionDocumentOptionsAllowedTypes);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for GelatoSessionDocumentOptionsAllowedTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

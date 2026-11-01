@@ -34,9 +34,7 @@ pub struct CustomerAcceptanceBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -100,25 +98,6 @@ const _: () = {
 
     impl ObjectDeser for CustomerAcceptance {
         type Builder = CustomerAcceptanceBuilder;
-    }
-
-    impl FromValueOpt for CustomerAcceptance {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = CustomerAcceptanceBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "accepted_at" => b.accepted_at = FromValueOpt::from_value(v),
-                    "offline" => b.offline = FromValueOpt::from_value(v),
-                    "online" => b.online = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The mandate includes the type of customer acceptance information, such as: `online` or `offline`.
@@ -196,7 +175,6 @@ impl miniserde::de::Visitor for crate::Place<CustomerAcceptanceType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(CustomerAcceptanceType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CustomerAcceptanceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

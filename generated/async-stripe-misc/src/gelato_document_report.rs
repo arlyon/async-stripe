@@ -70,9 +70,7 @@ pub struct GelatoDocumentReportBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -211,38 +209,6 @@ const _: () = {
     impl ObjectDeser for GelatoDocumentReport {
         type Builder = GelatoDocumentReportBuilder;
     }
-
-    impl FromValueOpt for GelatoDocumentReport {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = GelatoDocumentReportBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "address" => b.address = FromValueOpt::from_value(v),
-                    "dob" => b.dob = FromValueOpt::from_value(v),
-                    "error" => b.error = FromValueOpt::from_value(v),
-                    "expiration_date" => b.expiration_date = FromValueOpt::from_value(v),
-                    "files" => b.files = FromValueOpt::from_value(v),
-                    "first_name" => b.first_name = FromValueOpt::from_value(v),
-                    "issued_date" => b.issued_date = FromValueOpt::from_value(v),
-                    "issuing_country" => b.issuing_country = FromValueOpt::from_value(v),
-                    "last_name" => b.last_name = FromValueOpt::from_value(v),
-                    "number" => b.number = FromValueOpt::from_value(v),
-                    "sex" => b.sex = FromValueOpt::from_value(v),
-                    "status" => b.status = FromValueOpt::from_value(v),
-                    "type" => b.type_ = FromValueOpt::from_value(v),
-                    "unparsed_place_of_birth" => {
-                        b.unparsed_place_of_birth = FromValueOpt::from_value(v)
-                    }
-                    "unparsed_sex" => b.unparsed_sex = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
-    }
 };
 /// Sex of the person in the document.
 #[derive(Clone, Eq, PartialEq)]
@@ -326,7 +292,6 @@ impl miniserde::de::Visitor for crate::Place<GelatoDocumentReportSex> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(GelatoDocumentReportSex);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for GelatoDocumentReportSex {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -410,7 +375,6 @@ impl miniserde::de::Visitor for crate::Place<GelatoDocumentReportStatus> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(GelatoDocumentReportStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for GelatoDocumentReportStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
@@ -497,7 +461,6 @@ impl miniserde::de::Visitor for crate::Place<GelatoDocumentReportType> {
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(GelatoDocumentReportType);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for GelatoDocumentReportType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

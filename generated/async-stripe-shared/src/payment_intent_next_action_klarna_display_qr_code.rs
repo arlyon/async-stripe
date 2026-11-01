@@ -35,9 +35,7 @@ pub struct PaymentIntentNextActionKlarnaDisplayQrCodeBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -104,24 +102,5 @@ const _: () = {
 
     impl ObjectDeser for PaymentIntentNextActionKlarnaDisplayQrCode {
         type Builder = PaymentIntentNextActionKlarnaDisplayQrCodeBuilder;
-    }
-
-    impl FromValueOpt for PaymentIntentNextActionKlarnaDisplayQrCode {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PaymentIntentNextActionKlarnaDisplayQrCodeBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "data" => b.data = FromValueOpt::from_value(v),
-                    "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-                    "image_url_png" => b.image_url_png = FromValueOpt::from_value(v),
-                    "image_url_svg" => b.image_url_svg = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };

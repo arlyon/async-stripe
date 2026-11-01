@@ -29,9 +29,7 @@ pub struct PortalCustomerUpdateBuilder {
 )]
 const _: () = {
     use miniserde::de::{Map, Visitor};
-    use miniserde::json::Value;
     use miniserde::{Deserialize, Result, make_place};
-    use stripe_types::miniserde_helpers::FromValueOpt;
     use stripe_types::{MapBuilder, ObjectDeser};
 
     make_place!(Place);
@@ -93,23 +91,6 @@ const _: () = {
 
     impl ObjectDeser for PortalCustomerUpdate {
         type Builder = PortalCustomerUpdateBuilder;
-    }
-
-    impl FromValueOpt for PortalCustomerUpdate {
-        fn from_value(v: Value) -> Option<Self> {
-            let Value::Object(obj) = v else {
-                return None;
-            };
-            let mut b = PortalCustomerUpdateBuilder::deser_default();
-            for (k, v) in obj {
-                match k.as_str() {
-                    "allowed_updates" => b.allowed_updates = FromValueOpt::from_value(v),
-                    "enabled" => b.enabled = FromValueOpt::from_value(v),
-                    _ => {}
-                }
-            }
-            b.take_out()
-        }
     }
 };
 /// The types of customer updates that are supported. When empty, customers are not updateable.
@@ -203,7 +184,6 @@ impl miniserde::de::Visitor for crate::Place<PortalCustomerUpdateAllowedUpdates>
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PortalCustomerUpdateAllowedUpdates);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PortalCustomerUpdateAllowedUpdates {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
