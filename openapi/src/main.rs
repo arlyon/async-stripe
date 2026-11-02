@@ -1,85 +1,108 @@
-use std::fmt::Debug;
 use std::fs;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result, bail};
-use clap::Parser;
+use clap::{Args, Parser, Subcommand};
 use petgraph::dot::{Config, Dot};
 use stripe_openapi_codegen::codegen::CodeGen;
 use stripe_openapi_codegen::crates::ALL_CRATES;
 use stripe_openapi_codegen::spec::Spec;
-use stripe_openapi_codegen::spec_fetch;
-use stripe_openapi_codegen::spec_fetch::fetch_spec;
+use stripe_openapi_codegen::spec_fetch::{self, SpecUpdate};
 use stripe_openapi_codegen::url_finder::{UrlFinder, update_api_doc_data};
 use stripe_openapi_codegen::utils::write_to_file;
 use tracing::info;
 
 #[derive(Debug, Parser)]
-struct Command {
-    /// Version of the library to generate. If not provided, uses the version found in the root
-    /// workspace.
+#[command(about = "Generate async-stripe's OpenAPI bindings and dependency graphs")]
+struct Cli {
+    #[command(subcommand)]
+    command: Command,
+}
+
+#[derive(Debug, Subcommand)]
+enum Command {
+    /// Generate bindings and install them into the repository.
+    Generate(GenerateArgs),
+    /// Write component and crate dependency graphs to out/graphs.
+    Graph(VersionArgs),
+    /// Refresh the Stripe documentation URL mapping.
+    UpdateApiDocs(UpdateApiDocsArgs),
+}
+
+#[derive(Debug, Args)]
+struct VersionArgs {
+    /// Library version to generate. Defaults to the root workspace version.
     #[arg(long)]
     version: Option<String>,
-    /// Input path for the OpenAPI spec, defaults to `spec3.sdk.json`
-    #[arg(default_value = "spec3.sdk.json")]
-    spec_path: String,
-    /// Output directory for generated code, defaults to `out`
+}
+
+#[derive(Debug, Args)]
+struct GenerateArgs {
+    #[command(flatten)]
+    version: VersionArgs,
+    /// Output directory for generated code.
     #[arg(long, default_value = "out")]
-    out: String,
-    /// If not passed, skips the step of fetching the spec. Otherwise, `latest` for the
-    /// newest spec release, `current` for the version used in the latest codegen update,
-    /// or a specific version, such as `v171`
-    #[arg(long, value_parser = spec_fetch::parse_spec_version)]
-    fetch: Option<spec_fetch::SpecVersion>,
-    /// Instead of writing files, generate a graph of dependencies in `graphviz` `DOT` format. Writes
-    /// to `graph.txt`
-    #[arg(long)]
-    graph: bool,
-    /// Update the Stripe API docs instead of using the existing data in the repo
-    #[arg(long)]
-    update_api_docs: bool,
-    /// The URL to target for the stripe docs.
-    #[arg(long, default_value = "https://stripe.com/docs/api")]
-    api_docs_url: String,
-    /// Skip the step of copying the generated code from `out` to `generated/`.
-    #[arg(long)]
-    dry_run: bool,
-    /// Write a markdown report of any auto-resolved crate inference warnings to `out/crate_warnings.md`.
+    out: PathBuf,
+    /// Update the pinned spec to `latest` or a release such as `v171`.
+    #[arg(long, value_parser = spec_fetch::parse_spec_update)]
+    update_spec: Option<SpecUpdate>,
+    /// Generate staging output without installing it into the repository.
+    #[arg(long, alias = "dry-run")]
+    no_install: bool,
+    /// Write crate inference warnings to out/crate_warnings.md.
     #[arg(long)]
     emit_warnings: bool,
 }
 
+#[derive(Debug, Args)]
+struct UpdateApiDocsArgs {
+    /// Stripe API documentation URL.
+    #[arg(long, default_value = "https://stripe.com/docs/api")]
+    api_docs_url: String,
+}
+
 fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
-    let args = Command::parse();
-
-    let in_path = args.spec_path;
-    let out_path = Path::new(&args.out);
-    if out_path.exists() {
-        fs::remove_dir_all(out_path).context("could not remove out folder")?;
+    match Cli::parse().command {
+        Command::Generate(args) => run_generate(args),
+        Command::Graph(args) => {
+            let spec = Spec::new(spec_fetch::load_pinned_spec()?);
+            let codegen = build_codegen(args.version, spec)?;
+            prepare_output(Path::new("out"))?;
+            let components = codegen.components.gen_component_dep_graph();
+            write_to_file(
+                format!("{:?}", Dot::with_config(&components, &[Config::EdgeNoLabel])),
+                "graphs/components_graph.txt",
+            )?;
+            let crates = codegen.components.gen_crate_dep_graph();
+            write_to_file(
+                format!("{:?}", Dot::with_config(&crates, &[Config::EdgeNoLabel])),
+                "graphs/crate_graph.txt",
+            )
+        }
+        Command::UpdateApiDocs(args) => {
+            let spec = Spec::new(spec_fetch::load_pinned_spec()?);
+            let codegen = build_codegen(None, spec)?;
+            update_api_doc_data(&args.api_docs_url, &codegen.components)
+        }
     }
-    fs::create_dir_all(out_path).context("could not create out folder")?;
+}
 
-    info!("generating code for {in_path} to {}", out_path.display());
+fn build_codegen(version: Option<String>, spec: Spec) -> Result<CodeGen> {
+    let url_finder = UrlFinder::new().context("Could not initialize URL finder")?;
+    let version = version.map_or_else(parse_workspace_version, Ok)?;
+    CodeGen::new(spec, url_finder, version)
+}
 
-    let spec = if let Some(version) = args.fetch {
-        let raw = fetch_spec(version, &in_path)?;
-        Spec::new(serde_json::from_value(raw)?)
-    } else {
-        let raw = File::open(in_path).context("failed to load the specfile. does it exist?")?;
-        Spec::new(serde_json::from_reader(&raw).context("failed to read json from specfile")?)
-    };
-    info!("Finished parsing spec");
+fn prepare_output(out: &Path) -> Result<()> {
+    if out.exists() {
+        fs::remove_dir_all(out).context("Could not remove output folder")?;
+    }
+    fs::create_dir_all(out).context("Could not create output folder")
+}
 
-    let url_finder = UrlFinder::new().context("couldn't initialize url finder")?;
-    let version =
-        if let Some(version) = args.version { version } else { parse_workspace_version()? };
-    info!("Generating with version {version}");
-    let codegen = CodeGen::new(spec, url_finder, version)?;
-
-    if args.emit_warnings && !codegen.crate_inference_warnings.is_empty() {
+fn write_crate_inference_warnings(codegen: &CodeGen) -> Result<()> {
+    if !codegen.crate_inference_warnings.is_empty() {
         let mut body = String::from(
             "## Crate Inference Warnings\n\n\
              The following components could not have their crate automatically inferred \
@@ -120,22 +143,16 @@ fn main() -> Result<()> {
         write_to_file(body, "crate_warnings.md")?;
     }
 
-    if args.update_api_docs {
-        update_api_doc_data(&args.api_docs_url, &codegen.components)?;
-        return Ok(());
+    Ok(())
+}
+
+fn run_generate(args: GenerateArgs) -> Result<()> {
+    let spec = Spec::new(spec_fetch::load_generation_spec(args.update_spec)?);
+    let codegen = build_codegen(args.version.version, spec)?;
+    prepare_output(&args.out)?;
+    if args.emit_warnings {
+        write_crate_inference_warnings(&codegen)?;
     }
-
-    if args.graph {
-        let comp_graph = codegen.components.gen_component_dep_graph();
-        let graph_txt = format!("{:?}", Dot::with_config(&comp_graph, &[Config::EdgeNoLabel]));
-        write_to_file(graph_txt, "graphs/components_graph.txt")?;
-
-        let crate_graph = codegen.components.gen_crate_dep_graph();
-        let graph_txt = format!("{:?}", Dot::with_config(&crate_graph, &[Config::EdgeNoLabel]));
-        write_to_file(graph_txt, "graphs/crate_graph.txt")?;
-        return Ok(());
-    }
-
     codegen.write_files()?;
 
     let mut fmt_cmd = std::process::Command::new("cargo");
@@ -146,7 +163,7 @@ fn main() -> Result<()> {
     fmt_cmd.arg("out/async-stripe-webhook/mod.rs");
     fmt_cmd.arg("out/tests/mod.rs");
 
-    if !args.dry_run {
+    if !args.no_install {
         info!("Formatting generated files");
 
         // in a rather bizarre turn of events, we actually need to run fmt _twice_
@@ -197,16 +214,20 @@ fn main() -> Result<()> {
 }
 
 fn parse_workspace_version() -> Result<String> {
-    let reader = BufReader::new(File::open("../Cargo.toml")?);
-    for line in reader.lines() {
-        let line = line?;
-        let line = line.trim_ascii();
-        if line.starts_with("version") {
-            let version = line.split_once('=').unwrap().1.trim_ascii();
-            return Ok(version.replace('"', ""));
-        }
+    #[derive(serde::Deserialize)]
+    struct Manifest {
+        workspace: Workspace,
     }
-    bail!("No version key found");
+    #[derive(serde::Deserialize)]
+    struct Workspace {
+        package: WorkspacePackage,
+    }
+    #[derive(serde::Deserialize)]
+    struct WorkspacePackage {
+        version: String,
+    }
+    let manifest = fs::read_to_string("../Cargo.toml")?;
+    Ok(toml::from_str::<Manifest>(&manifest)?.workspace.package.version)
 }
 
 // --delete-during so that generated files don't stick around when not
