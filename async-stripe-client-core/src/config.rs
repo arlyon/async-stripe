@@ -159,10 +159,12 @@ pub struct ConfigOverride {
     pub request_strategy: Option<RequestStrategy>,
     /// Use a particular timeout, instead of the client default.
     pub timeout: Option<Duration>,
+    /// Extra headers to send with this request.
+    pub headers: Vec<(String, String)>,
 }
 
 impl ConfigOverride {
     pub(crate) fn new() -> Self {
-        Self { account_id: None, request_strategy: None, timeout: None }
+        Self { account_id: None, request_strategy: None, timeout: None, headers: Vec::new() }
     }
 }

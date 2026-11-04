@@ -375,3 +375,32 @@ async fn client_and_account_ids() {
     )
     .await;
 }
+
+#[tokio::test]
+async fn custom_headers() {
+    assert_headers_sent(
+        client_builder(),
+        test_req().header("x-first", "first-value").header("x-second", "second-value"),
+        vec![("x-first", "first-value"), ("x-second", "second-value")],
+    )
+    .await;
+
+    // Custom headers replace built-in headers of the same name.
+    assert_headers_sent(
+        client_builder(),
+        test_req().header("stripe-version", "2020-08-27"),
+        vec![("stripe-version", "2020-08-27")],
+    )
+    .await;
+}
+
+#[tokio::test]
+async fn invalid_custom_headers() {
+    let client = client_builder().build().unwrap();
+
+    let res = test_req().header("bad header", "value").send(&client).await;
+    assert!(matches!(res, Err(StripeError::ConfigError(_))));
+
+    let res = test_req().header("x-ok", "bad\nvalue").send(&client).await;
+    assert!(matches!(res, Err(StripeError::ConfigError(_))));
+}
