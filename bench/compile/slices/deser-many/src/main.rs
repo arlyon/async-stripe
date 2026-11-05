@@ -4,6 +4,10 @@ use stripe_core::{Charge, Customer, PaymentIntent, Refund, SetupIntent};
 use stripe_payment::{PaymentLink, PaymentMethod};
 use stripe_product::{Price, Product};
 
+#[allow(
+    clippy::large_stack_frames,
+    reason = "This compile-only workload is never run; preserve its deserialization codegen."
+)]
 fn main() {
     let input = std::env::args().nth(1).unwrap_or_else(|| "{}".into());
 
