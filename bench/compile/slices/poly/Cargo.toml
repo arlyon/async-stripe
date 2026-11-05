@@ -1,0 +1,10 @@
+[package]
+name = "bench-poly"
+version = "0.0.0"
+publish = false
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+miniserde = { workspace = true }
+async-stripe-shared = { path = "../../../../generated/async-stripe-shared" }
