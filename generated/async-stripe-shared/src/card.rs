@@ -2,6 +2,9 @@
 /// later. You can also store multiple debit cards on a recipient in order to
 /// transfer to those cards later.
 ///
+/// This API is deprecated.
+/// Use the [PaymentMethods API](https://docs.stripe.com/api/payment_methods) instead.
+///
 /// Related guide: [Card payments with Sources](https://docs.stripe.com/sources/cards)
 ///
 /// For more details see <<https://stripe.com/docs/api/cards/object>>.
@@ -9,6 +12,8 @@
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Card {
+    /// The account this card belongs to.
+    /// Only applicable on Accounts (not customers or recipients) This property is only available when returned as an [External Account](/api/external_account_cards/object) where [controller.is_controller](/api/accounts/object#account_object-controller-is_controller) is `true`.
     pub account: Option<stripe_types::Expandable<stripe_shared::Account>>,
     /// City/District/Suburb/Town/Village.
     pub address_city: Option<String>,

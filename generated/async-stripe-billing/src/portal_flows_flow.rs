@@ -8,6 +8,8 @@ pub struct PortalFlowsFlow {
     pub customer_update: Option<stripe_billing::PortalFlowsFlowCustomerUpdate>,
     /// Configuration when `flow.type=subscription_cancel`.
     pub subscription_cancel: Option<stripe_billing::PortalFlowsFlowSubscriptionCancel>,
+    /// Configuration when `flow.type=subscription_pause`.
+    pub subscription_pause: Option<stripe_billing::PortalFlowsFlowSubscriptionPause>,
     /// Configuration when `flow.type=subscription_update`.
     pub subscription_update: Option<stripe_billing::PortalFlowsFlowSubscriptionUpdate>,
     /// Configuration when `flow.type=subscription_update_confirm`.
@@ -28,6 +30,7 @@ pub struct PortalFlowsFlowBuilder {
     after_completion: Option<stripe_billing::PortalFlowsFlowAfterCompletion>,
     customer_update: Option<Option<stripe_billing::PortalFlowsFlowCustomerUpdate>>,
     subscription_cancel: Option<Option<stripe_billing::PortalFlowsFlowSubscriptionCancel>>,
+    subscription_pause: Option<Option<stripe_billing::PortalFlowsFlowSubscriptionPause>>,
     subscription_update: Option<Option<stripe_billing::PortalFlowsFlowSubscriptionUpdate>>,
     subscription_update_confirm:
         Option<Option<stripe_billing::PortalFlowsFlowSubscriptionUpdateConfirm>>,
@@ -77,6 +80,7 @@ const _: () = {
                 "after_completion" => Deserialize::begin(&mut self.after_completion),
                 "customer_update" => Deserialize::begin(&mut self.customer_update),
                 "subscription_cancel" => Deserialize::begin(&mut self.subscription_cancel),
+                "subscription_pause" => Deserialize::begin(&mut self.subscription_pause),
                 "subscription_update" => Deserialize::begin(&mut self.subscription_update),
                 "subscription_update_confirm" => {
                     Deserialize::begin(&mut self.subscription_update_confirm)
@@ -91,6 +95,7 @@ const _: () = {
                 after_completion: None,
                 customer_update: Some(None),
                 subscription_cancel: Some(None),
+                subscription_pause: Some(None),
                 subscription_update: Some(None),
                 subscription_update_confirm: Some(None),
                 type_: None,
@@ -102,6 +107,7 @@ const _: () = {
                 Some(after_completion),
                 Some(customer_update),
                 Some(subscription_cancel),
+                Some(subscription_pause),
                 Some(subscription_update),
                 Some(subscription_update_confirm),
                 Some(type_),
@@ -109,6 +115,7 @@ const _: () = {
                 self.after_completion.take(),
                 self.customer_update,
                 self.subscription_cancel.take(),
+                self.subscription_pause.take(),
                 self.subscription_update.take(),
                 self.subscription_update_confirm.take(),
                 self.type_.take(),
@@ -120,6 +127,7 @@ const _: () = {
                 after_completion,
                 customer_update,
                 subscription_cancel,
+                subscription_pause,
                 subscription_update,
                 subscription_update_confirm,
                 type_,
@@ -153,6 +161,7 @@ const _: () = {
                     "after_completion" => b.after_completion = FromValueOpt::from_value(v),
                     "customer_update" => b.customer_update = FromValueOpt::from_value(v),
                     "subscription_cancel" => b.subscription_cancel = FromValueOpt::from_value(v),
+                    "subscription_pause" => b.subscription_pause = FromValueOpt::from_value(v),
                     "subscription_update" => b.subscription_update = FromValueOpt::from_value(v),
                     "subscription_update_confirm" => {
                         b.subscription_update_confirm = FromValueOpt::from_value(v)
@@ -172,6 +181,7 @@ pub enum PortalFlowsFlowType {
     CustomerUpdate,
     PaymentMethodUpdate,
     SubscriptionCancel,
+    SubscriptionPause,
     SubscriptionUpdate,
     SubscriptionUpdateConfirm,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
@@ -184,6 +194,7 @@ impl PortalFlowsFlowType {
             CustomerUpdate => "customer_update",
             PaymentMethodUpdate => "payment_method_update",
             SubscriptionCancel => "subscription_cancel",
+            SubscriptionPause => "subscription_pause",
             SubscriptionUpdate => "subscription_update",
             SubscriptionUpdateConfirm => "subscription_update_confirm",
             Unknown(v) => v,
@@ -199,6 +210,7 @@ impl std::str::FromStr for PortalFlowsFlowType {
             "customer_update" => Ok(CustomerUpdate),
             "payment_method_update" => Ok(PaymentMethodUpdate),
             "subscription_cancel" => Ok(SubscriptionCancel),
+            "subscription_pause" => Ok(SubscriptionPause),
             "subscription_update" => Ok(SubscriptionUpdate),
             "subscription_update_confirm" => Ok(SubscriptionUpdateConfirm),
             v => {
