@@ -1337,6 +1337,27 @@ pub enum EventObject {
     TestHelpersTestClockInternalFailure(Box<stripe_shared::TestHelpersTestClock>),
     /// Occurs whenever a test clock transitions to a ready status.
     TestHelpersTestClockReady(Box<stripe_shared::TestHelpersTestClock>),
+    /// Occurs when a 3DS Authentication's status transitions to 'canceled'
+    #[cfg(feature = "async-stripe-payment")]
+    ThreeDSecureAuthenticationCanceled(Box<stripe_payment::ThreeDSecureAuthentication>),
+    /// Occurs when a 3DS Authentication's 'challenge_url' was loaded.
+    #[cfg(feature = "async-stripe-payment")]
+    ThreeDSecureAuthenticationChallengeStarted(Box<stripe_payment::ThreeDSecureAuthentication>),
+    /// Occurs when a 3DS Authentication's status transitions to 'error'
+    #[cfg(feature = "async-stripe-payment")]
+    ThreeDSecureAuthenticationErrored(Box<stripe_payment::ThreeDSecureAuthentication>),
+    /// Occurs when a 3DS Authentication's status transitions to 'failed'
+    #[cfg(feature = "async-stripe-payment")]
+    ThreeDSecureAuthenticationFailed(Box<stripe_payment::ThreeDSecureAuthentication>),
+    /// Occurs when a 3DS Authentication's status transitions to 'requires_challenge'
+    #[cfg(feature = "async-stripe-payment")]
+    ThreeDSecureAuthenticationRequiresChallenge(Box<stripe_payment::ThreeDSecureAuthentication>),
+    /// Occurs when a 3DS Authentication's status transitions to 'requires_submission'
+    #[cfg(feature = "async-stripe-payment")]
+    ThreeDSecureAuthenticationRequiresSubmission(Box<stripe_payment::ThreeDSecureAuthentication>),
+    /// Occurs when a 3DS Authentication's status transitions to 'succeeded'
+    #[cfg(feature = "async-stripe-payment")]
+    ThreeDSecureAuthenticationSucceeded(Box<stripe_payment::ThreeDSecureAuthentication>),
     /// Occurs whenever a top-up is canceled.
     TopupCanceled(Box<stripe_shared::Topup>),
     /// Occurs whenever a top-up is created.
@@ -2231,6 +2252,34 @@ impl EventObject {
         }
         if typ == "test_helpers.test_clock.ready" {
             return parse_and_box(data).map(Self::TestHelpersTestClockReady);
+        }
+        #[cfg(feature = "async-stripe-payment")]
+        if typ == "three_d_secure.authentication.canceled" {
+            return parse_and_box(data).map(Self::ThreeDSecureAuthenticationCanceled);
+        }
+        #[cfg(feature = "async-stripe-payment")]
+        if typ == "three_d_secure.authentication.challenge_started" {
+            return parse_and_box(data).map(Self::ThreeDSecureAuthenticationChallengeStarted);
+        }
+        #[cfg(feature = "async-stripe-payment")]
+        if typ == "three_d_secure.authentication.errored" {
+            return parse_and_box(data).map(Self::ThreeDSecureAuthenticationErrored);
+        }
+        #[cfg(feature = "async-stripe-payment")]
+        if typ == "three_d_secure.authentication.failed" {
+            return parse_and_box(data).map(Self::ThreeDSecureAuthenticationFailed);
+        }
+        #[cfg(feature = "async-stripe-payment")]
+        if typ == "three_d_secure.authentication.requires_challenge" {
+            return parse_and_box(data).map(Self::ThreeDSecureAuthenticationRequiresChallenge);
+        }
+        #[cfg(feature = "async-stripe-payment")]
+        if typ == "three_d_secure.authentication.requires_submission" {
+            return parse_and_box(data).map(Self::ThreeDSecureAuthenticationRequiresSubmission);
+        }
+        #[cfg(feature = "async-stripe-payment")]
+        if typ == "three_d_secure.authentication.succeeded" {
+            return parse_and_box(data).map(Self::ThreeDSecureAuthenticationSucceeded);
         }
         if typ == "topup.canceled" {
             return parse_and_box(data).map(Self::TopupCanceled);
@@ -3164,6 +3213,34 @@ impl EventObject {
         }
         if typ == "test_helpers.test_clock.ready" {
             return parse_and_box(data).map(Self::TestHelpersTestClockReady);
+        }
+        #[cfg(feature = "async-stripe-payment")]
+        if typ == "three_d_secure.authentication.canceled" {
+            return parse_and_box(data).map(Self::ThreeDSecureAuthenticationCanceled);
+        }
+        #[cfg(feature = "async-stripe-payment")]
+        if typ == "three_d_secure.authentication.challenge_started" {
+            return parse_and_box(data).map(Self::ThreeDSecureAuthenticationChallengeStarted);
+        }
+        #[cfg(feature = "async-stripe-payment")]
+        if typ == "three_d_secure.authentication.errored" {
+            return parse_and_box(data).map(Self::ThreeDSecureAuthenticationErrored);
+        }
+        #[cfg(feature = "async-stripe-payment")]
+        if typ == "three_d_secure.authentication.failed" {
+            return parse_and_box(data).map(Self::ThreeDSecureAuthenticationFailed);
+        }
+        #[cfg(feature = "async-stripe-payment")]
+        if typ == "three_d_secure.authentication.requires_challenge" {
+            return parse_and_box(data).map(Self::ThreeDSecureAuthenticationRequiresChallenge);
+        }
+        #[cfg(feature = "async-stripe-payment")]
+        if typ == "three_d_secure.authentication.requires_submission" {
+            return parse_and_box(data).map(Self::ThreeDSecureAuthenticationRequiresSubmission);
+        }
+        #[cfg(feature = "async-stripe-payment")]
+        if typ == "three_d_secure.authentication.succeeded" {
+            return parse_and_box(data).map(Self::ThreeDSecureAuthenticationSucceeded);
         }
         if typ == "topup.canceled" {
             return parse_and_box(data).map(Self::TopupCanceled);

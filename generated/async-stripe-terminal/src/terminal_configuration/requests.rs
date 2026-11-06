@@ -347,11 +347,15 @@ struct CreateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     offline: Option<Offline>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    reader_security: Option<ReaderSecurity>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     reboot_window: Option<RebootWindow>,
     #[serde(skip_serializing_if = "Option::is_none")]
     stripe_s700: Option<CreateTerminalConfigurationStripeS700>,
     #[serde(skip_serializing_if = "Option::is_none")]
     stripe_s710: Option<CreateTerminalConfigurationStripeS710>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    stripe_t600: Option<CreateTerminalConfigurationStripeT600>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tipping: Option<Tipping>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -382,9 +386,11 @@ impl CreateTerminalConfigurationBuilder {
             expand: None,
             name: None,
             offline: None,
+            reader_security: None,
             reboot_window: None,
             stripe_s700: None,
             stripe_s710: None,
+            stripe_t600: None,
             tipping: None,
             verifone_m425: None,
             verifone_p400: None,
@@ -466,6 +472,31 @@ impl CreateTerminalConfigurationStripeS710 {
     }
 }
 impl Default for CreateTerminalConfigurationStripeS710 {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// An object containing device type specific settings for Stripe T600 readers.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTerminalConfigurationStripeT600 {
+    /// A File ID representing an image you want to display on the reader.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub splashscreen: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalConfigurationStripeT600 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalConfigurationStripeT600").finish_non_exhaustive()
+    }
+}
+impl CreateTerminalConfigurationStripeT600 {
+    pub fn new() -> Self {
+        Self { splashscreen: None }
+    }
+}
+impl Default for CreateTerminalConfigurationStripeT600 {
     fn default() -> Self {
         Self::new()
     }
@@ -757,6 +788,11 @@ impl CreateTerminalConfiguration {
         self.inner.offline = Some(offline.into());
         self
     }
+    /// Configurations for reader security settings.
+    pub fn reader_security(mut self, reader_security: impl Into<ReaderSecurity>) -> Self {
+        self.inner.reader_security = Some(reader_security.into());
+        self
+    }
     /// Reboot time settings for readers. that support customized reboot time configuration.
     pub fn reboot_window(mut self, reboot_window: impl Into<RebootWindow>) -> Self {
         self.inner.reboot_window = Some(reboot_window.into());
@@ -776,6 +812,14 @@ impl CreateTerminalConfiguration {
         stripe_s710: impl Into<CreateTerminalConfigurationStripeS710>,
     ) -> Self {
         self.inner.stripe_s710 = Some(stripe_s710.into());
+        self
+    }
+    /// An object containing device type specific settings for Stripe T600 readers.
+    pub fn stripe_t600(
+        mut self,
+        stripe_t600: impl Into<CreateTerminalConfigurationStripeT600>,
+    ) -> Self {
+        self.inner.stripe_t600 = Some(stripe_t600.into());
         self
     }
     /// Tipping configurations for readers that support on-reader tips.
@@ -876,11 +920,15 @@ struct UpdateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     offline: Option<Offline>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    reader_security: Option<ReaderSecurity>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     reboot_window: Option<RebootWindow>,
     #[serde(skip_serializing_if = "Option::is_none")]
     stripe_s700: Option<UpdateTerminalConfigurationStripeS700>,
     #[serde(skip_serializing_if = "Option::is_none")]
     stripe_s710: Option<UpdateTerminalConfigurationStripeS710>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    stripe_t600: Option<UpdateTerminalConfigurationStripeT600>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tipping: Option<Tipping>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -911,9 +959,11 @@ impl UpdateTerminalConfigurationBuilder {
             expand: None,
             name: None,
             offline: None,
+            reader_security: None,
             reboot_window: None,
             stripe_s700: None,
             stripe_s710: None,
+            stripe_t600: None,
             tipping: None,
             verifone_m425: None,
             verifone_p400: None,
@@ -995,6 +1045,31 @@ impl UpdateTerminalConfigurationStripeS710 {
     }
 }
 impl Default for UpdateTerminalConfigurationStripeS710 {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// An object containing device type specific settings for Stripe T600 readers.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateTerminalConfigurationStripeT600 {
+    /// A File ID representing an image you want to display on the reader.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub splashscreen: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalConfigurationStripeT600 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalConfigurationStripeT600").finish_non_exhaustive()
+    }
+}
+impl UpdateTerminalConfigurationStripeT600 {
+    pub fn new() -> Self {
+        Self { splashscreen: None }
+    }
+}
+impl Default for UpdateTerminalConfigurationStripeT600 {
     fn default() -> Self {
         Self::new()
     }
@@ -1290,6 +1365,11 @@ impl UpdateTerminalConfiguration {
         self.inner.offline = Some(offline.into());
         self
     }
+    /// Configurations for reader security settings.
+    pub fn reader_security(mut self, reader_security: impl Into<ReaderSecurity>) -> Self {
+        self.inner.reader_security = Some(reader_security.into());
+        self
+    }
     /// Reboot time settings for readers. that support customized reboot time configuration.
     pub fn reboot_window(mut self, reboot_window: impl Into<RebootWindow>) -> Self {
         self.inner.reboot_window = Some(reboot_window.into());
@@ -1309,6 +1389,14 @@ impl UpdateTerminalConfiguration {
         stripe_s710: impl Into<UpdateTerminalConfigurationStripeS710>,
     ) -> Self {
         self.inner.stripe_s710 = Some(stripe_s710.into());
+        self
+    }
+    /// An object containing device type specific settings for Stripe T600 readers.
+    pub fn stripe_t600(
+        mut self,
+        stripe_t600: impl Into<UpdateTerminalConfigurationStripeT600>,
+    ) -> Self {
+        self.inner.stripe_t600 = Some(stripe_t600.into());
         self
     }
     /// Tipping configurations for readers that support on-reader tips.
@@ -1537,6 +1625,30 @@ impl std::fmt::Debug for Offline {
 impl Offline {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into() }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ReaderSecurity {
+    /// Passcode used to access a reader's admin menu.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub admin_menu_passcode: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReaderSecurity {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReaderSecurity").finish_non_exhaustive()
+    }
+}
+impl ReaderSecurity {
+    pub fn new() -> Self {
+        Self { admin_menu_passcode: None }
+    }
+}
+impl Default for ReaderSecurity {
+    fn default() -> Self {
+        Self::new()
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]

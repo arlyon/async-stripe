@@ -78,6 +78,10 @@ pub mod connect_embedded_account_session_create_components;
 #[doc(inline)]
 pub use connect_embedded_account_session_create_components::*;
 #[doc(hidden)]
+pub mod connect_embedded_base_config;
+#[doc(inline)]
+pub use connect_embedded_base_config::*;
+#[doc(hidden)]
 pub mod connect_embedded_base_config_claim;
 #[doc(inline)]
 pub use connect_embedded_base_config_claim::*;
