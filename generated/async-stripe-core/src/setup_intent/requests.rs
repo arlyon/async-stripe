@@ -3287,6 +3287,10 @@ pub struct CreateSetupIntentPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
         Option<CreateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
+    /// Set to indicate the future transaction type usage for the card being set up.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_credential_usage:
+        Option<CreateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage>,
     /// If 3D Secure authentication was performed with a third-party provider,
     /// the authentication details to use for this setup.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3305,6 +3309,7 @@ impl CreateSetupIntentPaymentMethodOptionsCard {
             moto: None,
             network: None,
             request_three_d_secure: None,
+            setup_credential_usage: None,
             three_d_secure: None,
         }
     }
@@ -3803,6 +3808,84 @@ impl serde::Serialize for CreateSetupIntentPaymentMethodOptionsCardRequestThreeD
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CreateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Set to indicate the future transaction type usage for the card being set up.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    Installment,
+    Recurring,
+    Unscheduled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    pub fn as_str(&self) -> &str {
+        use CreateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage::*;
+        match self {
+            Installment => "installment",
+            Recurring => "recurring",
+            Unscheduled => "unscheduled",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage::*;
+        match s {
+            "installment" => Ok(Installment),
+            "recurring" => Ok(Recurring),
+            "unscheduled" => Ok(Unscheduled),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -6649,7 +6732,7 @@ impl CreateSetupIntent {
         self.inner.on_behalf_of = Some(on_behalf_of.into());
         self
     }
-    /// ID of the payment method (a PaymentMethod, Card, or saved Source object) to attach to this SetupIntent.
+    /// The ID of a PaymentMethod to attach to this SetupIntent.
     pub fn payment_method(mut self, payment_method: impl Into<String>) -> Self {
         self.inner.payment_method = Some(payment_method.into());
         self
@@ -9528,6 +9611,10 @@ pub struct UpdateSetupIntentPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
         Option<UpdateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
+    /// Set to indicate the future transaction type usage for the card being set up.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_credential_usage:
+        Option<UpdateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage>,
     /// If 3D Secure authentication was performed with a third-party provider,
     /// the authentication details to use for this setup.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9546,6 +9633,7 @@ impl UpdateSetupIntentPaymentMethodOptionsCard {
             moto: None,
             network: None,
             request_three_d_secure: None,
+            setup_credential_usage: None,
             three_d_secure: None,
         }
     }
@@ -10044,6 +10132,84 @@ impl serde::Serialize for UpdateSetupIntentPaymentMethodOptionsCardRequestThreeD
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for UpdateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Set to indicate the future transaction type usage for the card being set up.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    Installment,
+    Recurring,
+    Unscheduled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    pub fn as_str(&self) -> &str {
+        use UpdateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage::*;
+        match self {
+            Installment => "installment",
+            Recurring => "recurring",
+            Unscheduled => "unscheduled",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage::*;
+        match s {
+            "installment" => Ok(Installment),
+            "recurring" => Ok(Recurring),
+            "unscheduled" => Ok(Unscheduled),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSetupIntentPaymentMethodOptionsCardSetupCredentialUsage
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -12759,7 +12925,7 @@ impl UpdateSetupIntent {
         self.inner.metadata = Some(metadata.into());
         self
     }
-    /// ID of the payment method (a PaymentMethod, Card, or saved Source object) to attach to this SetupIntent.
+    /// The ID of a PaymentMethod to attach to this SetupIntent.
     /// To unset this field to null, pass in an empty string.
     pub fn payment_method(mut self, payment_method: impl Into<String>) -> Self {
         self.inner.payment_method = Some(payment_method.into());
@@ -15973,6 +16139,10 @@ pub struct ConfirmSetupIntentPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
         Option<ConfirmSetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
+    /// Set to indicate the future transaction type usage for the card being set up.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_credential_usage:
+        Option<ConfirmSetupIntentPaymentMethodOptionsCardSetupCredentialUsage>,
     /// If 3D Secure authentication was performed with a third-party provider,
     /// the authentication details to use for this setup.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -15991,6 +16161,7 @@ impl ConfirmSetupIntentPaymentMethodOptionsCard {
             moto: None,
             network: None,
             request_three_d_secure: None,
+            setup_credential_usage: None,
             three_d_secure: None,
         }
     }
@@ -16490,6 +16661,84 @@ impl serde::Serialize for ConfirmSetupIntentPaymentMethodOptionsCardRequestThree
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for ConfirmSetupIntentPaymentMethodOptionsCardRequestThreeDSecure
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Set to indicate the future transaction type usage for the card being set up.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    Installment,
+    Recurring,
+    Unscheduled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    pub fn as_str(&self) -> &str {
+        use ConfirmSetupIntentPaymentMethodOptionsCardSetupCredentialUsage::*;
+        match self {
+            Installment => "installment",
+            Recurring => "recurring",
+            Unscheduled => "unscheduled",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmSetupIntentPaymentMethodOptionsCardSetupCredentialUsage::*;
+        match s {
+            "installment" => Ok(Installment),
+            "recurring" => Ok(Recurring),
+            "unscheduled" => Ok(Unscheduled),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmSetupIntentPaymentMethodOptionsCardSetupCredentialUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmSetupIntentPaymentMethodOptionsCardSetupCredentialUsage))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ConfirmSetupIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmSetupIntentPaymentMethodOptionsCardSetupCredentialUsage
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -19187,7 +19436,7 @@ impl ConfirmSetupIntent {
         self.inner.mandate_data = Some(mandate_data.into());
         self
     }
-    /// ID of the payment method (a PaymentMethod, Card, or saved Source object) to attach to this SetupIntent.
+    /// The ID of a PaymentMethod to attach to this SetupIntent.
     pub fn payment_method(mut self, payment_method: impl Into<String>) -> Self {
         self.inner.payment_method = Some(payment_method.into());
         self

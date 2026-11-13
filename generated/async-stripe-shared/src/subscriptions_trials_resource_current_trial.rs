@@ -4,8 +4,11 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionsTrialsResourceCurrentTrial {
+    /// The time the current trial ends.
     pub end_date: stripe_types::Timestamp,
+    /// The time the current trial started.
     pub start_date: stripe_types::Timestamp,
+    /// The Trial Offer ID applied to the subscription item.
     pub trial_offer: String,
 }
 #[cfg(feature = "redact-generated-debug")]

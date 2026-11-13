@@ -1,3 +1,6 @@
+/// Legacy TransactionEntries are part of the v1 version of Treasury for platforms and do not support many of the features introduced in [Treasury for platforms v2](https://docs.stripe.com/treasury/connect).
+/// Use [Transaction Entries](https://docs.stripe.com/api/v2/money-management/transaction-entries) instead of building a new v1 integration.
+///
 /// TransactionEntries represent individual units of money movements within a single [Transaction](https://docs.stripe.com/api#transactions).
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
