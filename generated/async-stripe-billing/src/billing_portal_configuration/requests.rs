@@ -290,6 +290,9 @@ pub struct CreateBillingPortalConfigurationFeatures {
     /// Information about canceling subscriptions in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_cancel: Option<CreateBillingPortalConfigurationFeaturesSubscriptionCancel>,
+    /// Information about pausing subscriptions in the portal.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_pause: Option<CreateBillingPortalConfigurationFeaturesSubscriptionPause>,
     /// Information about updating subscriptions in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_update: Option<CreateBillingPortalConfigurationFeaturesSubscriptionUpdate>,
@@ -307,6 +310,7 @@ impl CreateBillingPortalConfigurationFeatures {
             invoice_history: None,
             payment_method_update: None,
             subscription_cancel: None,
+            subscription_pause: None,
             subscription_update: None,
         }
     }
@@ -771,6 +775,263 @@ impl serde::Serialize
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Information about pausing subscriptions in the portal.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateBillingPortalConfigurationFeaturesSubscriptionPause {
+    /// Controls how long a subscription can be paused.
+    /// Defaults to `interval_options` with a single one-month option.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duration: Option<CreateBillingPortalConfigurationFeaturesSubscriptionPauseDuration>,
+    /// Whether the feature is enabled.
+    /// Customers can only pause subscriptions in the [redesigned customer portal](/customer-management).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesSubscriptionPause {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalConfigurationFeaturesSubscriptionPause")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateBillingPortalConfigurationFeaturesSubscriptionPause {
+    pub fn new() -> Self {
+        Self { duration: None, enabled: None }
+    }
+}
+impl Default for CreateBillingPortalConfigurationFeaturesSubscriptionPause {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls how long a subscription can be paused.
+/// Defaults to `interval_options` with a single one-month option.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateBillingPortalConfigurationFeaturesSubscriptionPauseDuration {
+    /// The preset pause durations customers can choose from. Required when `type` is `interval_options`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_options: Option<
+        Vec<CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptions>,
+    >,
+    /// Whether subscriptions can be paused indefinitely or for a preset duration.
+    #[serde(rename = "type")]
+    pub type_: CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesSubscriptionPauseDuration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalConfigurationFeaturesSubscriptionPauseDuration")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateBillingPortalConfigurationFeaturesSubscriptionPauseDuration {
+    pub fn new(
+        type_: impl Into<CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType>,
+    ) -> Self {
+        Self { interval_options: None, type_: type_.into() }
+    }
+}
+/// The preset pause durations customers can choose from. Required when `type` is `interval_options`.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptions {
+    /// Specifies the pause duration unit. Either `day`, `week`, `month`, or `year`.
+    pub interval:
+        CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval,
+    /// The number of intervals in the pause duration. Defaults to 1. The maximum duration is three years.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptions",
+        )
+        .finish_non_exhaustive()
+    }
+}
+impl CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptions {
+    pub fn new(
+        interval: impl Into<CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval>,
+    ) -> Self {
+        Self { interval: interval.into(), interval_count: None }
+    }
+}
+/// Specifies the pause duration unit. Either `day`, `week`, `month`, or `year`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval {
+    Day,
+    Month,
+    Week,
+    Year,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval {
+    pub fn as_str(&self) -> &str {
+        use CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval::*;
+        match self {
+            Day => "day",
+            Month => "month",
+            Week => "week",
+            Year => "year",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval::*;
+        match s {
+            "day" => Ok(Day),
+            "month" => Ok(Month),
+            "week" => Ok(Week),
+            "year" => Ok(Year),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval)).finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Whether subscriptions can be paused indefinitely or for a preset duration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType {
+    Indefinite,
+    IntervalOptions,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType {
+    pub fn as_str(&self) -> &str {
+        use CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType::*;
+        match self {
+            Indefinite => "indefinite",
+            IntervalOptions => "interval_options",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType::*;
+        match s {
+            "indefinite" => Ok(Indefinite),
+            "interval_options" => Ok(IntervalOptions),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -1535,6 +1796,9 @@ pub struct UpdateBillingPortalConfigurationFeatures {
     /// Information about canceling subscriptions in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_cancel: Option<UpdateBillingPortalConfigurationFeaturesSubscriptionCancel>,
+    /// Information about pausing subscriptions in the portal.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_pause: Option<UpdateBillingPortalConfigurationFeaturesSubscriptionPause>,
     /// Information about updating subscriptions in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_update: Option<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate>,
@@ -1552,6 +1816,7 @@ impl UpdateBillingPortalConfigurationFeatures {
             invoice_history: None,
             payment_method_update: None,
             subscription_cancel: None,
+            subscription_pause: None,
             subscription_update: None,
         }
     }
@@ -2018,6 +2283,263 @@ impl serde::Serialize
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Information about pausing subscriptions in the portal.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionPause {
+    /// Controls how long a subscription can be paused.
+    /// Defaults to `interval_options` with a single one-month option.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duration: Option<UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDuration>,
+    /// Whether the feature is enabled.
+    /// Customers can only pause subscriptions in the [redesigned customer portal](/customer-management).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesSubscriptionPause {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBillingPortalConfigurationFeaturesSubscriptionPause")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateBillingPortalConfigurationFeaturesSubscriptionPause {
+    pub fn new() -> Self {
+        Self { duration: None, enabled: None }
+    }
+}
+impl Default for UpdateBillingPortalConfigurationFeaturesSubscriptionPause {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls how long a subscription can be paused.
+/// Defaults to `interval_options` with a single one-month option.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDuration {
+    /// The preset pause durations customers can choose from. Required when `type` is `interval_options`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_options: Option<
+        Vec<UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptions>,
+    >,
+    /// Whether subscriptions can be paused indefinitely or for a preset duration.
+    #[serde(rename = "type")]
+    pub type_: UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDuration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDuration")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDuration {
+    pub fn new(
+        type_: impl Into<UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType>,
+    ) -> Self {
+        Self { interval_options: None, type_: type_.into() }
+    }
+}
+/// The preset pause durations customers can choose from. Required when `type` is `interval_options`.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptions {
+    /// Specifies the pause duration unit. Either `day`, `week`, `month`, or `year`.
+    pub interval:
+        UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval,
+    /// The number of intervals in the pause duration. Defaults to 1. The maximum duration is three years.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptions",
+        )
+        .finish_non_exhaustive()
+    }
+}
+impl UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptions {
+    pub fn new(
+        interval: impl Into<UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval>,
+    ) -> Self {
+        Self { interval: interval.into(), interval_count: None }
+    }
+}
+/// Specifies the pause duration unit. Either `day`, `week`, `month`, or `year`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval {
+    Day,
+    Month,
+    Week,
+    Year,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval {
+    pub fn as_str(&self) -> &str {
+        use UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval::*;
+        match self {
+            Day => "day",
+            Month => "month",
+            Week => "week",
+            Year => "year",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval::*;
+        match s {
+            "day" => Ok(Day),
+            "month" => Ok(Month),
+            "week" => Ok(Week),
+            "year" => Ok(Year),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval)).finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationIntervalOptionsInterval
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Whether subscriptions can be paused indefinitely or for a preset duration.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType {
+    Indefinite,
+    IntervalOptions,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType {
+    pub fn as_str(&self) -> &str {
+        use UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType::*;
+        match self {
+            Indefinite => "indefinite",
+            IntervalOptions => "interval_options",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType::*;
+        match s {
+            "indefinite" => Ok(Indefinite),
+            "interval_options" => Ok(IntervalOptions),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionPauseDurationType
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

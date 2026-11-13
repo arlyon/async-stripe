@@ -5,6 +5,10 @@
 pub struct RefundDestinationDetailsPaypal {
     /// For refunds declined by the network, a decline code provided by the network which indicates the reason the refund failed.
     pub network_decline_code: Option<String>,
+    /// The reference assigned to the refund.
+    pub reference: Option<String>,
+    /// Status of the reference on the refund. This can be `pending`, `available` or `unavailable`.
+    pub reference_status: Option<String>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for RefundDestinationDetailsPaypal {
@@ -15,6 +19,8 @@ impl std::fmt::Debug for RefundDestinationDetailsPaypal {
 #[doc(hidden)]
 pub struct RefundDestinationDetailsPaypalBuilder {
     network_decline_code: Option<Option<String>>,
+    reference: Option<Option<String>>,
+    reference_status: Option<Option<String>>,
 }
 
 #[allow(
@@ -58,19 +64,29 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "network_decline_code" => Deserialize::begin(&mut self.network_decline_code),
+                "reference" => Deserialize::begin(&mut self.reference),
+                "reference_status" => Deserialize::begin(&mut self.reference_status),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { network_decline_code: Some(None) }
+            Self {
+                network_decline_code: Some(None),
+                reference: Some(None),
+                reference_status: Some(None),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(network_decline_code),) = (self.network_decline_code.take(),) else {
+            let (Some(network_decline_code), Some(reference), Some(reference_status)) = (
+                self.network_decline_code.take(),
+                self.reference.take(),
+                self.reference_status.take(),
+            ) else {
                 return None;
             };
-            Some(Self::Out { network_decline_code })
+            Some(Self::Out { network_decline_code, reference, reference_status })
         }
     }
 
@@ -98,6 +114,8 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "network_decline_code" => b.network_decline_code = FromValueOpt::from_value(v),
+                    "reference" => b.reference = FromValueOpt::from_value(v),
+                    "reference_status" => b.reference_status = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }

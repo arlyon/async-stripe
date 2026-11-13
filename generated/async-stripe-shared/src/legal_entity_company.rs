@@ -41,6 +41,7 @@ pub struct LegalEntityCompany {
     pub ownership_exemption_reason: Option<LegalEntityCompanyOwnershipExemptionReason>,
     /// The company's phone number (used for verification).
     pub phone: Option<String>,
+    pub physical_address: Option<stripe_shared::Address>,
     pub principal_place_of_business: Option<stripe_shared::Address>,
     pub registration_date: Option<stripe_shared::LegalEntityRegistrationDate>,
     /// This hash is used to attest that the representative is authorized to act as the representative of their legal entity.
@@ -82,6 +83,7 @@ pub struct LegalEntityCompanyBuilder {
     ownership_declaration: Option<Option<stripe_shared::LegalEntityUboDeclaration>>,
     ownership_exemption_reason: Option<Option<LegalEntityCompanyOwnershipExemptionReason>>,
     phone: Option<Option<String>>,
+    physical_address: Option<Option<stripe_shared::Address>>,
     principal_place_of_business: Option<Option<stripe_shared::Address>>,
     registration_date: Option<Option<stripe_shared::LegalEntityRegistrationDate>>,
     representative_declaration: Option<Option<stripe_shared::LegalEntityRepresentativeDeclaration>>,
@@ -152,6 +154,7 @@ const _: () = {
                     Deserialize::begin(&mut self.ownership_exemption_reason)
                 }
                 "phone" => Deserialize::begin(&mut self.phone),
+                "physical_address" => Deserialize::begin(&mut self.physical_address),
                 "principal_place_of_business" => {
                     Deserialize::begin(&mut self.principal_place_of_business)
                 }
@@ -186,6 +189,7 @@ const _: () = {
                 ownership_declaration: Some(None),
                 ownership_exemption_reason: Some(None),
                 phone: Some(None),
+                physical_address: Some(None),
                 principal_place_of_business: Some(None),
                 registration_date: Some(None),
                 representative_declaration: Some(None),
@@ -215,6 +219,7 @@ const _: () = {
                 Some(ownership_declaration),
                 Some(ownership_exemption_reason),
                 Some(phone),
+                Some(physical_address),
                 Some(principal_place_of_business),
                 Some(registration_date),
                 Some(representative_declaration),
@@ -240,6 +245,7 @@ const _: () = {
                 self.ownership_declaration.take(),
                 self.ownership_exemption_reason.take(),
                 self.phone.take(),
+                self.physical_address.take(),
                 self.principal_place_of_business.take(),
                 self.registration_date,
                 self.representative_declaration.take(),
@@ -269,6 +275,7 @@ const _: () = {
                 ownership_declaration,
                 ownership_exemption_reason,
                 phone,
+                physical_address,
                 principal_place_of_business,
                 registration_date,
                 representative_declaration,
@@ -328,6 +335,7 @@ const _: () = {
                         b.ownership_exemption_reason = FromValueOpt::from_value(v)
                     }
                     "phone" => b.phone = FromValueOpt::from_value(v),
+                    "physical_address" => b.physical_address = FromValueOpt::from_value(v),
                     "principal_place_of_business" => {
                         b.principal_place_of_business = FromValueOpt::from_value(v)
                     }

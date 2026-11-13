@@ -69,6 +69,10 @@ pub network_transaction_id: Option<String>,
 pub overcapture: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercapture>,
     /// Status of a card based on the card issuer.
 pub regulated_status: Option<PaymentMethodDetailsCardRegulatedStatus>,
+        /// The payment_method_options.card.setup_credential_usage value that was passed when setup_future_usage was present at confirmation, one of `recurring`, `unscheduled`, or `installment`.
+pub setup_credential_usage: Option<PaymentMethodDetailsCardSetupCredentialUsage>,
+        /// The payment_method_options.card.stored_credential_usage value that was passed for an off session, merchant-initiated transaction.
+pub stored_credential_usage: Option<PaymentMethodDetailsCardStoredCredentialUsage>,
     /// Populated if this transaction used 3D Secure authentication.
 pub three_d_secure: Option<stripe_shared::ThreeDSecureDetailsCharge>,
         /// Transaction Link ID (TLID) is a unique identifier for a transaction.
@@ -113,6 +117,8 @@ network_token: Option<Option<stripe_shared::PaymentMethodDetailsCardNetworkToken
 network_transaction_id: Option<Option<String>>,
 overcapture: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercapture>>,
 regulated_status: Option<Option<PaymentMethodDetailsCardRegulatedStatus>>,
+setup_credential_usage: Option<Option<PaymentMethodDetailsCardSetupCredentialUsage>>,
+stored_credential_usage: Option<Option<PaymentMethodDetailsCardStoredCredentialUsage>>,
 three_d_secure: Option<Option<stripe_shared::ThreeDSecureDetailsCharge>>,
 transaction_link_id: Option<Option<String>>,
 wallet: Option<Option<stripe_shared::PaymentMethodDetailsCardWallet>>,
@@ -189,6 +195,8 @@ const _: () = {
                 "network_transaction_id" => Deserialize::begin(&mut self.network_transaction_id),
                 "overcapture" => Deserialize::begin(&mut self.overcapture),
                 "regulated_status" => Deserialize::begin(&mut self.regulated_status),
+                "setup_credential_usage" => Deserialize::begin(&mut self.setup_credential_usage),
+                "stored_credential_usage" => Deserialize::begin(&mut self.stored_credential_usage),
                 "three_d_secure" => Deserialize::begin(&mut self.three_d_secure),
                 "transaction_link_id" => Deserialize::begin(&mut self.transaction_link_id),
                 "wallet" => Deserialize::begin(&mut self.wallet),
@@ -224,6 +232,8 @@ const _: () = {
                 network_transaction_id: Some(None),
                 overcapture: Some(None),
                 regulated_status: Some(None),
+                setup_credential_usage: Some(None),
+                stored_credential_usage: Some(None),
                 three_d_secure: Some(None),
                 transaction_link_id: Some(None),
                 wallet: Some(None),
@@ -258,6 +268,8 @@ const _: () = {
                 Some(network_transaction_id),
                 Some(overcapture),
                 Some(regulated_status),
+                Some(setup_credential_usage),
+                Some(stored_credential_usage),
                 Some(three_d_secure),
                 Some(transaction_link_id),
                 Some(wallet),
@@ -288,6 +300,8 @@ const _: () = {
                 self.network_transaction_id.take(),
                 self.overcapture.take(),
                 self.regulated_status.take(),
+                self.setup_credential_usage.take(),
+                self.stored_credential_usage.take(),
                 self.three_d_secure.take(),
                 self.transaction_link_id.take(),
                 self.wallet.take(),
@@ -322,6 +336,8 @@ const _: () = {
                 network_transaction_id,
                 overcapture,
                 regulated_status,
+                setup_credential_usage,
+                stored_credential_usage,
                 three_d_secure,
                 transaction_link_id,
                 wallet,
@@ -386,6 +402,12 @@ const _: () = {
                     }
                     "overcapture" => b.overcapture = FromValueOpt::from_value(v),
                     "regulated_status" => b.regulated_status = FromValueOpt::from_value(v),
+                    "setup_credential_usage" => {
+                        b.setup_credential_usage = FromValueOpt::from_value(v)
+                    }
+                    "stored_credential_usage" => {
+                        b.stored_credential_usage = FromValueOpt::from_value(v)
+                    }
                     "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
                     "transaction_link_id" => b.transaction_link_id = FromValueOpt::from_value(v),
                     "wallet" => b.wallet = FromValueOpt::from_value(v),
@@ -478,6 +500,192 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsCardRegulatedSt
 stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsCardRegulatedStatus);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardRegulatedStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// The payment_method_options.card.setup_credential_usage value that was passed when setup_future_usage was present at confirmation, one of `recurring`, `unscheduled`, or `installment`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum PaymentMethodDetailsCardSetupCredentialUsage {
+    Installment,
+    Recurring,
+    Unscheduled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl PaymentMethodDetailsCardSetupCredentialUsage {
+    pub fn as_str(&self) -> &str {
+        use PaymentMethodDetailsCardSetupCredentialUsage::*;
+        match self {
+            Installment => "installment",
+            Recurring => "recurring",
+            Unscheduled => "unscheduled",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentMethodDetailsCardSetupCredentialUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentMethodDetailsCardSetupCredentialUsage::*;
+        match s {
+            "installment" => Ok(Installment),
+            "recurring" => Ok(Recurring),
+            "unscheduled" => Ok(Unscheduled),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodDetailsCardSetupCredentialUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for PaymentMethodDetailsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for PaymentMethodDetailsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDetailsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodDetailsCardSetupCredentialUsage))
+            .finish_non_exhaustive()
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for PaymentMethodDetailsCardSetupCredentialUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for PaymentMethodDetailsCardSetupCredentialUsage {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsCardSetupCredentialUsage> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out =
+            Some(PaymentMethodDetailsCardSetupCredentialUsage::from_str(s).expect("infallible"));
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsCardSetupCredentialUsage);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardSetupCredentialUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// The payment_method_options.card.stored_credential_usage value that was passed for an off session, merchant-initiated transaction.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum PaymentMethodDetailsCardStoredCredentialUsage {
+    Installment,
+    Recurring,
+    Unscheduled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl PaymentMethodDetailsCardStoredCredentialUsage {
+    pub fn as_str(&self) -> &str {
+        use PaymentMethodDetailsCardStoredCredentialUsage::*;
+        match self {
+            Installment => "installment",
+            Recurring => "recurring",
+            Unscheduled => "unscheduled",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentMethodDetailsCardStoredCredentialUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentMethodDetailsCardStoredCredentialUsage::*;
+        match s {
+            "installment" => Ok(Installment),
+            "recurring" => Ok(Recurring),
+            "unscheduled" => Ok(Unscheduled),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodDetailsCardStoredCredentialUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for PaymentMethodDetailsCardStoredCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for PaymentMethodDetailsCardStoredCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDetailsCardStoredCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodDetailsCardStoredCredentialUsage))
+            .finish_non_exhaustive()
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for PaymentMethodDetailsCardStoredCredentialUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for PaymentMethodDetailsCardStoredCredentialUsage {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsCardStoredCredentialUsage> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out =
+            Some(PaymentMethodDetailsCardStoredCredentialUsage::from_str(s).expect("infallible"));
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsCardStoredCredentialUsage);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardStoredCredentialUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;

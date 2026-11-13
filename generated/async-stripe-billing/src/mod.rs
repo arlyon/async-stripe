@@ -146,6 +146,14 @@ pub mod plan;
 pub use stripe_shared::plan::*;
 pub use stripe_shared::plan_tier::*;
 #[doc(hidden)]
+pub mod portal_after_expiration;
+#[doc(inline)]
+pub use portal_after_expiration::*;
+#[doc(hidden)]
+pub mod portal_after_expiration_customer_login;
+#[doc(inline)]
+pub use portal_after_expiration_customer_login::*;
+#[doc(hidden)]
 pub mod portal_business_profile;
 #[doc(inline)]
 pub use portal_business_profile::*;
@@ -185,6 +193,10 @@ pub use portal_flows_flow_customer_update::*;
 pub mod portal_flows_flow_subscription_cancel;
 #[doc(inline)]
 pub use portal_flows_flow_subscription_cancel::*;
+#[doc(hidden)]
+pub mod portal_flows_flow_subscription_pause;
+#[doc(inline)]
+pub use portal_flows_flow_subscription_pause::*;
 #[doc(hidden)]
 pub mod portal_flows_flow_subscription_update;
 #[doc(inline)]
@@ -233,6 +245,18 @@ pub use portal_subscription_cancel::*;
 pub mod portal_subscription_cancellation_reason;
 #[doc(inline)]
 pub use portal_subscription_cancellation_reason::*;
+#[doc(hidden)]
+pub mod portal_subscription_pause;
+#[doc(inline)]
+pub use portal_subscription_pause::*;
+#[doc(hidden)]
+pub mod portal_subscription_pause_duration;
+#[doc(inline)]
+pub use portal_subscription_pause_duration::*;
+#[doc(hidden)]
+pub mod portal_subscription_pause_interval_option;
+#[doc(inline)]
+pub use portal_subscription_pause_interval_option::*;
 #[doc(hidden)]
 pub mod portal_subscription_update;
 #[doc(inline)]
@@ -303,7 +327,7 @@ pub use stripe_shared::subscription::*;
 pub use stripe_shared::subscription_automatic_tax::*;
 pub use stripe_shared::subscription_billing_thresholds::*;
 pub mod subscription_item;
-pub use stripe_shared::subscription_item::*;pub use stripe_shared::subscription_item_billing_thresholds::*;pub use stripe_shared::subscription_payment_method_options_billie::*;pub use stripe_shared::subscription_payment_method_options_billie_company_details::*;pub use stripe_shared::subscription_payment_method_options_billie_company_details_registered_address::*;pub use stripe_shared::subscription_payment_method_options_blik::*;pub use stripe_shared::subscription_payment_method_options_card::*;pub use stripe_shared::subscription_payment_method_options_mandate_options_blik::*;pub use stripe_shared::subscription_payment_method_options_mandate_options_pix::*;pub use stripe_shared::subscription_payment_method_options_pix::*;pub use stripe_shared::subscription_pending_invoice_item_interval::*;
+pub use stripe_shared::subscription_item::*;pub use stripe_shared::subscription_item_billing_thresholds::*;pub use stripe_shared::subscription_payment_method_options_billie::*;pub use stripe_shared::subscription_payment_method_options_billie_company_details::*;pub use stripe_shared::subscription_payment_method_options_billie_company_details_registered_address::*;pub use stripe_shared::subscription_payment_method_options_blik::*;pub use stripe_shared::subscription_payment_method_options_card::*;pub use stripe_shared::subscription_payment_method_options_mandate_options_blik::*;pub use stripe_shared::subscription_payment_method_options_mandate_options_pix::*;pub use stripe_shared::subscription_payment_method_options_pix::*;pub use stripe_shared::subscription_payment_method_options_sepa_debit::*;pub use stripe_shared::subscription_pending_invoice_item_interval::*;
 pub mod subscription_schedule;
 pub use stripe_shared::subscription_schedule::*;
 pub use stripe_shared::subscription_schedule_add_invoice_item::*;

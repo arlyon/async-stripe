@@ -7,6 +7,7 @@ pub struct PortalFeatures {
     pub invoice_history: stripe_billing::PortalInvoiceList,
     pub payment_method_update: stripe_billing::PortalPaymentMethodUpdate,
     pub subscription_cancel: stripe_billing::PortalSubscriptionCancel,
+    pub subscription_pause: stripe_billing::PortalSubscriptionPause,
     pub subscription_update: stripe_billing::PortalSubscriptionUpdate,
 }
 #[cfg(feature = "redact-generated-debug")]
@@ -21,6 +22,7 @@ pub struct PortalFeaturesBuilder {
     invoice_history: Option<stripe_billing::PortalInvoiceList>,
     payment_method_update: Option<stripe_billing::PortalPaymentMethodUpdate>,
     subscription_cancel: Option<stripe_billing::PortalSubscriptionCancel>,
+    subscription_pause: Option<stripe_billing::PortalSubscriptionPause>,
     subscription_update: Option<stripe_billing::PortalSubscriptionUpdate>,
 }
 
@@ -68,6 +70,7 @@ const _: () = {
                 "invoice_history" => Deserialize::begin(&mut self.invoice_history),
                 "payment_method_update" => Deserialize::begin(&mut self.payment_method_update),
                 "subscription_cancel" => Deserialize::begin(&mut self.subscription_cancel),
+                "subscription_pause" => Deserialize::begin(&mut self.subscription_pause),
                 "subscription_update" => Deserialize::begin(&mut self.subscription_update),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -79,6 +82,7 @@ const _: () = {
                 invoice_history: None,
                 payment_method_update: None,
                 subscription_cancel: None,
+                subscription_pause: None,
                 subscription_update: None,
             }
         }
@@ -89,12 +93,14 @@ const _: () = {
                 Some(invoice_history),
                 Some(payment_method_update),
                 Some(subscription_cancel),
+                Some(subscription_pause),
                 Some(subscription_update),
             ) = (
                 self.customer_update.take(),
                 self.invoice_history,
                 self.payment_method_update.take(),
                 self.subscription_cancel.take(),
+                self.subscription_pause.take(),
                 self.subscription_update.take(),
             )
             else {
@@ -105,6 +111,7 @@ const _: () = {
                 invoice_history,
                 payment_method_update,
                 subscription_cancel,
+                subscription_pause,
                 subscription_update,
             })
         }
@@ -139,6 +146,7 @@ const _: () = {
                         b.payment_method_update = FromValueOpt::from_value(v)
                     }
                     "subscription_cancel" => b.subscription_cancel = FromValueOpt::from_value(v),
+                    "subscription_pause" => b.subscription_pause = FromValueOpt::from_value(v),
                     "subscription_update" => b.subscription_update = FromValueOpt::from_value(v),
                     _ => {}
                 }

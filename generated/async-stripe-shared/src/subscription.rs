@@ -127,8 +127,8 @@ pub struct Subscription {
     /// A subscription that is currently in a trial period is `trialing` and moves to `active` when the trial period is over.
     ///
     ///
-    /// A subscription can only enter a `paused` status [when a trial ends without a payment method](https://docs.stripe.com/billing/subscriptions/trials/free-trials#create-free-trials-without-payment).
-    /// A `paused` subscription doesn't generate invoices and can be resumed after your customer adds their payment method.
+    /// A subscription can enter a `paused` status in several ways, including [when a trial ends without a payment method](https://docs.stripe.com/billing/subscriptions/trials/free-trials#create-free-trials-without-payment) or when you pause it using the [pause endpoint](https://docs.stripe.com/api/subscriptions/pause).
+    /// A `paused` subscription doesn't advance to a new billing period or generate invoices until it resumes.
     /// The `paused` status is different from [pausing collection](https://docs.stripe.com/billing/subscriptions/pause-payment), which still generates invoices and leaves the subscription's status unchanged.
     ///
     ///
@@ -682,8 +682,8 @@ impl serde::Serialize for Subscription {
 /// A subscription that is currently in a trial period is `trialing` and moves to `active` when the trial period is over.
 ///
 ///
-/// A subscription can only enter a `paused` status [when a trial ends without a payment method](https://docs.stripe.com/billing/subscriptions/trials/free-trials#create-free-trials-without-payment).
-/// A `paused` subscription doesn't generate invoices and can be resumed after your customer adds their payment method.
+/// A subscription can enter a `paused` status in several ways, including [when a trial ends without a payment method](https://docs.stripe.com/billing/subscriptions/trials/free-trials#create-free-trials-without-payment) or when you pause it using the [pause endpoint](https://docs.stripe.com/api/subscriptions/pause).
+/// A `paused` subscription doesn't advance to a new billing period or generate invoices until it resumes.
 /// The `paused` status is different from [pausing collection](https://docs.stripe.com/billing/subscriptions/pause-payment), which still generates invoices and leaves the subscription's status unchanged.
 ///
 ///
