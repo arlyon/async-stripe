@@ -7,6 +7,8 @@ use stripe_client_core::{
 #[derive(serde::Serialize)]
 struct CreateBillingPortalSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
+    after_expiration: Option<CreateBillingPortalSessionAfterExpiration>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     configuration: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
@@ -32,6 +34,7 @@ impl std::fmt::Debug for CreateBillingPortalSessionBuilder {
 impl CreateBillingPortalSessionBuilder {
     fn new() -> Self {
         Self {
+            after_expiration: None,
             configuration: None,
             customer: None,
             customer_account: None,
@@ -41,6 +44,126 @@ impl CreateBillingPortalSessionBuilder {
             on_behalf_of: None,
             return_url: None,
         }
+    }
+}
+/// Behavior after the portal session expires.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateBillingPortalSessionAfterExpiration {
+    /// Configuration for authenticating the customer after the session expires.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_login: Option<CreateBillingPortalSessionAfterExpirationCustomerLogin>,
+    /// The behavior to apply when the session expires.
+    #[serde(rename = "type")]
+    pub type_: CreateBillingPortalSessionAfterExpirationType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSessionAfterExpiration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalSessionAfterExpiration").finish_non_exhaustive()
+    }
+}
+impl CreateBillingPortalSessionAfterExpiration {
+    pub fn new(type_: impl Into<CreateBillingPortalSessionAfterExpirationType>) -> Self {
+        Self { customer_login: None, type_: type_.into() }
+    }
+}
+/// Configuration for authenticating the customer after the session expires.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateBillingPortalSessionAfterExpirationCustomerLogin {
+    /// The Unix timestamp after which the customer can no longer recover this session.
+    /// Leave unset to allow recovery without a deadline.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSessionAfterExpirationCustomerLogin {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalSessionAfterExpirationCustomerLogin")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateBillingPortalSessionAfterExpirationCustomerLogin {
+    pub fn new() -> Self {
+        Self { expires_at: None }
+    }
+}
+impl Default for CreateBillingPortalSessionAfterExpirationCustomerLogin {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The behavior to apply when the session expires.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateBillingPortalSessionAfterExpirationType {
+    CustomerLogin,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateBillingPortalSessionAfterExpirationType {
+    pub fn as_str(&self) -> &str {
+        use CreateBillingPortalSessionAfterExpirationType::*;
+        match self {
+            CustomerLogin => "customer_login",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateBillingPortalSessionAfterExpirationType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateBillingPortalSessionAfterExpirationType::*;
+        match s {
+            "customer_login" => Ok(CustomerLogin),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateBillingPortalSessionAfterExpirationType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateBillingPortalSessionAfterExpirationType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateBillingPortalSessionAfterExpirationType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSessionAfterExpirationType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateBillingPortalSessionAfterExpirationType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateBillingPortalSessionAfterExpirationType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateBillingPortalSessionAfterExpirationType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Information about a specific flow for the customer to go through.
@@ -55,6 +178,9 @@ pub struct CreateBillingPortalSessionFlowData {
     /// Configuration when `flow_data.type=subscription_cancel`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_cancel: Option<CreateBillingPortalSessionFlowDataSubscriptionCancel>,
+    /// Configuration when `flow_data.type=subscription_pause`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_pause: Option<CreateBillingPortalSessionFlowDataSubscriptionPause>,
     /// Configuration when `flow_data.type=subscription_update`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_update: Option<CreateBillingPortalSessionFlowDataSubscriptionUpdate>,
@@ -77,6 +203,7 @@ impl CreateBillingPortalSessionFlowData {
         Self {
             after_completion: None,
             subscription_cancel: None,
+            subscription_pause: None,
             subscription_update: None,
             subscription_update_confirm: None,
             type_: type_.into(),
@@ -377,6 +504,26 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Configuration when `flow_data.type=subscription_pause`.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateBillingPortalSessionFlowDataSubscriptionPause {
+    /// The ID of the subscription to be paused.
+    pub subscription: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSessionFlowDataSubscriptionPause {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalSessionFlowDataSubscriptionPause")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateBillingPortalSessionFlowDataSubscriptionPause {
+    pub fn new(subscription: impl Into<String>) -> Self {
+        Self { subscription: subscription.into() }
+    }
+}
 /// Configuration when `flow_data.type=subscription_update`.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -491,6 +638,7 @@ pub enum CreateBillingPortalSessionFlowDataType {
     CustomerUpdate,
     PaymentMethodUpdate,
     SubscriptionCancel,
+    SubscriptionPause,
     SubscriptionUpdate,
     SubscriptionUpdateConfirm,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
@@ -503,6 +651,7 @@ impl CreateBillingPortalSessionFlowDataType {
             CustomerUpdate => "customer_update",
             PaymentMethodUpdate => "payment_method_update",
             SubscriptionCancel => "subscription_cancel",
+            SubscriptionPause => "subscription_pause",
             SubscriptionUpdate => "subscription_update",
             SubscriptionUpdateConfirm => "subscription_update_confirm",
             Unknown(v) => v,
@@ -518,6 +667,7 @@ impl std::str::FromStr for CreateBillingPortalSessionFlowDataType {
             "customer_update" => Ok(CustomerUpdate),
             "payment_method_update" => Ok(PaymentMethodUpdate),
             "subscription_cancel" => Ok(SubscriptionCancel),
+            "subscription_pause" => Ok(SubscriptionPause),
             "subscription_update" => Ok(SubscriptionUpdate),
             "subscription_update_confirm" => Ok(SubscriptionUpdateConfirm),
             v => {
@@ -582,6 +732,14 @@ impl CreateBillingPortalSession {
     /// Construct a new `CreateBillingPortalSession`.
     pub fn new() -> Self {
         Self { inner: CreateBillingPortalSessionBuilder::new() }
+    }
+    /// Behavior after the portal session expires.
+    pub fn after_expiration(
+        mut self,
+        after_expiration: impl Into<CreateBillingPortalSessionAfterExpiration>,
+    ) -> Self {
+        self.inner.after_expiration = Some(after_expiration.into());
+        self
     }
     /// The ID of an existing [configuration](https://docs.stripe.com/api/customer_portal/configurations) to use for this session, describing its functionality and features.
     /// If not specified, the session uses the default configuration.

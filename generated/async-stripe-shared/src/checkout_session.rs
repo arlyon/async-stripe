@@ -125,7 +125,8 @@ pub struct CheckoutSession {
     pub payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
     /// The ID of the Payment Link that created this Session.
     pub payment_link: Option<stripe_types::Expandable<stripe_shared::PaymentLink>>,
-    /// Configure whether a Checkout Session should collect a payment method for sessions with mode `payment`.
+    /// Configure whether a Checkout Session should collect a payment method.
+    /// Can only be set in `subscription` mode.
     /// Defaults to `always`.
     pub payment_method_collection: Option<CheckoutSessionPaymentMethodCollection>,
     /// Information about the payment method configuration used for this Checkout session if using dynamic payment methods.
@@ -989,7 +990,8 @@ impl<'de> serde::Deserialize<'de> for CheckoutSessionCustomerCreation {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Configure whether a Checkout Session should collect a payment method for sessions with mode `payment`.
+/// Configure whether a Checkout Session should collect a payment method.
+/// Can only be set in `subscription` mode.
 /// Defaults to `always`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -1285,6 +1287,7 @@ pub enum CheckoutSessionLocale {
     Fil,
     Fr,
     FrMinusCa,
+    HiMinusIn,
     Hr,
     Hu,
     Id,
@@ -1333,6 +1336,7 @@ impl CheckoutSessionLocale {
             Fil => "fil",
             Fr => "fr",
             FrMinusCa => "fr-CA",
+            HiMinusIn => "hi-IN",
             Hr => "hr",
             Hu => "hu",
             Id => "id",
@@ -1384,6 +1388,7 @@ impl std::str::FromStr for CheckoutSessionLocale {
             "fil" => Ok(Fil),
             "fr" => Ok(Fr),
             "fr-CA" => Ok(FrMinusCa),
+            "hi-IN" => Ok(HiMinusIn),
             "hr" => Ok(Hr),
             "hu" => Ok(Hu),
             "id" => Ok(Id),

@@ -7,6 +7,8 @@ pub struct DisputeEvidence {
     /// Any server or activity logs showing proof that the customer accessed or downloaded the purchased digital product.
     /// This information should include IP addresses, corresponding timestamps, and any detailed recorded activity.
     pub access_activity_log: Option<String>,
+    /// Appeal evidence submitted during the appeal stage.
+    pub appeal: Option<stripe_shared::DisputeAppeal>,
     /// The billing address provided by the customer.
     pub billing_address: Option<String>,
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Your subscription cancellation policy, as shown to the customer.
@@ -78,6 +80,7 @@ impl std::fmt::Debug for DisputeEvidence {
 #[doc(hidden)]
 pub struct DisputeEvidenceBuilder {
     access_activity_log: Option<Option<String>>,
+    appeal: Option<Option<stripe_shared::DisputeAppeal>>,
     billing_address: Option<Option<String>>,
     cancellation_policy: Option<Option<stripe_types::Expandable<stripe_shared::File>>>,
     cancellation_policy_disclosure: Option<Option<String>>,
@@ -148,6 +151,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "access_activity_log" => Deserialize::begin(&mut self.access_activity_log),
+                "appeal" => Deserialize::begin(&mut self.appeal),
                 "billing_address" => Deserialize::begin(&mut self.billing_address),
                 "cancellation_policy" => Deserialize::begin(&mut self.cancellation_policy),
                 "cancellation_policy_disclosure" => {
@@ -194,6 +198,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 access_activity_log: Some(None),
+                appeal: Some(None),
                 billing_address: Some(None),
                 cancellation_policy: Some(None),
                 cancellation_policy_disclosure: Some(None),
@@ -227,6 +232,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(access_activity_log),
+                Some(appeal),
                 Some(billing_address),
                 Some(cancellation_policy),
                 Some(cancellation_policy_disclosure),
@@ -256,6 +262,7 @@ const _: () = {
                 Some(uncategorized_text),
             ) = (
                 self.access_activity_log.take(),
+                self.appeal.take(),
                 self.billing_address.take(),
                 self.cancellation_policy.take(),
                 self.cancellation_policy_disclosure.take(),
@@ -289,6 +296,7 @@ const _: () = {
             };
             Some(Self::Out {
                 access_activity_log,
+                appeal,
                 billing_address,
                 cancellation_policy,
                 cancellation_policy_disclosure,
@@ -344,6 +352,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "access_activity_log" => b.access_activity_log = FromValueOpt::from_value(v),
+                    "appeal" => b.appeal = FromValueOpt::from_value(v),
                     "billing_address" => b.billing_address = FromValueOpt::from_value(v),
                     "cancellation_policy" => b.cancellation_policy = FromValueOpt::from_value(v),
                     "cancellation_policy_disclosure" => {

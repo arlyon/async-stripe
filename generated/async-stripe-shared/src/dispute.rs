@@ -27,6 +27,8 @@ pub struct Dispute {
     pub evidence_details: stripe_shared::DisputeEvidenceDetails,
     /// Unique identifier for the object.
     pub id: stripe_shared::DisputeId,
+    /// Intended submission method for the dispute.
+    pub intended_submission_method: Option<stripe_shared::DisputeIntendedSubmissionMethod>,
     /// If true, it's still possible to refund the disputed payment.
     /// After the payment has been fully refunded, no further funds are withdrawn from your Stripe account as a result of this dispute.
     pub is_charge_refundable: bool,
@@ -46,7 +48,7 @@ pub struct Dispute {
     /// Learn more about [dispute reasons](https://docs.stripe.com/disputes/categories).
     pub reason: String,
     /// The current status of a dispute.
-    /// Possible values include:`warning_needs_response`, `warning_under_review`, `warning_closed`, `needs_response`, `under_review`, `won`, `lost`, or `prevented`.
+    /// Possible values include:`warning_needs_response`, `warning_under_review`, `warning_closed`, `needs_response`, `under_review`, `appeal_needs_response`, `appeal_under_review`, `won`, `lost`, or `prevented`.
     pub status: DisputeStatus,
 }
 #[cfg(feature = "redact-generated-debug")]
@@ -66,6 +68,7 @@ pub struct DisputeBuilder {
     evidence: Option<stripe_shared::DisputeEvidence>,
     evidence_details: Option<stripe_shared::DisputeEvidenceDetails>,
     id: Option<stripe_shared::DisputeId>,
+    intended_submission_method: Option<Option<stripe_shared::DisputeIntendedSubmissionMethod>>,
     is_charge_refundable: Option<bool>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
@@ -124,6 +127,9 @@ const _: () = {
                 "evidence" => Deserialize::begin(&mut self.evidence),
                 "evidence_details" => Deserialize::begin(&mut self.evidence_details),
                 "id" => Deserialize::begin(&mut self.id),
+                "intended_submission_method" => {
+                    Deserialize::begin(&mut self.intended_submission_method)
+                }
                 "is_charge_refundable" => Deserialize::begin(&mut self.is_charge_refundable),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
@@ -147,6 +153,7 @@ const _: () = {
                 evidence: None,
                 evidence_details: None,
                 id: None,
+                intended_submission_method: Some(None),
                 is_charge_refundable: None,
                 livemode: None,
                 metadata: None,
@@ -169,6 +176,7 @@ const _: () = {
                 Some(evidence),
                 Some(evidence_details),
                 Some(id),
+                Some(intended_submission_method),
                 Some(is_charge_refundable),
                 Some(livemode),
                 Some(metadata),
@@ -187,6 +195,7 @@ const _: () = {
                 self.evidence.take(),
                 self.evidence_details.take(),
                 self.id.take(),
+                self.intended_submission_method.take(),
                 self.is_charge_refundable,
                 self.livemode,
                 self.metadata.take(),
@@ -209,6 +218,7 @@ const _: () = {
                 evidence,
                 evidence_details,
                 id,
+                intended_submission_method,
                 is_charge_refundable,
                 livemode,
                 metadata,
@@ -255,6 +265,9 @@ const _: () = {
                     "evidence" => b.evidence = FromValueOpt::from_value(v),
                     "evidence_details" => b.evidence_details = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
+                    "intended_submission_method" => {
+                        b.intended_submission_method = FromValueOpt::from_value(v)
+                    }
                     "is_charge_refundable" => b.is_charge_refundable = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
@@ -276,7 +289,7 @@ const _: () = {
 impl serde::Serialize for Dispute {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Dispute", 18)?;
+        let mut s = s.serialize_struct("Dispute", 19)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("balance_transactions", &self.balance_transactions)?;
         s.serialize_field("charge", &self.charge)?;
@@ -286,6 +299,7 @@ impl serde::Serialize for Dispute {
         s.serialize_field("evidence", &self.evidence)?;
         s.serialize_field("evidence_details", &self.evidence_details)?;
         s.serialize_field("id", &self.id)?;
+        s.serialize_field("intended_submission_method", &self.intended_submission_method)?;
         s.serialize_field("is_charge_refundable", &self.is_charge_refundable)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;
@@ -391,10 +405,12 @@ impl<'de> serde::Deserialize<'de> for DisputeEnhancedEligibilityTypes {
     }
 }
 /// The current status of a dispute.
-/// Possible values include:`warning_needs_response`, `warning_under_review`, `warning_closed`, `needs_response`, `under_review`, `won`, `lost`, or `prevented`.
+/// Possible values include:`warning_needs_response`, `warning_under_review`, `warning_closed`, `needs_response`, `under_review`, `appeal_needs_response`, `appeal_under_review`, `won`, `lost`, or `prevented`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum DisputeStatus {
+    AppealNeedsResponse,
+    AppealUnderReview,
     Lost,
     NeedsResponse,
     Prevented,
@@ -410,6 +426,8 @@ impl DisputeStatus {
     pub fn as_str(&self) -> &str {
         use DisputeStatus::*;
         match self {
+            AppealNeedsResponse => "appeal_needs_response",
+            AppealUnderReview => "appeal_under_review",
             Lost => "lost",
             NeedsResponse => "needs_response",
             Prevented => "prevented",
@@ -428,6 +446,8 @@ impl std::str::FromStr for DisputeStatus {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use DisputeStatus::*;
         match s {
+            "appeal_needs_response" => Ok(AppealNeedsResponse),
+            "appeal_under_review" => Ok(AppealUnderReview),
             "lost" => Ok(Lost),
             "needs_response" => Ok(NeedsResponse),
             "prevented" => Ok(Prevented),
@@ -504,3 +524,95 @@ impl stripe_types::Object for Dispute {
     }
 }
 stripe_types::def_id!(DisputeId);
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum DisputeIntendedSubmissionMethod {
+    Manual,
+    PreferManual,
+    PreferSmartDisputes,
+    SmartDisputes,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl DisputeIntendedSubmissionMethod {
+    pub fn as_str(&self) -> &str {
+        use DisputeIntendedSubmissionMethod::*;
+        match self {
+            Manual => "manual",
+            PreferManual => "prefer_manual",
+            PreferSmartDisputes => "prefer_smart_disputes",
+            SmartDisputes => "smart_disputes",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for DisputeIntendedSubmissionMethod {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DisputeIntendedSubmissionMethod::*;
+        match s {
+            "manual" => Ok(Manual),
+            "prefer_manual" => Ok(PreferManual),
+            "prefer_smart_disputes" => Ok(PreferSmartDisputes),
+            "smart_disputes" => Ok(SmartDisputes),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "DisputeIntendedSubmissionMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for DisputeIntendedSubmissionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for DisputeIntendedSubmissionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DisputeIntendedSubmissionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(DisputeIntendedSubmissionMethod)).finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for DisputeIntendedSubmissionMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for DisputeIntendedSubmissionMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<DisputeIntendedSubmissionMethod> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(DisputeIntendedSubmissionMethod::from_str(s).expect("infallible"));
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(DisputeIntendedSubmissionMethod);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for DisputeIntendedSubmissionMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}

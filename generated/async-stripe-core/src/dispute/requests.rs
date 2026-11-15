@@ -213,6 +213,8 @@ struct UpdateDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    intended_submission_method: Option<stripe_shared::DisputeIntendedSubmissionMethod>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     submit: Option<bool>,
@@ -225,7 +227,13 @@ impl std::fmt::Debug for UpdateDisputeBuilder {
 }
 impl UpdateDisputeBuilder {
     fn new() -> Self {
-        Self { evidence: None, expand: None, metadata: None, submit: None }
+        Self {
+            evidence: None,
+            expand: None,
+            intended_submission_method: None,
+            metadata: None,
+            submit: None,
+        }
     }
 }
 /// Evidence to upload, to respond to a dispute.
@@ -240,6 +248,9 @@ pub struct UpdateDisputeEvidence {
     /// Has a maximum character count of 20,000.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub access_activity_log: Option<String>,
+    /// Evidence to submit when appealing a dispute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub appeal: Option<UpdateDisputeEvidenceAppeal>,
     /// The billing address provided by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_address: Option<String>,
@@ -345,6 +356,7 @@ impl UpdateDisputeEvidence {
     pub fn new() -> Self {
         Self {
             access_activity_log: None,
+            appeal: None,
             billing_address: None,
             cancellation_policy: None,
             cancellation_policy_disclosure: None,
@@ -376,6 +388,59 @@ impl UpdateDisputeEvidence {
     }
 }
 impl Default for UpdateDisputeEvidence {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Evidence to submit when appealing a dispute.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateDisputeEvidenceAppeal {
+    /// Evidence for a card dispute appeal.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<UpdateDisputeEvidenceAppealCard>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateDisputeEvidenceAppeal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateDisputeEvidenceAppeal").finish_non_exhaustive()
+    }
+}
+impl UpdateDisputeEvidenceAppeal {
+    pub fn new() -> Self {
+        Self { card: None }
+    }
+}
+impl Default for UpdateDisputeEvidenceAppeal {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Evidence for a card dispute appeal.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateDisputeEvidenceAppealCard {
+    /// An explanation of the reason for filing the appeal.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reason_for_filing: Option<String>,
+    /// One or more document IDs returned by a [file upload](https://docs.stripe.com/api#create_file) with a `purpose` value of `dispute_evidence` to support the appeal.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub supporting_files: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateDisputeEvidenceAppealCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateDisputeEvidenceAppealCard").finish_non_exhaustive()
+    }
+}
+impl UpdateDisputeEvidenceAppealCard {
+    pub fn new() -> Self {
+        Self { reason_for_filing: None, supporting_files: None }
+    }
+}
+impl Default for UpdateDisputeEvidenceAppealCard {
     fn default() -> Self {
         Self::new()
     }
@@ -723,6 +788,14 @@ impl UpdateDispute {
     /// Specifies which fields in the response should be expanded.
     pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
         self.inner.expand = Some(expand.into());
+        self
+    }
+    /// Intended submission method for the dispute.
+    pub fn intended_submission_method(
+        mut self,
+        intended_submission_method: impl Into<stripe_shared::DisputeIntendedSubmissionMethod>,
+    ) -> Self {
+        self.inner.intended_submission_method = Some(intended_submission_method.into());
         self
     }
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.

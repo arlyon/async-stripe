@@ -433,11 +433,13 @@ pub enum ApiErrorsCode {
     ShippingCalculationFailed,
     SiretInvalid,
     SkuInactive,
+    SmartDisputesNotAvailable,
     StateUnsupported,
     StatusTransitionInvalid,
     StorerCapabilityMissing,
     StorerCapabilityNotActive,
     StripeTaxInactive,
+    SubscriptionUpdateTrialAfterBillingCycleAnchor,
     TaxIdInvalid,
     TaxIdProhibited,
     TaxesCalculationFailed,
@@ -449,6 +451,8 @@ pub enum ApiErrorsCode {
     TerminalReaderOffline,
     TerminalReaderTimeout,
     TestmodeChargesOnly,
+    ThreeDSecureAuthenticationNotSupported,
+    ThreeDSecureAuthenticationUpstreamError,
     TlsVersionUnsupported,
     TokenAlreadyUsed,
     TokenCardNetworkInvalid,
@@ -681,11 +685,15 @@ impl ApiErrorsCode {
             ShippingCalculationFailed => "shipping_calculation_failed",
             SiretInvalid => "siret_invalid",
             SkuInactive => "sku_inactive",
+            SmartDisputesNotAvailable => "smart_disputes_not_available",
             StateUnsupported => "state_unsupported",
             StatusTransitionInvalid => "status_transition_invalid",
             StorerCapabilityMissing => "storer_capability_missing",
             StorerCapabilityNotActive => "storer_capability_not_active",
             StripeTaxInactive => "stripe_tax_inactive",
+            SubscriptionUpdateTrialAfterBillingCycleAnchor => {
+                "subscription_update_trial_after_billing_cycle_anchor"
+            }
             TaxIdInvalid => "tax_id_invalid",
             TaxIdProhibited => "tax_id_prohibited",
             TaxesCalculationFailed => "taxes_calculation_failed",
@@ -701,6 +709,10 @@ impl ApiErrorsCode {
             TerminalReaderOffline => "terminal_reader_offline",
             TerminalReaderTimeout => "terminal_reader_timeout",
             TestmodeChargesOnly => "testmode_charges_only",
+            ThreeDSecureAuthenticationNotSupported => "three_d_secure_authentication_not_supported",
+            ThreeDSecureAuthenticationUpstreamError => {
+                "three_d_secure_authentication_upstream_error"
+            }
             TlsVersionUnsupported => "tls_version_unsupported",
             TokenAlreadyUsed => "token_already_used",
             TokenCardNetworkInvalid => "token_card_network_invalid",
@@ -944,11 +956,15 @@ impl std::str::FromStr for ApiErrorsCode {
             "shipping_calculation_failed" => Ok(ShippingCalculationFailed),
             "siret_invalid" => Ok(SiretInvalid),
             "sku_inactive" => Ok(SkuInactive),
+            "smart_disputes_not_available" => Ok(SmartDisputesNotAvailable),
             "state_unsupported" => Ok(StateUnsupported),
             "status_transition_invalid" => Ok(StatusTransitionInvalid),
             "storer_capability_missing" => Ok(StorerCapabilityMissing),
             "storer_capability_not_active" => Ok(StorerCapabilityNotActive),
             "stripe_tax_inactive" => Ok(StripeTaxInactive),
+            "subscription_update_trial_after_billing_cycle_anchor" => {
+                Ok(SubscriptionUpdateTrialAfterBillingCycleAnchor)
+            }
             "tax_id_invalid" => Ok(TaxIdInvalid),
             "tax_id_prohibited" => Ok(TaxIdProhibited),
             "taxes_calculation_failed" => Ok(TaxesCalculationFailed),
@@ -964,6 +980,12 @@ impl std::str::FromStr for ApiErrorsCode {
             "terminal_reader_offline" => Ok(TerminalReaderOffline),
             "terminal_reader_timeout" => Ok(TerminalReaderTimeout),
             "testmode_charges_only" => Ok(TestmodeChargesOnly),
+            "three_d_secure_authentication_not_supported" => {
+                Ok(ThreeDSecureAuthenticationNotSupported)
+            }
+            "three_d_secure_authentication_upstream_error" => {
+                Ok(ThreeDSecureAuthenticationUpstreamError)
+            }
             "tls_version_unsupported" => Ok(TlsVersionUnsupported),
             "token_already_used" => Ok(TokenAlreadyUsed),
             "token_card_network_invalid" => Ok(TokenCardNetworkInvalid),

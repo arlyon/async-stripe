@@ -1,3 +1,6 @@
+/// Legacy Transactions are part of the v1 version of Treasury for platforms and do not support many of the features introduced in [Treasury for platforms v2](https://docs.stripe.com/treasury/connect).
+/// Use [Transactions](https://docs.stripe.com/api/v2/money-management/transactions) instead of building a new v1 integration.
+///
 /// Transactions represent changes to a [FinancialAccount's](https://docs.stripe.com/api#financial_accounts) balance.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]

@@ -1,3 +1,9 @@
+/// When you collect a transaction fee on top of a charge made for your user
+/// (using [Connect](https://docs.stripe.com/connect)), an `Application Fee` object is created in
+/// your account. You can list, retrieve, and refund application fees.
+///
+/// Related guide: [Collecting application fees](https://docs.stripe.com/connect/direct-charges#collect-fees).
+///
 /// For more details see <<https://stripe.com/docs/api/application_fees/object>>.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]

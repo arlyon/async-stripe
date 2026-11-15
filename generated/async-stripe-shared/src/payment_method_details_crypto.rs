@@ -234,6 +234,7 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCryptoNetwork {
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentMethodDetailsCryptoTokenCurrency {
+    Ousd,
     PhantomCash,
     Usdc,
     Usdg,
@@ -247,6 +248,7 @@ impl PaymentMethodDetailsCryptoTokenCurrency {
     pub fn as_str(&self) -> &str {
         use PaymentMethodDetailsCryptoTokenCurrency::*;
         match self {
+            Ousd => "ousd",
             PhantomCash => "phantom_cash",
             Usdc => "usdc",
             Usdg => "usdg",
@@ -263,6 +265,7 @@ impl std::str::FromStr for PaymentMethodDetailsCryptoTokenCurrency {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsCryptoTokenCurrency::*;
         match s {
+            "ousd" => Ok(Ousd),
             "phantom_cash" => Ok(PhantomCash),
             "usdc" => Ok(Usdc),
             "usdg" => Ok(Usdg),

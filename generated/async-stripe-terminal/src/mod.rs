@@ -62,6 +62,10 @@ pub mod terminal_configuration_configuration_resource_personal_psk_wifi;
 #[doc(inline)]
 pub use terminal_configuration_configuration_resource_personal_psk_wifi::*;
 #[doc(hidden)]
+pub mod terminal_configuration_configuration_resource_reader_security_config;
+#[doc(inline)]
+pub use terminal_configuration_configuration_resource_reader_security_config::*;
+#[doc(hidden)]
 pub mod terminal_configuration_configuration_resource_reboot_window;
 #[doc(inline)]
 pub use terminal_configuration_configuration_resource_reboot_window::*;

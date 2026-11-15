@@ -560,7 +560,7 @@ impl CreateCharge {
         self
     }
     /// The email address to which this charge's [receipt](https://docs.stripe.com/dashboard/receipts) will be sent.
-    /// The receipt will not be sent until the charge is paid, and no receipts will be sent for test mode charges.
+    /// The receipt will not be sent until the charge is paid, and receipts are only sent for payments in live mode.
     /// If this charge is for a [Customer](https://docs.stripe.com/api/customers/object), the email address specified here will override the customer's email address.
     /// If `receipt_email` is specified for a charge in live mode, a receipt will be sent regardless of your [email settings](https://dashboard.stripe.com/account/emails).
     pub fn receipt_email(mut self, receipt_email: impl Into<String>) -> Self {
@@ -991,7 +991,7 @@ impl CaptureCharge {
     }
     /// The email address to send this charge's receipt to.
     /// This will override the previously-specified email address for this charge, if one was set.
-    /// Receipts will not be sent in test mode.
+    /// Receipts are only sent for payments in live mode.
     pub fn receipt_email(mut self, receipt_email: impl Into<String>) -> Self {
         self.inner.receipt_email = Some(receipt_email.into());
         self

@@ -5797,6 +5797,10 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCard {
     /// using the cvc_token parameter).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub require_cvc_recollection: Option<bool>,
+    /// Set to indicate the future transaction type usage for the card being set up.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_credential_usage:
+        Option<CreatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -5821,6 +5825,16 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCard {
     /// On card statements, the *concatenation* of both prefix and suffix (including separators) will appear truncated to 17 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix_kanji: Option<String>,
+    /// Use this parameter in scenarios where you collect card details and [charge them later](https://stripe.com/docs/payments/cards/charging-saved-cards).
+    ///
+    /// When making an off session payment with a previously saved card (that was saved with a SetupIntent or with a PaymentIntent with `setup_future_usage`), set this parameter to indicate the type of transaction.
+    ///
+    /// You can set this parameter at any time before or during PaymentIntent confirmation, and confirm this PaymentIntent with `off_session=true`.
+    ///
+    ///  Note that this parameter is currently unsupported with the `setup_future_usage` parameter.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stored_credential_usage:
+        Option<CreatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage>,
     /// If 3D Secure authentication was performed with a third-party provider,
     /// the authentication details to use for this payment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5847,9 +5861,11 @@ impl CreatePaymentIntentPaymentMethodOptionsCard {
             request_overcapture: None,
             request_three_d_secure: None,
             require_cvc_recollection: None,
+            setup_credential_usage: None,
             setup_future_usage: None,
             statement_descriptor_suffix_kana: None,
             statement_descriptor_suffix_kanji: None,
+            stored_credential_usage: None,
             three_d_secure: None,
         }
     }
@@ -6961,6 +6977,84 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Set to indicate the future transaction type usage for the card being set up.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    Installment,
+    Recurring,
+    Unscheduled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage::*;
+        match self {
+            Installment => "installment",
+            Recurring => "recurring",
+            Unscheduled => "unscheduled",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage::*;
+        match s {
+            "installment" => Ok(Installment),
+            "recurring" => Ok(Recurring),
+            "unscheduled" => Ok(Unscheduled),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -7040,6 +7134,90 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardSetupFuture
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Use this parameter in scenarios where you collect card details and [charge them later](https://stripe.com/docs/payments/cards/charging-saved-cards).
+///
+/// When making an off session payment with a previously saved card (that was saved with a SetupIntent or with a PaymentIntent with `setup_future_usage`), set this parameter to indicate the type of transaction.
+///
+/// You can set this parameter at any time before or during PaymentIntent confirmation, and confirm this PaymentIntent with `off_session=true`.
+///
+///  Note that this parameter is currently unsupported with the `setup_future_usage` parameter.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    Installment,
+    Recurring,
+    Unscheduled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage::*;
+        match self {
+            Installment => "installment",
+            Recurring => "recurring",
+            Unscheduled => "unscheduled",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage::*;
+        match s {
+            "installment" => Ok(Installment),
+            "recurring" => Ok(Recurring),
+            "unscheduled" => Ok(Unscheduled),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -12693,12 +12871,14 @@ pub struct CreatePaymentIntentPaymentMethodOptionsPix {
     /// Determines if the amount includes the IOF tax. Defaults to `never`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_includes_iof: Option<CreatePaymentIntentPaymentMethodOptionsPixAmountIncludesIof>,
-    /// The number of seconds (between 10 and 1209600) after which Pix payment will expire.
-    /// Defaults to 86400 seconds.
+    /// The number of seconds after PaymentIntent confirmation when the Pix expires (between 60 and 1209600, inclusive).
+    /// If neither expiration option is supplied, defaults to 14400 seconds (4 hours).
+    /// Mutually exclusive with `expires_at`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_seconds: Option<i64>,
-    /// The timestamp at which the Pix expires (between 10 and 1209600 seconds in the future).
-    /// Defaults to 1 day in the future.
+    /// The absolute Unix timestamp at which the Pix expires, between 60 and 1209600 seconds from the current time.
+    /// If neither expiration option is supplied, the Pix expires 14400 seconds (4 hours) after PaymentIntent confirmation.
+    /// Mutually exclusive with `expires_after_seconds`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<stripe_types::Timestamp>,
     /// Additional fields for mandate creation. Only applicable when `setup_future_usage=off_session`.
@@ -16709,7 +16889,7 @@ impl CreatePaymentIntent {
         self.inner.payment_details = Some(payment_details.into());
         self
     }
-    /// ID of the payment method (a PaymentMethod, Card, or [compatible Source](https://docs.stripe.com/payments/payment-methods#compatibility) object) to attach to this PaymentIntent.
+    /// The ID of a PaymentMethod to attach to this PaymentIntent.
     ///
     /// If you don't provide the `payment_method` parameter or the `source` parameter with `confirm=true`, `source` automatically populates with `customer.default_source` to improve migration for users of the Charges API.
     /// We recommend that you explicitly provide the `payment_method` moving forward.
@@ -22048,6 +22228,10 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCard {
     /// using the cvc_token parameter).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub require_cvc_recollection: Option<bool>,
+    /// Set to indicate the future transaction type usage for the card being set up.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_credential_usage:
+        Option<UpdatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -22072,6 +22256,16 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCard {
     /// On card statements, the *concatenation* of both prefix and suffix (including separators) will appear truncated to 17 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix_kanji: Option<String>,
+    /// Use this parameter in scenarios where you collect card details and [charge them later](https://stripe.com/docs/payments/cards/charging-saved-cards).
+    ///
+    /// When making an off session payment with a previously saved card (that was saved with a SetupIntent or with a PaymentIntent with `setup_future_usage`), set this parameter to indicate the type of transaction.
+    ///
+    /// You can set this parameter at any time before or during PaymentIntent confirmation, and confirm this PaymentIntent with `off_session=true`.
+    ///
+    ///  Note that this parameter is currently unsupported with the `setup_future_usage` parameter.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stored_credential_usage:
+        Option<UpdatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage>,
     /// If 3D Secure authentication was performed with a third-party provider,
     /// the authentication details to use for this payment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -22098,9 +22292,11 @@ impl UpdatePaymentIntentPaymentMethodOptionsCard {
             request_overcapture: None,
             request_three_d_secure: None,
             require_cvc_recollection: None,
+            setup_credential_usage: None,
             setup_future_usage: None,
             statement_descriptor_suffix_kana: None,
             statement_descriptor_suffix_kanji: None,
+            stored_credential_usage: None,
             three_d_secure: None,
         }
     }
@@ -23212,6 +23408,84 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Set to indicate the future transaction type usage for the card being set up.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    Installment,
+    Recurring,
+    Unscheduled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage::*;
+        match self {
+            Installment => "installment",
+            Recurring => "recurring",
+            Unscheduled => "unscheduled",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage::*;
+        match s {
+            "installment" => Ok(Installment),
+            "recurring" => Ok(Recurring),
+            "unscheduled" => Ok(Unscheduled),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCardSetupCredentialUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -23291,6 +23565,90 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardSetupFuture
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Use this parameter in scenarios where you collect card details and [charge them later](https://stripe.com/docs/payments/cards/charging-saved-cards).
+///
+/// When making an off session payment with a previously saved card (that was saved with a SetupIntent or with a PaymentIntent with `setup_future_usage`), set this parameter to indicate the type of transaction.
+///
+/// You can set this parameter at any time before or during PaymentIntent confirmation, and confirm this PaymentIntent with `off_session=true`.
+///
+///  Note that this parameter is currently unsupported with the `setup_future_usage` parameter.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    Installment,
+    Recurring,
+    Unscheduled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage::*;
+        match self {
+            Installment => "installment",
+            Recurring => "recurring",
+            Unscheduled => "unscheduled",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage::*;
+        match s {
+            "installment" => Ok(Installment),
+            "recurring" => Ok(Recurring),
+            "unscheduled" => Ok(Unscheduled),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCardStoredCredentialUsage
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -28944,12 +29302,14 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsPix {
     /// Determines if the amount includes the IOF tax. Defaults to `never`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_includes_iof: Option<UpdatePaymentIntentPaymentMethodOptionsPixAmountIncludesIof>,
-    /// The number of seconds (between 10 and 1209600) after which Pix payment will expire.
-    /// Defaults to 86400 seconds.
+    /// The number of seconds after PaymentIntent confirmation when the Pix expires (between 60 and 1209600, inclusive).
+    /// If neither expiration option is supplied, defaults to 14400 seconds (4 hours).
+    /// Mutually exclusive with `expires_at`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_seconds: Option<i64>,
-    /// The timestamp at which the Pix expires (between 10 and 1209600 seconds in the future).
-    /// Defaults to 1 day in the future.
+    /// The absolute Unix timestamp at which the Pix expires, between 60 and 1209600 seconds from the current time.
+    /// If neither expiration option is supplied, the Pix expires 14400 seconds (4 hours) after PaymentIntent confirmation.
+    /// Mutually exclusive with `expires_after_seconds`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<stripe_types::Timestamp>,
     /// Additional fields for mandate creation. Only applicable when `setup_future_usage=off_session`.
@@ -32898,7 +33258,7 @@ impl UpdatePaymentIntent {
         self.inner.payment_details = Some(payment_details.into());
         self
     }
-    /// ID of the payment method (a PaymentMethod, Card, or [compatible Source](https://docs.stripe.com/payments/payment-methods/transitioning#compatibility) object) to attach to this PaymentIntent.
+    /// The ID of a PaymentMethod to attach to this PaymentIntent.
     /// To unset this field to null, pass in an empty string.
     pub fn payment_method(mut self, payment_method: impl Into<String>) -> Self {
         self.inner.payment_method = Some(payment_method.into());
@@ -39367,6 +39727,10 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCard {
     /// using the cvc_token parameter).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub require_cvc_recollection: Option<bool>,
+    /// Set to indicate the future transaction type usage for the card being set up.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_credential_usage:
+        Option<ConfirmPaymentIntentPaymentMethodOptionsCardSetupCredentialUsage>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -39391,6 +39755,16 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCard {
     /// On card statements, the *concatenation* of both prefix and suffix (including separators) will appear truncated to 17 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix_kanji: Option<String>,
+    /// Use this parameter in scenarios where you collect card details and [charge them later](https://stripe.com/docs/payments/cards/charging-saved-cards).
+    ///
+    /// When making an off session payment with a previously saved card (that was saved with a SetupIntent or with a PaymentIntent with `setup_future_usage`), set this parameter to indicate the type of transaction.
+    ///
+    /// You can set this parameter at any time before or during PaymentIntent confirmation, and confirm this PaymentIntent with `off_session=true`.
+    ///
+    ///  Note that this parameter is currently unsupported with the `setup_future_usage` parameter.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stored_credential_usage:
+        Option<ConfirmPaymentIntentPaymentMethodOptionsCardStoredCredentialUsage>,
     /// If 3D Secure authentication was performed with a third-party provider,
     /// the authentication details to use for this payment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -39417,9 +39791,11 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCard {
             request_overcapture: None,
             request_three_d_secure: None,
             require_cvc_recollection: None,
+            setup_credential_usage: None,
             setup_future_usage: None,
             statement_descriptor_suffix_kana: None,
             statement_descriptor_suffix_kanji: None,
+            stored_credential_usage: None,
             three_d_secure: None,
         }
     }
@@ -40539,6 +40915,84 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Set to indicate the future transaction type usage for the card being set up.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmPaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    Installment,
+    Recurring,
+    Unscheduled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmPaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    pub fn as_str(&self) -> &str {
+        use ConfirmPaymentIntentPaymentMethodOptionsCardSetupCredentialUsage::*;
+        match self {
+            Installment => "installment",
+            Recurring => "recurring",
+            Unscheduled => "unscheduled",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentMethodOptionsCardSetupCredentialUsage::*;
+        match s {
+            "installment" => Ok(Installment),
+            "recurring" => Ok(Recurring),
+            "unscheduled" => Ok(Unscheduled),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardSetupCredentialUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsCardSetupCredentialUsage))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardSetupCredentialUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCardSetupCredentialUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -40618,6 +41072,92 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutur
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Use this parameter in scenarios where you collect card details and [charge them later](https://stripe.com/docs/payments/cards/charging-saved-cards).
+///
+/// When making an off session payment with a previously saved card (that was saved with a SetupIntent or with a PaymentIntent with `setup_future_usage`), set this parameter to indicate the type of transaction.
+///
+/// You can set this parameter at any time before or during PaymentIntent confirmation, and confirm this PaymentIntent with `off_session=true`.
+///
+///  Note that this parameter is currently unsupported with the `setup_future_usage` parameter.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmPaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    Installment,
+    Recurring,
+    Unscheduled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmPaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    pub fn as_str(&self) -> &str {
+        use ConfirmPaymentIntentPaymentMethodOptionsCardStoredCredentialUsage::*;
+        match self {
+            Installment => "installment",
+            Recurring => "recurring",
+            Unscheduled => "unscheduled",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentMethodOptionsCardStoredCredentialUsage::*;
+        match s {
+            "installment" => Ok(Installment),
+            "recurring" => Ok(Recurring),
+            "unscheduled" => Ok(Unscheduled),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardStoredCredentialUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsCardStoredCredentialUsage
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardStoredCredentialUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCardStoredCredentialUsage
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -46273,12 +46813,14 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsPix {
     /// Determines if the amount includes the IOF tax. Defaults to `never`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_includes_iof: Option<ConfirmPaymentIntentPaymentMethodOptionsPixAmountIncludesIof>,
-    /// The number of seconds (between 10 and 1209600) after which Pix payment will expire.
-    /// Defaults to 86400 seconds.
+    /// The number of seconds after PaymentIntent confirmation when the Pix expires (between 60 and 1209600, inclusive).
+    /// If neither expiration option is supplied, defaults to 14400 seconds (4 hours).
+    /// Mutually exclusive with `expires_at`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_seconds: Option<i64>,
-    /// The timestamp at which the Pix expires (between 10 and 1209600 seconds in the future).
-    /// Defaults to 1 day in the future.
+    /// The absolute Unix timestamp at which the Pix expires, between 60 and 1209600 seconds from the current time.
+    /// If neither expiration option is supplied, the Pix expires 14400 seconds (4 hours) after PaymentIntent confirmation.
+    /// Mutually exclusive with `expires_after_seconds`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<stripe_types::Timestamp>,
     /// Additional fields for mandate creation. Only applicable when `setup_future_usage=off_session`.
@@ -50217,7 +50759,7 @@ impl ConfirmPaymentIntent {
         self.inner.payment_details = Some(payment_details.into());
         self
     }
-    /// ID of the payment method (a PaymentMethod, Card, or [compatible Source](https://docs.stripe.com/payments/payment-methods/transitioning#compatibility) object) to attach to this PaymentIntent.
+    /// The ID of a PaymentMethod to attach to this PaymentIntent.
     /// If the payment method is attached to a Customer, it must match the [customer](https://docs.stripe.com/api#create_payment_intent-customer) that is set on this PaymentIntent.
     pub fn payment_method(mut self, payment_method: impl Into<String>) -> Self {
         self.inner.payment_method = Some(payment_method.into());

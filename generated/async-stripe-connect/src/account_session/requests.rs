@@ -33,10 +33,10 @@ impl CreateAccountSessionBuilder {
 pub struct CreateAccountSessionComponents {
     /// Configuration for the [account management](/connect/supported-embedded-components/account-management/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_management: Option<AccountConfigParam>,
+    pub account_management: Option<CreateAccountSessionComponentsAccountManagement>,
     /// Configuration for the [account onboarding](/connect/supported-embedded-components/account-onboarding/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_onboarding: Option<AccountConfigParam>,
+    pub account_onboarding: Option<CreateAccountSessionComponentsAccountOnboarding>,
     /// Configuration for the [balance report](/connect/supported-embedded-components/financial-reports#balance-report) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub balance_report: Option<BaseConfigParam>,
@@ -67,7 +67,7 @@ pub struct CreateAccountSessionComponents {
     pub issuing_cards_list: Option<CreateAccountSessionComponentsIssuingCardsList>,
     /// Configuration for the [notification banner](/connect/supported-embedded-components/notification-banner/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub notification_banner: Option<AccountConfigParam>,
+    pub notification_banner: Option<CreateAccountSessionComponentsNotificationBanner>,
     /// Configuration for the [payment details](/connect/supported-embedded-components/payment-details/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_details: Option<CreateAccountSessionComponentsPaymentDetails>,
@@ -92,12 +92,21 @@ pub struct CreateAccountSessionComponents {
     /// Configuration for the [payouts list](/connect/supported-embedded-components/payouts-list/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payouts_list: Option<BaseConfigParam>,
+    /// Configuration for the [reporting chart](/connect/supported-embedded-components/reporting-chart/) embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reporting_chart: Option<BaseConfigParam>,
     /// Configuration for the [tax registrations](/connect/supported-embedded-components/tax-registrations/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_registrations: Option<BaseConfigParam>,
     /// Configuration for the [tax settings](/connect/supported-embedded-components/tax-settings/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_settings: Option<BaseConfigParam>,
+    /// Configuration for the [Terminal hardware orders](/connect/supported-embedded-components/terminal-hardware-orders/) embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terminal_hardware_orders: Option<BaseConfigParam>,
+    /// Configuration for the [Terminal hardware shop](/connect/supported-embedded-components/terminal-hardware-shop/) embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terminal_hardware_shop: Option<BaseConfigParam>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreateAccountSessionComponents {
@@ -128,12 +137,127 @@ impl CreateAccountSessionComponents {
             payout_reconciliation_report: None,
             payouts: None,
             payouts_list: None,
+            reporting_chart: None,
             tax_registrations: None,
             tax_settings: None,
+            terminal_hardware_orders: None,
+            terminal_hardware_shop: None,
         }
     }
 }
 impl Default for CreateAccountSessionComponents {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration for the [account management](/connect/supported-embedded-components/account-management/) embedded component.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountSessionComponentsAccountManagement {
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+    /// The list of features enabled in the embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateAccountSessionComponentsAccountManagementFeatures>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsAccountManagement {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsAccountManagement").finish_non_exhaustive()
+    }
+}
+impl CreateAccountSessionComponentsAccountManagement {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), features: None }
+    }
+}
+/// The list of features enabled in the embedded component.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountSessionComponentsAccountManagementFeatures {
+    /// Whether Stripe user authentication is disabled.
+    /// This value can only be `true` for accounts where `controller.requirement_collection` is `application` for the account.
+    /// The default value is the opposite of the `external_account_collection` value.
+    /// For example, if you don't set `external_account_collection`, it defaults to `true` and `disable_stripe_user_authentication` defaults to `false`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_stripe_user_authentication: Option<bool>,
+    /// Whether external account collection is enabled.
+    /// This feature can only be `false` for accounts where you’re responsible for collecting updated information when requirements are due or change, like Custom accounts.
+    /// The default value for this feature is `true`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub external_account_collection: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsAccountManagementFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsAccountManagementFeatures")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateAccountSessionComponentsAccountManagementFeatures {
+    pub fn new() -> Self {
+        Self { disable_stripe_user_authentication: None, external_account_collection: None }
+    }
+}
+impl Default for CreateAccountSessionComponentsAccountManagementFeatures {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration for the [account onboarding](/connect/supported-embedded-components/account-onboarding/) embedded component.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountSessionComponentsAccountOnboarding {
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+    /// The list of features enabled in the embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateAccountSessionComponentsAccountOnboardingFeatures>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsAccountOnboarding {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsAccountOnboarding").finish_non_exhaustive()
+    }
+}
+impl CreateAccountSessionComponentsAccountOnboarding {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), features: None }
+    }
+}
+/// The list of features enabled in the embedded component.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountSessionComponentsAccountOnboardingFeatures {
+    /// Whether Stripe user authentication is disabled.
+    /// This value can only be `true` for accounts where `controller.requirement_collection` is `application` for the account.
+    /// The default value is the opposite of the `external_account_collection` value.
+    /// For example, if you don't set `external_account_collection`, it defaults to `true` and `disable_stripe_user_authentication` defaults to `false`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_stripe_user_authentication: Option<bool>,
+    /// Whether external account collection is enabled.
+    /// This feature can only be `false` for accounts where you’re responsible for collecting updated information when requirements are due or change, like Custom accounts.
+    /// The default value for this feature is `true`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub external_account_collection: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsAccountOnboardingFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsAccountOnboardingFeatures")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateAccountSessionComponentsAccountOnboardingFeatures {
+    pub fn new() -> Self {
+        Self { disable_stripe_user_authentication: None, external_account_collection: None }
+    }
+}
+impl Default for CreateAccountSessionComponentsAccountOnboardingFeatures {
     fn default() -> Self {
         Self::new()
     }
@@ -516,6 +640,62 @@ impl Default for CreateAccountSessionComponentsIssuingCardsListFeatures {
         Self::new()
     }
 }
+/// Configuration for the [notification banner](/connect/supported-embedded-components/notification-banner/) embedded component.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountSessionComponentsNotificationBanner {
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+    /// The list of features enabled in the embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateAccountSessionComponentsNotificationBannerFeatures>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsNotificationBanner {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsNotificationBanner").finish_non_exhaustive()
+    }
+}
+impl CreateAccountSessionComponentsNotificationBanner {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), features: None }
+    }
+}
+/// The list of features enabled in the embedded component.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountSessionComponentsNotificationBannerFeatures {
+    /// Whether Stripe user authentication is disabled.
+    /// This value can only be `true` for accounts where `controller.requirement_collection` is `application` for the account.
+    /// The default value is the opposite of the `external_account_collection` value.
+    /// For example, if you don't set `external_account_collection`, it defaults to `true` and `disable_stripe_user_authentication` defaults to `false`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_stripe_user_authentication: Option<bool>,
+    /// Whether external account collection is enabled.
+    /// This feature can only be `false` for accounts where you’re responsible for collecting updated information when requirements are due or change, like Custom accounts.
+    /// The default value for this feature is `true`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub external_account_collection: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsNotificationBannerFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsNotificationBannerFeatures")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateAccountSessionComponentsNotificationBannerFeatures {
+    pub fn new() -> Self {
+        Self { disable_stripe_user_authentication: None, external_account_collection: None }
+    }
+}
+impl Default for CreateAccountSessionComponentsNotificationBannerFeatures {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// Configuration for the [payment details](/connect/supported-embedded-components/payment-details/) embedded component.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -822,38 +1002,6 @@ impl StripeRequest for CreateAccountSession {
     }
 }
 
-#[derive(Copy, Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct AccountFeaturesParam {
-    /// Whether Stripe user authentication is disabled.
-    /// This value can only be `true` for accounts where `controller.requirement_collection` is `application` for the account.
-    /// The default value is the opposite of the `external_account_collection` value.
-    /// For example, if you don't set `external_account_collection`, it defaults to `true` and `disable_stripe_user_authentication` defaults to `false`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub disable_stripe_user_authentication: Option<bool>,
-    /// Whether external account collection is enabled.
-    /// This feature can only be `false` for accounts where you’re responsible for collecting updated information when requirements are due or change, like Custom accounts.
-    /// The default value for this feature is `true`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub external_account_collection: Option<bool>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for AccountFeaturesParam {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("AccountFeaturesParam").finish_non_exhaustive()
-    }
-}
-impl AccountFeaturesParam {
-    pub fn new() -> Self {
-        Self { disable_stripe_user_authentication: None, external_account_collection: None }
-    }
-}
-impl Default for AccountFeaturesParam {
-    fn default() -> Self {
-        Self::new()
-    }
-}
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -923,27 +1071,6 @@ impl PayoutsFeaturesParam {
 impl Default for PayoutsFeaturesParam {
     fn default() -> Self {
         Self::new()
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct AccountConfigParam {
-    /// Whether the embedded component is enabled.
-    pub enabled: bool,
-    /// The list of features enabled in the embedded component.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub features: Option<AccountFeaturesParam>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for AccountConfigParam {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("AccountConfigParam").finish_non_exhaustive()
-    }
-}
-impl AccountConfigParam {
-    pub fn new(enabled: impl Into<bool>) -> Self {
-        Self { enabled: enabled.into(), features: None }
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]

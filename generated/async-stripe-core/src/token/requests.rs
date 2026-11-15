@@ -286,6 +286,9 @@ pub struct CreateTokenAccountCompany {
     /// The company's phone number (used for verification).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+    /// A location where the business has a meaningful physical operating presence.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub physical_address: Option<CreateTokenAccountCompanyPhysicalAddress>,
     /// The primary location where the business conducts operations.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub principal_place_of_business: Option<CreateTokenAccountCompanyPrincipalPlaceOfBusiness>,
@@ -346,6 +349,7 @@ impl CreateTokenAccountCompany {
             ownership_declaration_shown_and_signed: None,
             ownership_exemption_reason: None,
             phone: None,
+            physical_address: None,
             principal_place_of_business: None,
             registration_date: None,
             registration_number: None,
@@ -683,6 +687,46 @@ impl<'de> serde::Deserialize<'de> for CreateTokenAccountCompanyOwnershipExemptio
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// A location where the business has a meaningful physical operating presence.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTokenAccountCompanyPhysicalAddress {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Address line 1, such as the street, PO Box, or company name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+    /// Address line 2, such as the apartment, suite, unit, or building.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTokenAccountCompanyPhysicalAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTokenAccountCompanyPhysicalAddress").finish_non_exhaustive()
+    }
+}
+impl CreateTokenAccountCompanyPhysicalAddress {
+    pub fn new() -> Self {
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
+    }
+}
+impl Default for CreateTokenAccountCompanyPhysicalAddress {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The primary location where the business conducts operations.

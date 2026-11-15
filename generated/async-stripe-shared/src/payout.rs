@@ -40,7 +40,6 @@ pub struct Payout {
     pub failure_balance_transaction:
         Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>,
     /// Error code that provides a reason for a payout failure, if available.
-    /// View our [list of failure codes](https://docs.stripe.com/api#payout_failures).
     pub failure_code: Option<String>,
     /// Message that provides the reason for a payout failure, if available.
     pub failure_message: Option<String>,

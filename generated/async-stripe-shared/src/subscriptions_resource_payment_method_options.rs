@@ -22,7 +22,7 @@ pub struct SubscriptionsResourcePaymentMethodOptions {
     /// This sub-hash contains details about the Pix payment method options to pass to invoices created by the subscription.
     pub pix: Option<stripe_shared::SubscriptionPaymentMethodOptionsPix>,
     /// This sub-hash contains details about the SEPA Direct Debit payment method options to pass to invoices created by the subscription.
-    pub sepa_debit: Option<stripe_shared::InvoicePaymentMethodOptionsSepaDebit>,
+    pub sepa_debit: Option<stripe_shared::SubscriptionPaymentMethodOptionsSepaDebit>,
     /// This sub-hash contains details about the UPI payment method options to pass to invoices created by the subscription.
     pub upi: Option<stripe_shared::InvoicePaymentMethodOptionsUpi>,
     /// This sub-hash contains details about the ACH direct debit payment method options to pass to invoices created by the subscription.
@@ -45,7 +45,7 @@ pub struct SubscriptionsResourcePaymentMethodOptionsBuilder {
     konbini: Option<Option<stripe_shared::InvoicePaymentMethodOptionsKonbini>>,
     payto: Option<Option<stripe_shared::InvoicePaymentMethodOptionsPayto>>,
     pix: Option<Option<stripe_shared::SubscriptionPaymentMethodOptionsPix>>,
-    sepa_debit: Option<Option<stripe_shared::InvoicePaymentMethodOptionsSepaDebit>>,
+    sepa_debit: Option<Option<stripe_shared::SubscriptionPaymentMethodOptionsSepaDebit>>,
     upi: Option<Option<stripe_shared::InvoicePaymentMethodOptionsUpi>>,
     us_bank_account: Option<Option<stripe_shared::InvoicePaymentMethodOptionsUsBankAccount>>,
 }

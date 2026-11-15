@@ -15,6 +15,8 @@ pub struct DisputeEvidenceDetails {
     pub past_due: bool,
     /// The number of times evidence has been submitted. Typically, you may only submit evidence once.
     pub submission_count: u64,
+    /// Whether the dispute was submitted manually, with Smart Disputes, or not submitted.
+    pub submission_method: DisputeEvidenceDetailsSubmissionMethod,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for DisputeEvidenceDetails {
@@ -29,6 +31,7 @@ pub struct DisputeEvidenceDetailsBuilder {
     has_evidence: Option<bool>,
     past_due: Option<bool>,
     submission_count: Option<u64>,
+    submission_method: Option<DisputeEvidenceDetailsSubmissionMethod>,
 }
 
 #[allow(
@@ -76,6 +79,7 @@ const _: () = {
                 "has_evidence" => Deserialize::begin(&mut self.has_evidence),
                 "past_due" => Deserialize::begin(&mut self.past_due),
                 "submission_count" => Deserialize::begin(&mut self.submission_count),
+                "submission_method" => Deserialize::begin(&mut self.submission_method),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -87,6 +91,7 @@ const _: () = {
                 has_evidence: None,
                 past_due: None,
                 submission_count: None,
+                submission_method: None,
             }
         }
 
@@ -97,12 +102,14 @@ const _: () = {
                 Some(has_evidence),
                 Some(past_due),
                 Some(submission_count),
+                Some(submission_method),
             ) = (
                 self.due_by,
                 self.enhanced_eligibility.take(),
                 self.has_evidence,
                 self.past_due,
                 self.submission_count,
+                self.submission_method.take(),
             )
             else {
                 return None;
@@ -113,6 +120,7 @@ const _: () = {
                 has_evidence,
                 past_due,
                 submission_count,
+                submission_method,
             })
         }
     }
@@ -145,6 +153,7 @@ const _: () = {
                     "has_evidence" => b.has_evidence = FromValueOpt::from_value(v),
                     "past_due" => b.past_due = FromValueOpt::from_value(v),
                     "submission_count" => b.submission_count = FromValueOpt::from_value(v),
+                    "submission_method" => b.submission_method = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }
@@ -152,3 +161,94 @@ const _: () = {
         }
     }
 };
+/// Whether the dispute was submitted manually, with Smart Disputes, or not submitted.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum DisputeEvidenceDetailsSubmissionMethod {
+    Manual,
+    NotSubmitted,
+    SmartDisputes,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl DisputeEvidenceDetailsSubmissionMethod {
+    pub fn as_str(&self) -> &str {
+        use DisputeEvidenceDetailsSubmissionMethod::*;
+        match self {
+            Manual => "manual",
+            NotSubmitted => "not_submitted",
+            SmartDisputes => "smart_disputes",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for DisputeEvidenceDetailsSubmissionMethod {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DisputeEvidenceDetailsSubmissionMethod::*;
+        match s {
+            "manual" => Ok(Manual),
+            "not_submitted" => Ok(NotSubmitted),
+            "smart_disputes" => Ok(SmartDisputes),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "DisputeEvidenceDetailsSubmissionMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for DisputeEvidenceDetailsSubmissionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for DisputeEvidenceDetailsSubmissionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DisputeEvidenceDetailsSubmissionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(DisputeEvidenceDetailsSubmissionMethod)).finish_non_exhaustive()
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for DisputeEvidenceDetailsSubmissionMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for DisputeEvidenceDetailsSubmissionMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<DisputeEvidenceDetailsSubmissionMethod> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(DisputeEvidenceDetailsSubmissionMethod::from_str(s).expect("infallible"));
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(DisputeEvidenceDetailsSubmissionMethod);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for DisputeEvidenceDetailsSubmissionMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}

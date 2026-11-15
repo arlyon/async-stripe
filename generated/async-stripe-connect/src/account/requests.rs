@@ -1048,6 +1048,9 @@ pub struct CreateAccountCapabilities {
     /// The us_bank_transfer_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_transfer_payments: Option<CreateAccountCapabilitiesUsBankTransferPayments>,
+    /// The wero_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wero_payments: Option<CreateAccountCapabilitiesWeroPayments>,
     /// The zip_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub zip_payments: Option<CreateAccountCapabilitiesZipPayments>,
@@ -1129,6 +1132,7 @@ impl CreateAccountCapabilities {
             upi_payments: None,
             us_bank_account_ach_payments: None,
             us_bank_transfer_payments: None,
+            wero_payments: None,
             zip_payments: None,
         }
     }
@@ -2976,6 +2980,33 @@ impl Default for CreateAccountCapabilitiesUsBankTransferPayments {
         Self::new()
     }
 }
+/// The wero_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesWeroPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesWeroPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesWeroPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesWeroPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesWeroPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// The zip_payments capability.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -3063,6 +3094,9 @@ pub struct CreateAccountCompany {
     /// The company's phone number (used for verification).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+    /// A location where the business has a meaningful physical operating presence.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub physical_address: Option<CreateAccountCompanyPhysicalAddress>,
     /// The primary location where the business conducts operations.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub principal_place_of_business: Option<CreateAccountCompanyPrincipalPlaceOfBusiness>,
@@ -3122,6 +3156,7 @@ impl CreateAccountCompany {
             ownership_declaration: None,
             ownership_exemption_reason: None,
             phone: None,
+            physical_address: None,
             principal_place_of_business: None,
             registration_date: None,
             registration_number: None,
@@ -3399,6 +3434,46 @@ impl<'de> serde::Deserialize<'de> for CreateAccountCompanyOwnershipExemptionReas
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// A location where the business has a meaningful physical operating presence.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCompanyPhysicalAddress {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Address line 1, such as the street, PO Box, or company name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+    /// Address line 2, such as the apartment, suite, unit, or building.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCompanyPhysicalAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCompanyPhysicalAddress").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCompanyPhysicalAddress {
+    pub fn new() -> Self {
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
+    }
+}
+impl Default for CreateAccountCompanyPhysicalAddress {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// The primary location where the business conducts operations.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -3576,7 +3651,7 @@ impl<'de> serde::Deserialize<'de> for CreateAccountCompanyStructure {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// A hash of configuration describing the account controller's attributes.
+/// Configures the account's Dashboard access, loss liability, requirements collection, and Stripe fee responsibility.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -3616,9 +3691,11 @@ impl Default for CreateAccountController {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateAccountControllerFees {
-    /// A value indicating the responsible payer of Stripe fees on this account.
+    /// Controls who pays Stripe fees for direct charges and other pricing-control-eligible Stripe products.
+    /// Setting `controller.losses.payments=application` requires `controller.fees.payer=application`.
+    /// For destination charges and separate charges and transfers, Stripe bills the platform regardless of this setting.
     /// Defaults to `account`.
-    /// Learn more about [fee behavior on connected accounts](https://docs.stripe.com/connect/direct-charges-fee-payer-behavior).
+    /// Learn more about [fee behavior on connected accounts](https://docs.stripe.com/connect/direct-charges-fee-payer-behavior), including application fees and pricing considerations.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payer: Option<CreateAccountControllerFeesPayer>,
 }
@@ -3638,9 +3715,11 @@ impl Default for CreateAccountControllerFees {
         Self::new()
     }
 }
-/// A value indicating the responsible payer of Stripe fees on this account.
+/// Controls who pays Stripe fees for direct charges and other pricing-control-eligible Stripe products.
+/// Setting `controller.losses.payments=application` requires `controller.fees.payer=application`.
+/// For destination charges and separate charges and transfers, Stripe bills the platform regardless of this setting.
 /// Defaults to `account`.
-/// Learn more about [fee behavior on connected accounts](https://docs.stripe.com/connect/direct-charges-fee-payer-behavior).
+/// Learn more about [fee behavior on connected accounts](https://docs.stripe.com/connect/direct-charges-fee-payer-behavior), including application fees and pricing considerations.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateAccountControllerFeesPayer {
@@ -3717,7 +3796,9 @@ impl<'de> serde::Deserialize<'de> for CreateAccountControllerFeesPayer {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateAccountControllerLosses {
-    /// A value indicating who is liable when this account can't pay back negative balances resulting from payments.
+    /// Controls who is responsible for payment-related negative balances on this account.
+    /// The platform remains liable for negative balances on its own account.
+    /// To use Stripe negative balance liability, your integration must meet [Managed Risk requirements](https://docs.stripe.com/connect/risk-management/managed-risk).
     /// Defaults to `stripe`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payments: Option<CreateAccountControllerLossesPayments>,
@@ -3738,7 +3819,9 @@ impl Default for CreateAccountControllerLosses {
         Self::new()
     }
 }
-/// A value indicating who is liable when this account can't pay back negative balances resulting from payments.
+/// Controls who is responsible for payment-related negative balances on this account.
+/// The platform remains liable for negative balances on its own account.
+/// To use Stripe negative balance liability, your integration must meet [Managed Risk requirements](https://docs.stripe.com/connect/risk-management/managed-risk).
 /// Defaults to `stripe`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -4016,6 +4099,9 @@ pub struct CreateAccountDocuments {
     /// One or more documents that demonstrate proof of address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proof_of_address: Option<DocumentsParam>,
+    /// One or more documents that demonstrate proof of business presence.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proof_of_business_presence: Option<DocumentsParam>,
     /// One or more documents that demonstrate proof of ultimate beneficial ownership.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proof_of_ultimate_beneficial_ownership: Option<SignerParam>,
@@ -4036,6 +4122,7 @@ impl CreateAccountDocuments {
             company_registration_verification: None,
             company_tax_id_verification: None,
             proof_of_address: None,
+            proof_of_business_presence: None,
             proof_of_ultimate_beneficial_ownership: None,
         }
     }
@@ -5311,7 +5398,7 @@ impl CreateAccount {
         self.inner.company = Some(company.into());
         self
     }
-    /// A hash of configuration describing the account controller's attributes.
+    /// Configures the account's Dashboard access, loss liability, requirements collection, and Stripe fee responsibility.
     pub fn controller(mut self, controller: impl Into<CreateAccountController>) -> Self {
         self.inner.controller = Some(controller.into());
         self
@@ -5911,6 +5998,9 @@ pub struct UpdateAccountCapabilities {
     /// The us_bank_transfer_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_transfer_payments: Option<UpdateAccountCapabilitiesUsBankTransferPayments>,
+    /// The wero_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wero_payments: Option<UpdateAccountCapabilitiesWeroPayments>,
     /// The zip_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub zip_payments: Option<UpdateAccountCapabilitiesZipPayments>,
@@ -5992,6 +6082,7 @@ impl UpdateAccountCapabilities {
             upi_payments: None,
             us_bank_account_ach_payments: None,
             us_bank_transfer_payments: None,
+            wero_payments: None,
             zip_payments: None,
         }
     }
@@ -7839,6 +7930,33 @@ impl Default for UpdateAccountCapabilitiesUsBankTransferPayments {
         Self::new()
     }
 }
+/// The wero_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesWeroPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesWeroPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesWeroPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesWeroPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesWeroPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// The zip_payments capability.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -7926,6 +8044,9 @@ pub struct UpdateAccountCompany {
     /// The company's phone number (used for verification).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+    /// A location where the business has a meaningful physical operating presence.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub physical_address: Option<UpdateAccountCompanyPhysicalAddress>,
     /// The primary location where the business conducts operations.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub principal_place_of_business: Option<UpdateAccountCompanyPrincipalPlaceOfBusiness>,
@@ -7984,6 +8105,7 @@ impl UpdateAccountCompany {
             ownership_declaration: None,
             ownership_exemption_reason: None,
             phone: None,
+            physical_address: None,
             principal_place_of_business: None,
             registration_date: None,
             registration_number: None,
@@ -8261,6 +8383,46 @@ impl<'de> serde::Deserialize<'de> for UpdateAccountCompanyOwnershipExemptionReas
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// A location where the business has a meaningful physical operating presence.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCompanyPhysicalAddress {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    /// Address line 1, such as the street, PO Box, or company name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+    /// Address line 2, such as the apartment, suite, unit, or building.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCompanyPhysicalAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCompanyPhysicalAddress").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCompanyPhysicalAddress {
+    pub fn new() -> Self {
+        Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
+    }
+}
+impl Default for UpdateAccountCompanyPhysicalAddress {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// The primary location where the business conducts operations.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -8465,6 +8627,9 @@ pub struct UpdateAccountDocuments {
     /// One or more documents that demonstrate proof of address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proof_of_address: Option<DocumentsParam>,
+    /// One or more documents that demonstrate proof of business presence.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proof_of_business_presence: Option<DocumentsParam>,
     /// One or more documents showing the company’s proof of registration with the national business registry.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proof_of_registration: Option<SignerParam>,
@@ -8488,6 +8653,7 @@ impl UpdateAccountDocuments {
             company_registration_verification: None,
             company_tax_id_verification: None,
             proof_of_address: None,
+            proof_of_business_presence: None,
             proof_of_registration: None,
             proof_of_ultimate_beneficial_ownership: None,
         }

@@ -153,7 +153,9 @@ impl<'de> serde::Deserialize<'de> for CancelSubscriptionCancellationDetailsFeedb
 /// After it’s canceled, the subscription is largely immutable.
 /// You can still update its <a href="/metadata">metadata</a> and `cancellation_details`.
 ///
-/// Any pending invoice items that you’ve created are still charged at the end of the period, unless manually <a href="/api/invoiceitems/delete">deleted</a>.
+/// Pending invoice items are included on a final invoice if you generate one.
+/// Otherwise, they remain pending and can be billed on another invoice for the customer.
+/// To prevent billing, manually <a href="/api/invoiceitems/delete">delete</a> them.
 /// If you’ve set the subscription to cancel at the end of the period, any pending prorations are also left in place and collected at the end of the period.
 /// But if the subscription is set to cancel immediately, pending prorations are removed if `invoice_now` and `prorate` are both set to false.
 ///
@@ -3738,8 +3740,8 @@ impl<'de> serde::Deserialize<'de>
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsPix {
-    /// The number of seconds (between 10 and 1209600) after which Pix payment will expire.
-    /// Defaults to 86400 seconds.
+    /// The number of seconds after PaymentIntent confirmation when the Pix expires (between 60 and 1209600, inclusive).
+    /// If unspecified, defaults to 14400 seconds (4 hours).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_seconds: Option<i64>,
     /// Configuration options for setting up a mandate
@@ -4590,6 +4592,7 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     Satispay,
     SepaCreditTransfer,
     SepaDebit,
+    Sequra,
     Sofort,
     Swish,
     Twint,
@@ -4647,6 +4650,7 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             Satispay => "satispay",
             SepaCreditTransfer => "sepa_credit_transfer",
             SepaDebit => "sepa_debit",
+            Sequra => "sequra",
             Sofort => "sofort",
             Swish => "swish",
             Twint => "twint",
@@ -4707,6 +4711,7 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             "satispay" => Ok(Satispay),
             "sepa_credit_transfer" => Ok(SepaCreditTransfer),
             "sepa_debit" => Ok(SepaDebit),
+            "sequra" => Ok(Sequra),
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
@@ -9705,8 +9710,8 @@ impl<'de> serde::Deserialize<'de>
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPix {
-    /// The number of seconds (between 10 and 1209600) after which Pix payment will expire.
-    /// Defaults to 86400 seconds.
+    /// The number of seconds after PaymentIntent confirmation when the Pix expires (between 60 and 1209600, inclusive).
+    /// If unspecified, defaults to 14400 seconds (4 hours).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_seconds: Option<i64>,
     /// Configuration options for setting up a mandate
@@ -10557,6 +10562,7 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     Satispay,
     SepaCreditTransfer,
     SepaDebit,
+    Sequra,
     Sofort,
     Swish,
     Twint,
@@ -10614,6 +10620,7 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             Satispay => "satispay",
             SepaCreditTransfer => "sepa_credit_transfer",
             SepaDebit => "sepa_debit",
+            Sequra => "sequra",
             Sofort => "sofort",
             Swish => "swish",
             Twint => "twint",
@@ -10674,6 +10681,7 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             "satispay" => Ok(Satispay),
             "sepa_credit_transfer" => Ok(SepaCreditTransfer),
             "sepa_debit" => Ok(SepaDebit),
+            "sequra" => Ok(Sequra),
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
@@ -11353,6 +11361,8 @@ impl UpdateSubscription {
     /// It must belong to the customer associated with the subscription.
     /// This takes precedence over `default_source`.
     /// If neither are set, invoices will use the customer's [invoice_settings.default_payment_method](https://docs.stripe.com/api/customers/object#customer_object-invoice_settings-default_payment_method) or [default_source](https://docs.stripe.com/api/customers/object#customer_object-default_source).
+    /// For subscriptions created by Checkout Sessions with Managed Payments enabled, you can't update this field directly through the API.
+    /// Customers can update it through the Customer Portal.
     pub fn default_payment_method(mut self, default_payment_method: impl Into<String>) -> Self {
         self.inner.default_payment_method = Some(default_payment_method.into());
         self

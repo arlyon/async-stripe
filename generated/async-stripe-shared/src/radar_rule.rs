@@ -2,24 +2,24 @@
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct Rule {
+pub struct RadarRule {
     /// The action taken on the payment.
     pub action: String,
     /// Unique identifier for the object.
-    pub id: stripe_shared::RuleId,
+    pub id: stripe_shared::RadarRuleId,
     /// The predicate to evaluate the payment against.
     pub predicate: String,
 }
 #[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for Rule {
+impl std::fmt::Debug for RadarRule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("Rule").finish_non_exhaustive()
+        f.debug_struct("RadarRule").finish_non_exhaustive()
     }
 }
 #[doc(hidden)]
-pub struct RuleBuilder {
+pub struct RadarRuleBuilder {
     action: Option<String>,
-    id: Option<stripe_shared::RuleId>,
+    id: Option<stripe_shared::RadarRuleId>,
     predicate: Option<String>,
 }
 
@@ -39,25 +39,25 @@ const _: () = {
 
     make_place!(Place);
 
-    impl Deserialize for Rule {
+    impl Deserialize for RadarRule {
         fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
             Place::new(out)
         }
     }
 
     struct Builder<'a> {
-        out: &'a mut Option<Rule>,
-        builder: RuleBuilder,
+        out: &'a mut Option<RadarRule>,
+        builder: RadarRuleBuilder,
     }
 
-    impl Visitor for Place<Rule> {
+    impl Visitor for Place<RadarRule> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
-            Ok(Box::new(Builder { out: &mut self.out, builder: RuleBuilder::deser_default() }))
+            Ok(Box::new(Builder { out: &mut self.out, builder: RadarRuleBuilder::deser_default() }))
         }
     }
 
-    impl MapBuilder for RuleBuilder {
-        type Out = Rule;
+    impl MapBuilder for RadarRuleBuilder {
+        type Out = RadarRule;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "action" => Deserialize::begin(&mut self.action),
@@ -92,16 +92,16 @@ const _: () = {
         }
     }
 
-    impl ObjectDeser for Rule {
-        type Builder = RuleBuilder;
+    impl ObjectDeser for RadarRule {
+        type Builder = RadarRuleBuilder;
     }
 
-    impl FromValueOpt for Rule {
+    impl FromValueOpt for RadarRule {
         fn from_value(v: Value) -> Option<Self> {
             let Value::Object(obj) = v else {
                 return None;
             };
-            let mut b = RuleBuilder::deser_default();
+            let mut b = RadarRuleBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
                     "action" => b.action = FromValueOpt::from_value(v),
@@ -114,8 +114,8 @@ const _: () = {
         }
     }
 };
-impl stripe_types::Object for Rule {
-    type Id = stripe_shared::RuleId;
+impl stripe_types::Object for RadarRule {
+    type Id = stripe_shared::RadarRuleId;
     fn id(&self) -> &Self::Id {
         &self.id
     }
@@ -124,4 +124,4 @@ impl stripe_types::Object for Rule {
         self.id
     }
 }
-stripe_types::def_id!(RuleId);
+stripe_types::def_id!(RadarRuleId);

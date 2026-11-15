@@ -139,6 +139,8 @@ pub struct AccountCapabilities {
     pub us_bank_account_ach_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the US customer_balance payments (USD currency) capability of the account, or whether the account can directly process US customer_balance charges.
     pub us_bank_transfer_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    /// The status of the Wero capability of the account, or whether the account can directly process Wero payments.
+    pub wero_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the Zip capability of the account, or whether the account can directly process Zip charges.
     pub zip_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
 }
@@ -218,6 +220,7 @@ pub struct AccountCapabilitiesBuilder {
     upi_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     us_bank_account_ach_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     us_bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
+    wero_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     zip_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
 }
 
@@ -351,6 +354,7 @@ const _: () = {
                 "us_bank_transfer_payments" => {
                     Deserialize::begin(&mut self.us_bank_transfer_payments)
                 }
+                "wero_payments" => Deserialize::begin(&mut self.wero_payments),
                 "zip_payments" => Deserialize::begin(&mut self.zip_payments),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -426,6 +430,7 @@ const _: () = {
                 upi_payments: Some(None),
                 us_bank_account_ach_payments: Some(None),
                 us_bank_transfer_payments: Some(None),
+                wero_payments: Some(None),
                 zip_payments: Some(None),
             }
         }
@@ -500,6 +505,7 @@ const _: () = {
                 Some(upi_payments),
                 Some(us_bank_account_ach_payments),
                 Some(us_bank_transfer_payments),
+                Some(wero_payments),
                 Some(zip_payments),
             ) = (
                 self.acss_debit_payments.take(),
@@ -570,6 +576,7 @@ const _: () = {
                 self.upi_payments.take(),
                 self.us_bank_account_ach_payments.take(),
                 self.us_bank_transfer_payments.take(),
+                self.wero_payments.take(),
                 self.zip_payments.take(),
             )
             else {
@@ -644,6 +651,7 @@ const _: () = {
                 upi_payments,
                 us_bank_account_ach_payments,
                 us_bank_transfer_payments,
+                wero_payments,
                 zip_payments,
             })
         }
@@ -770,6 +778,7 @@ const _: () = {
                     "us_bank_transfer_payments" => {
                         b.us_bank_transfer_payments = FromValueOpt::from_value(v)
                     }
+                    "wero_payments" => b.wero_payments = FromValueOpt::from_value(v),
                     "zip_payments" => b.zip_payments = FromValueOpt::from_value(v),
                     _ => {}
                 }
