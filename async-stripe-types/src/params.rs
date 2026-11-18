@@ -179,4 +179,18 @@ mod tests {
         let encoded = urldecode(serde_qs::to_string(&params).unwrap());
         assert_eq!(encoded, "created[gte]=1501598702&created[lt]=1504233902&limit=3");
     }
+
+    // Regression test for https://github.com/arlyon/async-stripe/issues/922:
+    // a literal `%` must be escaped, otherwise Stripe reads `%20` as a space
+    // or rejects the request.
+    #[test]
+    fn serialize_escapes_percent() {
+        #[derive(serde::Serialize)]
+        struct ProductData {
+            name: String,
+        }
+
+        let params = ProductData { name: "Custom %20 Fee".to_string() };
+        assert_eq!(serde_qs::to_string(&params).unwrap(), "name=Custom+%2520+Fee");
+    }
 }
