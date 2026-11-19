@@ -8,6 +8,8 @@ members = [
     "examples/*",
     "async-stripe-client-core",
     "async-stripe",
+    "bench/compile/slices/*",
+    "bench/compile/collector",
 ]
 
 # Skip "examples/*" when running default commands since that adds a bunch of deps that makes
