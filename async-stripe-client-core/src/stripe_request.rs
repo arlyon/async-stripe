@@ -132,6 +132,13 @@ impl<T> CustomizableStripeRequest<T> {
         self.inner.config_override.timeout = Some(timeout);
         self
     }
+
+    /// Add a header to send with this request. If the name matches a
+    /// built-in header (e.g. "stripe-version"), this value replaces it.
+    pub fn header(mut self, name: impl Into<String>, value: impl Into<String>) -> Self {
+        self.inner.config_override.headers.push((name.into(), value.into()));
+        self
+    }
 }
 
 impl<T: miniserde::Deserialize> CustomizableStripeRequest<T> {

@@ -58,6 +58,7 @@ impl Client {
         &self,
         req: RequestBuilder,
         account_id: Option<AccountId>,
+        extra_headers: Vec<(String, String)>,
     ) -> Result<(Builder, Option<Bytes>), StripeError> {
         let mut uri = format!("{}v1{}", self.config.api_base, req.path);
         if let Some(query) = req.query {
@@ -76,6 +77,14 @@ impl Client {
         }
         if let Some(account_id) = self.get_account_id_header(account_id)? {
             builder = builder.header(HeaderName::from_static("stripe-account"), account_id);
+        }
+        if let Some(headers) = builder.headers_mut() {
+            for (name, value) in extra_headers {
+                let invalid = || StripeError::ConfigError(format!("invalid header `{name}`"));
+                let header_name = HeaderName::try_from(name.as_str()).map_err(|_| invalid())?;
+                let header_value = HeaderValue::try_from(value).map_err(|_| invalid())?;
+                headers.insert(header_name, header_value);
+            }
         }
 
         let body = if let Some(body) = req.body {
@@ -199,7 +208,7 @@ impl stripe_client_core::StripeClient for Client {
         tracing::Span::current().record("method", tracing::field::debug(&req.method));
         tracing::Span::current().record("path", &req.path);
 
-        let (builder, body) = self.construct_request(req, config.account_id)?;
+        let (builder, body) = self.construct_request(req, config.account_id, config.headers)?;
 
         let request_strategy =
             config.request_strategy.unwrap_or_else(|| self.config.request_strategy.clone());
