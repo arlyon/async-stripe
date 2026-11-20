@@ -5,6 +5,8 @@
 pub struct PaymentMethodDetailsCardWalletLink {
     /// The [funding source group code](https://docs.stripe.com/payments/link/link-payment-methods) applied to this Link payment at confirmation time.
     pub funding_source_group: Option<String>,
+    /// Details about the funding sources used for this Link payment.
+    pub funding_sources: Option<Vec<stripe_shared::PaymentMethodDetailsLinkFundingSource>>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for PaymentMethodDetailsCardWalletLink {
@@ -15,6 +17,7 @@ impl std::fmt::Debug for PaymentMethodDetailsCardWalletLink {
 #[doc(hidden)]
 pub struct PaymentMethodDetailsCardWalletLinkBuilder {
     funding_source_group: Option<Option<String>>,
+    funding_sources: Option<Option<Vec<stripe_shared::PaymentMethodDetailsLinkFundingSource>>>,
 }
 
 #[allow(
@@ -58,19 +61,22 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "funding_source_group" => Deserialize::begin(&mut self.funding_source_group),
+                "funding_sources" => Deserialize::begin(&mut self.funding_sources),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { funding_source_group: Some(None) }
+            Self { funding_source_group: Some(None), funding_sources: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(funding_source_group),) = (self.funding_source_group.take(),) else {
+            let (Some(funding_source_group), Some(funding_sources)) =
+                (self.funding_source_group.take(), self.funding_sources.take())
+            else {
                 return None;
             };
-            Some(Self::Out { funding_source_group })
+            Some(Self::Out { funding_source_group, funding_sources })
         }
     }
 
@@ -98,6 +104,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "funding_source_group" => b.funding_source_group = FromValueOpt::from_value(v),
+                    "funding_sources" => b.funding_sources = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }

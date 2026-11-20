@@ -553,8 +553,8 @@ impl<'de> serde::Deserialize<'de> for CreateTreasuryReceivedCreditNetwork {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Use this endpoint to simulate a test mode ReceivedCredit initiated by a third party.
-/// In live mode, you can’t directly create ReceivedCredits initiated by third parties.
+/// Simulates a test `ReceivedCredit` initiated by a third party.
+/// In live mode, you can’t directly create `ReceivedCredit` objects initiated by third parties.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]

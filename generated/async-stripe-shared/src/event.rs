@@ -38,7 +38,10 @@ pub struct Event {
     /// If the object exists in live mode, the value is `true`.
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
-    /// Number of webhooks that haven't been successfully delivered (for example, to return a 20x response) to the URLs you specify.
+    /// Number of webhooks that haven't been successfully delivered (for example, to return a 20x response).
+    /// This count can include deliveries to endpoints that belong to Connect platforms or apps with access to your account.
+    /// These endpoints don't appear when you list your account's webhook endpoints or event destinations.
+    /// To see the delivery status for each endpoint, view the event in [Workbench](https://docs.stripe.com/workbench/overview#events).
     pub pending_webhooks: i64,
     /// Information on the API request that triggers the event.
     pub request: Option<stripe_shared::NotificationEventRequest>,

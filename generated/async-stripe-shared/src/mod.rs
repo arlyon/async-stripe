@@ -1725,6 +1725,102 @@ pub mod payment_flows_automatic_payment_methods_setup_intent;
 #[doc(inline)]
 pub use payment_flows_automatic_payment_methods_setup_intent::*;
 #[doc(hidden)]
+pub mod payment_flows_industry_metadata_car_rental_data_resource_car_rental;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_car_rental_data_resource_car_rental::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_affiliate;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_affiliate::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_date_of_birth;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_date_of_birth::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_discounts;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_discounts::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_distance;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_distance::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_driver;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_driver::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_extra_charge;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_extra_charge::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_insurance;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_insurance::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_location;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_location::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_tax;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_tax::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_tax_item;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_tax_item::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_total;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_total::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_vehicle;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_car_rental_data_resource_car_rental_supplementary_vehicle::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_lodging_data_resource_lodging;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_lodging_data_resource_lodging::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_accommodation;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_accommodation::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_affiliate;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_affiliate::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_discount;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_discount::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_extra_charge;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_extra_charge::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_guest;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_guest::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_host;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_host::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_insurance;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_insurance::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_tax;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_tax::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_tax_item;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_tax_item::*;
+#[doc(hidden)]
+pub mod payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_total;
+#[doc(inline)]
+pub use payment_flows_industry_metadata_lodging_data_resource_lodging_supplementary_total::*;
+#[doc(hidden)]
 pub mod payment_flows_payment_details;
 #[doc(inline)]
 pub use payment_flows_payment_details::*;
@@ -2492,6 +2588,14 @@ pub use payment_method_details_kr_card::*;
 pub mod payment_method_details_link;
 #[doc(inline)]
 pub use payment_method_details_link::*;
+#[doc(hidden)]
+pub mod payment_method_details_link_funding_source;
+#[doc(inline)]
+pub use payment_method_details_link_funding_source::*;
+#[doc(hidden)]
+pub mod payment_method_details_link_funding_source_card;
+#[doc(inline)]
+pub use payment_method_details_link_funding_source_card::*;
 #[doc(hidden)]
 pub mod payment_method_details_mb_way;
 #[doc(inline)]
@@ -3601,6 +3705,10 @@ pub mod refund_destination_details_afterpay_clearpay;
 #[doc(inline)]
 pub use refund_destination_details_afterpay_clearpay::*;
 #[doc(hidden)]
+pub mod refund_destination_details_bizum;
+#[doc(inline)]
+pub use refund_destination_details_bizum::*;
+#[doc(hidden)]
 pub mod refund_destination_details_blik;
 #[doc(inline)]
 pub use refund_destination_details_blik::*;
@@ -3660,6 +3768,10 @@ pub use refund_destination_details_swish::*;
 pub mod refund_destination_details_th_bank_transfer;
 #[doc(inline)]
 pub use refund_destination_details_th_bank_transfer::*;
+#[doc(hidden)]
+pub mod refund_destination_details_upi;
+#[doc(inline)]
+pub use refund_destination_details_upi::*;
 #[doc(hidden)]
 pub mod refund_destination_details_us_bank_transfer;
 #[doc(inline)]
@@ -4140,6 +4252,10 @@ pub use subscription_payment_method_options_pix::*;
 pub mod subscription_payment_method_options_sepa_debit;
 #[doc(inline)]
 pub use subscription_payment_method_options_sepa_debit::*;
+#[doc(hidden)]
+pub mod subscription_payment_method_options_upi;
+#[doc(inline)]
+pub use subscription_payment_method_options_upi::*;
 #[doc(hidden)]
 pub mod subscription_pending_invoice_item_interval;
 #[doc(inline)]

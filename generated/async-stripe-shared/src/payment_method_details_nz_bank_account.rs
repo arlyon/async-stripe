@@ -4,7 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsNzBankAccount {
     /// The name on the bank account.
-    /// Only present if the account holder name is different from the name of the authorized signatory collected in the PaymentMethod’s billing details.
+    /// Only present if the account holder name is different from the name of the authorized signatory collected in the PaymentMethod's billing details.
     pub account_holder_name: Option<String>,
     /// The numeric code for the bank account's bank.
     pub bank_code: String,

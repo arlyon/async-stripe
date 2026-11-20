@@ -3,10 +3,14 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentFlowsPaymentDetails {
+    pub car_rental_data:
+        Option<Vec<stripe_shared::PaymentFlowsIndustryMetadataCarRentalDataResourceCarRental>>,
     /// A unique value to identify the customer. This field is available only for card payments.
     ///
     /// This field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
     pub customer_reference: Option<String>,
+    pub lodging_data:
+        Option<Vec<stripe_shared::PaymentFlowsIndustryMetadataLodgingDataResourceLodging>>,
     /// A unique value assigned by the business to identify the transaction. Required for L2 and L3 rates.
     ///
     /// For Cards, this field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
@@ -21,7 +25,12 @@ impl std::fmt::Debug for PaymentFlowsPaymentDetails {
 }
 #[doc(hidden)]
 pub struct PaymentFlowsPaymentDetailsBuilder {
+    car_rental_data: Option<
+        Option<Vec<stripe_shared::PaymentFlowsIndustryMetadataCarRentalDataResourceCarRental>>,
+    >,
     customer_reference: Option<Option<String>>,
+    lodging_data:
+        Option<Option<Vec<stripe_shared::PaymentFlowsIndustryMetadataLodgingDataResourceLodging>>>,
     order_reference: Option<Option<String>>,
 }
 
@@ -65,23 +74,39 @@ const _: () = {
         type Out = PaymentFlowsPaymentDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "car_rental_data" => Deserialize::begin(&mut self.car_rental_data),
                 "customer_reference" => Deserialize::begin(&mut self.customer_reference),
+                "lodging_data" => Deserialize::begin(&mut self.lodging_data),
                 "order_reference" => Deserialize::begin(&mut self.order_reference),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { customer_reference: Some(None), order_reference: Some(None) }
+            Self {
+                car_rental_data: Some(None),
+                customer_reference: Some(None),
+                lodging_data: Some(None),
+                order_reference: Some(None),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(customer_reference), Some(order_reference)) =
-                (self.customer_reference.take(), self.order_reference.take())
+            let (
+                Some(car_rental_data),
+                Some(customer_reference),
+                Some(lodging_data),
+                Some(order_reference),
+            ) = (
+                self.car_rental_data.take(),
+                self.customer_reference.take(),
+                self.lodging_data.take(),
+                self.order_reference.take(),
+            )
             else {
                 return None;
             };
-            Some(Self::Out { customer_reference, order_reference })
+            Some(Self::Out { car_rental_data, customer_reference, lodging_data, order_reference })
         }
     }
 
@@ -108,7 +133,9 @@ const _: () = {
             let mut b = PaymentFlowsPaymentDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "car_rental_data" => b.car_rental_data = FromValueOpt::from_value(v),
                     "customer_reference" => b.customer_reference = FromValueOpt::from_value(v),
+                    "lodging_data" => b.lodging_data = FromValueOpt::from_value(v),
                     "order_reference" => b.order_reference = FromValueOpt::from_value(v),
                     _ => {}
                 }

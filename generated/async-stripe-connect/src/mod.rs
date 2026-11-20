@@ -138,6 +138,14 @@ pub mod connect_embedded_issuing_cards_list_features;
 #[doc(inline)]
 pub use connect_embedded_issuing_cards_list_features::*;
 #[doc(hidden)]
+pub mod connect_embedded_notification_banner_config;
+#[doc(inline)]
+pub use connect_embedded_notification_banner_config::*;
+#[doc(hidden)]
+pub mod connect_embedded_notification_banner_features;
+#[doc(inline)]
+pub use connect_embedded_notification_banner_features::*;
+#[doc(hidden)]
 pub mod connect_embedded_payment_disputes_config;
 #[doc(inline)]
 pub use connect_embedded_payment_disputes_config::*;

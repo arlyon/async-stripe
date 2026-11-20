@@ -3,6 +3,9 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesCheckoutSessionAutomaticTax {
+    /// Controls how much address information Checkout collects when automatic tax is enabled.
+    pub address_collection_precision:
+        Option<PaymentPagesCheckoutSessionAutomaticTaxAddressCollectionPrecision>,
     /// Indicates whether automatic tax is enabled for the session
     pub enabled: bool,
     /// The account that's liable for tax.
@@ -22,6 +25,8 @@ impl std::fmt::Debug for PaymentPagesCheckoutSessionAutomaticTax {
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionAutomaticTaxBuilder {
+    address_collection_precision:
+        Option<Option<PaymentPagesCheckoutSessionAutomaticTaxAddressCollectionPrecision>>,
     enabled: Option<bool>,
     liability: Option<Option<stripe_shared::ConnectAccountReference>>,
     provider: Option<Option<String>>,
@@ -68,6 +73,9 @@ const _: () = {
         type Out = PaymentPagesCheckoutSessionAutomaticTax;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "address_collection_precision" => {
+                    Deserialize::begin(&mut self.address_collection_precision)
+                }
                 "enabled" => Deserialize::begin(&mut self.enabled),
                 "liability" => Deserialize::begin(&mut self.liability),
                 "provider" => Deserialize::begin(&mut self.provider),
@@ -77,16 +85,33 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { enabled: None, liability: Some(None), provider: Some(None), status: Some(None) }
+            Self {
+                address_collection_precision: Some(None),
+                enabled: None,
+                liability: Some(None),
+                provider: Some(None),
+                status: Some(None),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enabled), Some(liability), Some(provider), Some(status)) =
-                (self.enabled, self.liability.take(), self.provider.take(), self.status.take())
+            let (
+                Some(address_collection_precision),
+                Some(enabled),
+                Some(liability),
+                Some(provider),
+                Some(status),
+            ) = (
+                self.address_collection_precision.take(),
+                self.enabled,
+                self.liability.take(),
+                self.provider.take(),
+                self.status.take(),
+            )
             else {
                 return None;
             };
-            Some(Self::Out { enabled, liability, provider, status })
+            Some(Self::Out { address_collection_precision, enabled, liability, provider, status })
         }
     }
 
@@ -113,6 +138,9 @@ const _: () = {
             let mut b = PaymentPagesCheckoutSessionAutomaticTaxBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "address_collection_precision" => {
+                        b.address_collection_precision = FromValueOpt::from_value(v)
+                    }
                     "enabled" => b.enabled = FromValueOpt::from_value(v),
                     "liability" => b.liability = FromValueOpt::from_value(v),
                     "provider" => b.provider = FromValueOpt::from_value(v),
@@ -124,6 +152,106 @@ const _: () = {
         }
     }
 };
+/// Controls how much address information Checkout collects when automatic tax is enabled.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum PaymentPagesCheckoutSessionAutomaticTaxAddressCollectionPrecision {
+    Full,
+    Minimal,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl PaymentPagesCheckoutSessionAutomaticTaxAddressCollectionPrecision {
+    pub fn as_str(&self) -> &str {
+        use PaymentPagesCheckoutSessionAutomaticTaxAddressCollectionPrecision::*;
+        match self {
+            Full => "full",
+            Minimal => "minimal",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentPagesCheckoutSessionAutomaticTaxAddressCollectionPrecision {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentPagesCheckoutSessionAutomaticTaxAddressCollectionPrecision::*;
+        match s {
+            "full" => Ok(Full),
+            "minimal" => Ok(Minimal),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentPagesCheckoutSessionAutomaticTaxAddressCollectionPrecision"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for PaymentPagesCheckoutSessionAutomaticTaxAddressCollectionPrecision {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for PaymentPagesCheckoutSessionAutomaticTaxAddressCollectionPrecision {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentPagesCheckoutSessionAutomaticTaxAddressCollectionPrecision {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            PaymentPagesCheckoutSessionAutomaticTaxAddressCollectionPrecision
+        ))
+        .finish_non_exhaustive()
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for PaymentPagesCheckoutSessionAutomaticTaxAddressCollectionPrecision {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for PaymentPagesCheckoutSessionAutomaticTaxAddressCollectionPrecision {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor
+    for crate::Place<PaymentPagesCheckoutSessionAutomaticTaxAddressCollectionPrecision>
+{
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            PaymentPagesCheckoutSessionAutomaticTaxAddressCollectionPrecision::from_str(s)
+                .expect("infallible"),
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(
+    PaymentPagesCheckoutSessionAutomaticTaxAddressCollectionPrecision
+);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for PaymentPagesCheckoutSessionAutomaticTaxAddressCollectionPrecision
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// The status of the most recent automated tax calculation for this session.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]

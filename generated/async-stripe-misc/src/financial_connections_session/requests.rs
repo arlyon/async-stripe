@@ -229,7 +229,7 @@ pub struct CreateFinancialConnectionsSessionFilters {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_subcategories:
         Option<Vec<CreateFinancialConnectionsSessionFiltersAccountSubcategories>>,
-    /// Country from which to collect accounts.
+    /// Country from which to collect accounts. Supported values are `US` and `CA`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
     /// Whether the session should require payment method support and successful account number retrieval before completion.

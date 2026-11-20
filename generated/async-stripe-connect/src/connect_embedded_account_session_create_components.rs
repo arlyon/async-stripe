@@ -15,7 +15,7 @@ pub struct ConnectEmbeddedAccountSessionCreateComponents {
     pub instant_payouts_promotion: stripe_connect::ConnectEmbeddedInstantPayoutsPromotionConfig,
     pub issuing_card: stripe_connect::ConnectEmbeddedIssuingCardConfigClaim,
     pub issuing_cards_list: stripe_connect::ConnectEmbeddedIssuingCardsListConfigClaim,
-    pub notification_banner: stripe_connect::ConnectEmbeddedAccountConfigClaim,
+    pub notification_banner: stripe_connect::ConnectEmbeddedNotificationBannerConfig,
     pub payment_details: stripe_connect::ConnectEmbeddedPaymentsConfigClaim,
     pub payment_disputes: stripe_connect::ConnectEmbeddedPaymentDisputesConfig,
     pub payment_method_settings: stripe_connect::ConnectEmbeddedPaymentMethodSettingsConfigClaim,
@@ -50,7 +50,7 @@ pub struct ConnectEmbeddedAccountSessionCreateComponentsBuilder {
     instant_payouts_promotion: Option<stripe_connect::ConnectEmbeddedInstantPayoutsPromotionConfig>,
     issuing_card: Option<stripe_connect::ConnectEmbeddedIssuingCardConfigClaim>,
     issuing_cards_list: Option<stripe_connect::ConnectEmbeddedIssuingCardsListConfigClaim>,
-    notification_banner: Option<stripe_connect::ConnectEmbeddedAccountConfigClaim>,
+    notification_banner: Option<stripe_connect::ConnectEmbeddedNotificationBannerConfig>,
     payment_details: Option<stripe_connect::ConnectEmbeddedPaymentsConfigClaim>,
     payment_disputes: Option<stripe_connect::ConnectEmbeddedPaymentDisputesConfig>,
     payment_method_settings:

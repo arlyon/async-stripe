@@ -1,0 +1,407 @@
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+pub struct PaymentMethodDetailsLinkFundingSourceCard {
+    /// The authorized amount.
+    pub amount_authorized: Option<i64>,
+    /// Authorization code on the charge.
+    pub authorization_code: Option<String>,
+    /// Card brand.
+    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `jcb`, `link`, `mastercard`, `unionpay`, `visa` or `unknown`.
+    pub brand: Option<String>,
+    /// Check results by Card networks on Card address and CVC at time of payment.
+    pub checks: Option<stripe_shared::PaymentMethodDetailsCardChecks>,
+    /// Two-letter ISO code representing the country of the card.
+    /// You could use this attribute to get a sense of the international breakdown of cards you've collected.
+    pub country: Option<String>,
+    /// A high-level description of the type of cards issued in this range.
+    /// (For internal use only and not typically available in standard API requests.).
+    pub description: Option<String>,
+    /// The Electronic Commerce Indicator (ECI) returned by the card network in the authorization response.
+    /// Indicates the level of authentication used.
+    /// Only populated for Visa and Mastercard transactions.
+    /// This is the network's final ECI and can differ from the request value.
+    /// An authenticated ECI alone doesn't determine liability shift.
+    pub electronic_commerce_indicator: Option<String>,
+    /// Two-digit number representing the card's expiration month.
+    pub exp_month: i64,
+    /// Four-digit number representing the card's expiration year.
+    pub exp_year: i64,
+    /// Uniquely identifies this particular card number.
+    /// You can use this attribute to check whether two customers who’ve signed up with you are using the same card number, for example.
+    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.
+    ///
+    /// *As of May 1, 2021, card fingerprint in India for Connect changed to allow two fingerprints for the same card---one for India and one for the rest of the world.*.
+    pub fingerprint: Option<String>,
+    /// Card funding type. Can be `credit`, `debit`, `prepaid`, or `unknown`.
+    pub funding: Option<String>,
+    /// Issuer identification number of the card.
+    /// (For internal use only and not typically available in standard API requests.).
+    pub iin: Option<String>,
+    /// The name of the card's issuing bank.
+    /// (For internal use only and not typically available in standard API requests.).
+    pub issuer: Option<String>,
+    /// The last four digits of the card.
+    pub last4: Option<String>,
+    /// Identifies which network this charge was processed on.
+    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    pub network: Option<String>,
+    /// If this card has network token credentials, this contains the details of the network token credentials.
+    pub network_token: Option<stripe_shared::PaymentMethodDetailsCardNetworkToken>,
+    /// This is used by the financial networks to identify a transaction.
+    /// Visa calls this the Transaction ID, Mastercard calls this the Trace ID, and American Express calls this the Acquirer Reference Data.
+    /// This value will be present if it is returned by the financial network in the authorization response, and null otherwise.
+    pub network_transaction_id: Option<String>,
+    /// Status of a card based on the card issuer.
+    pub regulated_status: Option<PaymentMethodDetailsLinkFundingSourceCardRegulatedStatus>,
+    /// Populated if this transaction used 3D Secure authentication.
+    pub three_d_secure: Option<stripe_shared::ThreeDSecureDetailsCharge>,
+    /// Transaction Link ID (TLID) is a unique identifier for a transaction.
+    /// This is used by some card networks, such as Mastercard, for transaction linking, in addition to Network Transaction IDs.
+    /// This value will be present if it is returned by the financial network in the authorization response, and null otherwise.
+    pub transaction_link_id: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDetailsLinkFundingSourceCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodDetailsLinkFundingSourceCard").finish_non_exhaustive()
+    }
+}
+#[doc(hidden)]
+pub struct PaymentMethodDetailsLinkFundingSourceCardBuilder {
+    amount_authorized: Option<Option<i64>>,
+    authorization_code: Option<Option<String>>,
+    brand: Option<Option<String>>,
+    checks: Option<Option<stripe_shared::PaymentMethodDetailsCardChecks>>,
+    country: Option<Option<String>>,
+    description: Option<Option<String>>,
+    electronic_commerce_indicator: Option<Option<String>>,
+    exp_month: Option<i64>,
+    exp_year: Option<i64>,
+    fingerprint: Option<Option<String>>,
+    funding: Option<Option<String>>,
+    iin: Option<Option<String>>,
+    issuer: Option<Option<String>>,
+    last4: Option<Option<String>>,
+    network: Option<Option<String>>,
+    network_token: Option<Option<stripe_shared::PaymentMethodDetailsCardNetworkToken>>,
+    network_transaction_id: Option<Option<String>>,
+    regulated_status: Option<Option<PaymentMethodDetailsLinkFundingSourceCardRegulatedStatus>>,
+    three_d_secure: Option<Option<stripe_shared::ThreeDSecureDetailsCharge>>,
+    transaction_link_id: Option<Option<String>>,
+}
+
+#[allow(
+    unused_variables,
+    irrefutable_let_patterns,
+    clippy::let_unit_value,
+    clippy::match_single_binding,
+    clippy::single_match
+)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{Deserialize, Result, make_place};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for PaymentMethodDetailsLinkFundingSourceCard {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<PaymentMethodDetailsLinkFundingSourceCard>,
+        builder: PaymentMethodDetailsLinkFundingSourceCardBuilder,
+    }
+
+    impl Visitor for Place<PaymentMethodDetailsLinkFundingSourceCard> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: PaymentMethodDetailsLinkFundingSourceCardBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for PaymentMethodDetailsLinkFundingSourceCardBuilder {
+        type Out = PaymentMethodDetailsLinkFundingSourceCard;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "amount_authorized" => Deserialize::begin(&mut self.amount_authorized),
+                "authorization_code" => Deserialize::begin(&mut self.authorization_code),
+                "brand" => Deserialize::begin(&mut self.brand),
+                "checks" => Deserialize::begin(&mut self.checks),
+                "country" => Deserialize::begin(&mut self.country),
+                "description" => Deserialize::begin(&mut self.description),
+                "electronic_commerce_indicator" => {
+                    Deserialize::begin(&mut self.electronic_commerce_indicator)
+                }
+                "exp_month" => Deserialize::begin(&mut self.exp_month),
+                "exp_year" => Deserialize::begin(&mut self.exp_year),
+                "fingerprint" => Deserialize::begin(&mut self.fingerprint),
+                "funding" => Deserialize::begin(&mut self.funding),
+                "iin" => Deserialize::begin(&mut self.iin),
+                "issuer" => Deserialize::begin(&mut self.issuer),
+                "last4" => Deserialize::begin(&mut self.last4),
+                "network" => Deserialize::begin(&mut self.network),
+                "network_token" => Deserialize::begin(&mut self.network_token),
+                "network_transaction_id" => Deserialize::begin(&mut self.network_transaction_id),
+                "regulated_status" => Deserialize::begin(&mut self.regulated_status),
+                "three_d_secure" => Deserialize::begin(&mut self.three_d_secure),
+                "transaction_link_id" => Deserialize::begin(&mut self.transaction_link_id),
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                amount_authorized: Some(None),
+                authorization_code: Some(None),
+                brand: Some(None),
+                checks: Some(None),
+                country: Some(None),
+                description: Some(None),
+                electronic_commerce_indicator: Some(None),
+                exp_month: None,
+                exp_year: None,
+                fingerprint: Some(None),
+                funding: Some(None),
+                iin: Some(None),
+                issuer: Some(None),
+                last4: Some(None),
+                network: Some(None),
+                network_token: Some(None),
+                network_transaction_id: Some(None),
+                regulated_status: Some(None),
+                three_d_secure: Some(None),
+                transaction_link_id: Some(None),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (
+                Some(amount_authorized),
+                Some(authorization_code),
+                Some(brand),
+                Some(checks),
+                Some(country),
+                Some(description),
+                Some(electronic_commerce_indicator),
+                Some(exp_month),
+                Some(exp_year),
+                Some(fingerprint),
+                Some(funding),
+                Some(iin),
+                Some(issuer),
+                Some(last4),
+                Some(network),
+                Some(network_token),
+                Some(network_transaction_id),
+                Some(regulated_status),
+                Some(three_d_secure),
+                Some(transaction_link_id),
+            ) = (
+                self.amount_authorized,
+                self.authorization_code.take(),
+                self.brand.take(),
+                self.checks.take(),
+                self.country.take(),
+                self.description.take(),
+                self.electronic_commerce_indicator.take(),
+                self.exp_month,
+                self.exp_year,
+                self.fingerprint.take(),
+                self.funding.take(),
+                self.iin.take(),
+                self.issuer.take(),
+                self.last4.take(),
+                self.network.take(),
+                self.network_token,
+                self.network_transaction_id.take(),
+                self.regulated_status.take(),
+                self.three_d_secure.take(),
+                self.transaction_link_id.take(),
+            )
+            else {
+                return None;
+            };
+            Some(Self::Out {
+                amount_authorized,
+                authorization_code,
+                brand,
+                checks,
+                country,
+                description,
+                electronic_commerce_indicator,
+                exp_month,
+                exp_year,
+                fingerprint,
+                funding,
+                iin,
+                issuer,
+                last4,
+                network,
+                network_token,
+                network_transaction_id,
+                regulated_status,
+                three_d_secure,
+                transaction_link_id,
+            })
+        }
+    }
+
+    impl Map for Builder<'_> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = Some(self.builder.take_out().ok_or(miniserde::Error)?);
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for PaymentMethodDetailsLinkFundingSourceCard {
+        type Builder = PaymentMethodDetailsLinkFundingSourceCardBuilder;
+    }
+
+    impl FromValueOpt for PaymentMethodDetailsLinkFundingSourceCard {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = PaymentMethodDetailsLinkFundingSourceCardBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "amount_authorized" => b.amount_authorized = FromValueOpt::from_value(v),
+                    "authorization_code" => b.authorization_code = FromValueOpt::from_value(v),
+                    "brand" => b.brand = FromValueOpt::from_value(v),
+                    "checks" => b.checks = FromValueOpt::from_value(v),
+                    "country" => b.country = FromValueOpt::from_value(v),
+                    "description" => b.description = FromValueOpt::from_value(v),
+                    "electronic_commerce_indicator" => {
+                        b.electronic_commerce_indicator = FromValueOpt::from_value(v)
+                    }
+                    "exp_month" => b.exp_month = FromValueOpt::from_value(v),
+                    "exp_year" => b.exp_year = FromValueOpt::from_value(v),
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
+                    "funding" => b.funding = FromValueOpt::from_value(v),
+                    "iin" => b.iin = FromValueOpt::from_value(v),
+                    "issuer" => b.issuer = FromValueOpt::from_value(v),
+                    "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "network" => b.network = FromValueOpt::from_value(v),
+                    "network_token" => b.network_token = FromValueOpt::from_value(v),
+                    "network_transaction_id" => {
+                        b.network_transaction_id = FromValueOpt::from_value(v)
+                    }
+                    "regulated_status" => b.regulated_status = FromValueOpt::from_value(v),
+                    "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
+                    "transaction_link_id" => b.transaction_link_id = FromValueOpt::from_value(v),
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+/// Status of a card based on the card issuer.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum PaymentMethodDetailsLinkFundingSourceCardRegulatedStatus {
+    Regulated,
+    Unregulated,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl PaymentMethodDetailsLinkFundingSourceCardRegulatedStatus {
+    pub fn as_str(&self) -> &str {
+        use PaymentMethodDetailsLinkFundingSourceCardRegulatedStatus::*;
+        match self {
+            Regulated => "regulated",
+            Unregulated => "unregulated",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentMethodDetailsLinkFundingSourceCardRegulatedStatus {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentMethodDetailsLinkFundingSourceCardRegulatedStatus::*;
+        match s {
+            "regulated" => Ok(Regulated),
+            "unregulated" => Ok(Unregulated),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodDetailsLinkFundingSourceCardRegulatedStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for PaymentMethodDetailsLinkFundingSourceCardRegulatedStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for PaymentMethodDetailsLinkFundingSourceCardRegulatedStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDetailsLinkFundingSourceCardRegulatedStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodDetailsLinkFundingSourceCardRegulatedStatus))
+            .finish_non_exhaustive()
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for PaymentMethodDetailsLinkFundingSourceCardRegulatedStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for PaymentMethodDetailsLinkFundingSourceCardRegulatedStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor
+    for crate::Place<PaymentMethodDetailsLinkFundingSourceCardRegulatedStatus>
+{
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            PaymentMethodDetailsLinkFundingSourceCardRegulatedStatus::from_str(s)
+                .expect("infallible"),
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(
+    PaymentMethodDetailsLinkFundingSourceCardRegulatedStatus
+);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsLinkFundingSourceCardRegulatedStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}

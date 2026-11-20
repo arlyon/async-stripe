@@ -3,7 +3,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntentNextActionVerifyWithMicrodeposits {
-    /// The timestamp when the microdeposits are expected to land.
+    /// The timestamp when the microdeposits are expected to land. Null for instant microdeposits.
     pub arrival_date: stripe_types::Timestamp,
     /// The URL for the hosted verification page, which allows customers to verify their bank account.
     pub hosted_verification_url: String,

@@ -136,6 +136,10 @@ pub mod treasury_inbound_transfers_resource_failure_details;
 #[doc(inline)]
 pub use treasury_inbound_transfers_resource_failure_details::*;
 #[doc(hidden)]
+pub mod treasury_inbound_transfers_resource_failure_details_resource_network_details;
+#[doc(inline)]
+pub use treasury_inbound_transfers_resource_failure_details_resource_network_details::*;
+#[doc(hidden)]
 pub mod treasury_inbound_transfers_resource_inbound_transfer_resource_linked_flows;
 #[doc(inline)]
 pub use treasury_inbound_transfers_resource_inbound_transfer_resource_linked_flows::*;
@@ -223,6 +227,14 @@ pub use treasury_received_debits_resource_status_transitions::*;
 pub mod treasury_shared_resource_billing_details;
 #[doc(inline)]
 pub use treasury_shared_resource_billing_details::*;
+#[doc(hidden)]
+pub mod treasury_shared_resource_failure_details_ach;
+#[doc(inline)]
+pub use treasury_shared_resource_failure_details_ach::*;
+#[doc(hidden)]
+pub mod treasury_shared_resource_failure_details_network_details;
+#[doc(inline)]
+pub use treasury_shared_resource_failure_details_network_details::*;
 #[doc(hidden)]
 pub mod treasury_shared_resource_initiating_payment_method_details_initiating_payment_method_details;
 #[doc(inline)]

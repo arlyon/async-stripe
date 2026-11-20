@@ -324,6 +324,7 @@ pub enum ApiErrorsCode {
     ForwardingApiUpstreamConnectionTimeout,
     ForwardingApiUpstreamError,
     IdempotencyKeyInUse,
+    InactiveApiOperationConfirmationRequired,
     IncorrectAddress,
     IncorrectCvc,
     IncorrectNumber,
@@ -554,6 +555,9 @@ impl ApiErrorsCode {
             ForwardingApiUpstreamConnectionTimeout => "forwarding_api_upstream_connection_timeout",
             ForwardingApiUpstreamError => "forwarding_api_upstream_error",
             IdempotencyKeyInUse => "idempotency_key_in_use",
+            InactiveApiOperationConfirmationRequired => {
+                "inactive_api_operation_confirmation_required"
+            }
             IncorrectAddress => "incorrect_address",
             IncorrectCvc => "incorrect_cvc",
             IncorrectNumber => "incorrect_number",
@@ -821,6 +825,9 @@ impl std::str::FromStr for ApiErrorsCode {
             }
             "forwarding_api_upstream_error" => Ok(ForwardingApiUpstreamError),
             "idempotency_key_in_use" => Ok(IdempotencyKeyInUse),
+            "inactive_api_operation_confirmation_required" => {
+                Ok(InactiveApiOperationConfirmationRequired)
+            }
             "incorrect_address" => Ok(IncorrectAddress),
             "incorrect_cvc" => Ok(IncorrectCvc),
             "incorrect_number" => Ok(IncorrectNumber),

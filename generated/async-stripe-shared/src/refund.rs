@@ -11,6 +11,10 @@
 pub struct Refund {
     /// Amount, in cents (or local equivalent).
     pub amount: i64,
+    /// ID of the Connect application that created the refund.
+    /// This can differ from the application on the associated Charge or PaymentIntent.
+    /// A null value does not necessarily mean the refund was created without a Connect application.
+    pub application: Option<stripe_types::Expandable<stripe_shared::Application>>,
     /// Balance transaction that describes the impact on your account balance.
     pub balance_transaction: Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>,
     /// ID of the charge that's refunded.
@@ -74,6 +78,7 @@ impl std::fmt::Debug for Refund {
 #[doc(hidden)]
 pub struct RefundBuilder {
     amount: Option<i64>,
+    application: Option<Option<stripe_types::Expandable<stripe_shared::Application>>>,
     balance_transaction:
         Option<Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>>,
     charge: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
@@ -140,6 +145,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount" => Deserialize::begin(&mut self.amount),
+                "application" => Deserialize::begin(&mut self.application),
                 "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
                 "charge" => Deserialize::begin(&mut self.charge),
                 "created" => Deserialize::begin(&mut self.created),
@@ -174,6 +180,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 amount: None,
+                application: Some(None),
                 balance_transaction: Some(None),
                 charge: Some(None),
                 created: None,
@@ -203,6 +210,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(amount),
+                Some(application),
                 Some(balance_transaction),
                 Some(charge),
                 Some(created),
@@ -228,6 +236,7 @@ const _: () = {
                 Some(transfer_reversal),
             ) = (
                 self.amount,
+                self.application.take(),
                 self.balance_transaction.take(),
                 self.charge.take(),
                 self.created,
@@ -257,6 +266,7 @@ const _: () = {
             };
             Some(Self::Out {
                 amount,
+                application,
                 balance_transaction,
                 charge,
                 created,
@@ -308,6 +318,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "amount" => b.amount = FromValueOpt::from_value(v),
+                    "application" => b.application = FromValueOpt::from_value(v),
                     "balance_transaction" => b.balance_transaction = FromValueOpt::from_value(v),
                     "charge" => b.charge = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
@@ -346,8 +357,9 @@ const _: () = {
 impl serde::Serialize for Refund {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Refund", 25)?;
+        let mut s = s.serialize_struct("Refund", 26)?;
         s.serialize_field("amount", &self.amount)?;
+        s.serialize_field("application", &self.application)?;
         s.serialize_field("balance_transaction", &self.balance_transaction)?;
         s.serialize_field("charge", &self.charge)?;
         s.serialize_field("created", &self.created)?;

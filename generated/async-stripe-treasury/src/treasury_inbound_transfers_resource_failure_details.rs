@@ -5,6 +5,10 @@
 pub struct TreasuryInboundTransfersResourceFailureDetails {
     /// Reason for the failure.
     pub code: TreasuryInboundTransfersResourceFailureDetailsCode,
+    /// Money movement network-specific details regarding the failure.
+    pub network_details: Option<
+        stripe_treasury::TreasuryInboundTransfersResourceFailureDetailsResourceNetworkDetails,
+    >,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for TreasuryInboundTransfersResourceFailureDetails {
@@ -15,6 +19,11 @@ impl std::fmt::Debug for TreasuryInboundTransfersResourceFailureDetails {
 #[doc(hidden)]
 pub struct TreasuryInboundTransfersResourceFailureDetailsBuilder {
     code: Option<TreasuryInboundTransfersResourceFailureDetailsCode>,
+    network_details: Option<
+        Option<
+            stripe_treasury::TreasuryInboundTransfersResourceFailureDetailsResourceNetworkDetails,
+        >,
+    >,
 }
 
 #[allow(
@@ -58,19 +67,22 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "code" => Deserialize::begin(&mut self.code),
+                "network_details" => Deserialize::begin(&mut self.network_details),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { code: None }
+            Self { code: None, network_details: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(code),) = (self.code.take(),) else {
+            let (Some(code), Some(network_details)) =
+                (self.code.take(), self.network_details.take())
+            else {
                 return None;
             };
-            Some(Self::Out { code })
+            Some(Self::Out { code, network_details })
         }
     }
 
@@ -98,6 +110,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "code" => b.code = FromValueOpt::from_value(v),
+                    "network_details" => b.network_details = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }

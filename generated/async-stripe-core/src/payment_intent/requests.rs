@@ -1024,11 +1024,17 @@ impl std::fmt::Debug for CreatePaymentIntentOffSession {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentDetails {
+    /// Car rental data for this PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub car_rental_data: Option<Vec<CreatePaymentIntentPaymentDetailsCarRentalData>>,
     /// A unique value to identify the customer. This field is available only for card payments.
     ///
     /// This field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_reference: Option<String>,
+    /// Lodging data for this PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub lodging_data: Option<Vec<CreatePaymentIntentPaymentDetailsLodgingData>>,
     /// A unique value assigned by the business to identify the transaction. Required for L2 and L3 rates.
     ///
     /// For Cards, this field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
@@ -1044,10 +1050,1610 @@ impl std::fmt::Debug for CreatePaymentIntentPaymentDetails {
 }
 impl CreatePaymentIntentPaymentDetails {
     pub fn new() -> Self {
-        Self { customer_reference: None, order_reference: None }
+        Self {
+            car_rental_data: None,
+            customer_reference: None,
+            lodging_data: None,
+            order_reference: None,
+        }
     }
 }
 impl Default for CreatePaymentIntentPaymentDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Car rental data for this PaymentIntent.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentIntentPaymentDetailsCarRentalData {
+    /// Affiliate (such as travel agency) details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affiliate: Option<Affiliate>,
+    /// Booking confirmation number for the car rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub booking_number: Option<String>,
+    /// Name of the car rental company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub carrier_name: Option<String>,
+    /// Customer service phone number for the car rental company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_service_phone_number: Option<String>,
+    /// Number of days the car is being rented.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub days_rented: Option<u32>,
+    /// Distance details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub distance: Option<CreatePaymentIntentPaymentDetailsCarRentalDataDistance>,
+    /// List of drivers for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub drivers: Option<Vec<Driver>>,
+    /// Drop-off location details.
+    pub drop_off: Location,
+    /// Insurance details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub insurances: Option<Vec<CreatePaymentIntentPaymentDetailsCarRentalDataInsurances>>,
+    /// Indicates if the customer was a no-show.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub no_show_indicator: Option<bool>,
+    /// Pickup location details.
+    pub pickup: Location,
+    /// Name of the person renting the vehicle.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub renter_name: Option<String>,
+    /// Total cost breakdown for the rental.
+    pub total: CreatePaymentIntentPaymentDetailsCarRentalDataTotal,
+    /// Vehicle details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vehicle: Option<CreatePaymentIntentPaymentDetailsCarRentalDataVehicle>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsCarRentalData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentDetailsCarRentalData").finish_non_exhaustive()
+    }
+}
+impl CreatePaymentIntentPaymentDetailsCarRentalData {
+    pub fn new(
+        drop_off: impl Into<Location>,
+        pickup: impl Into<Location>,
+        total: impl Into<CreatePaymentIntentPaymentDetailsCarRentalDataTotal>,
+    ) -> Self {
+        Self {
+            affiliate: None,
+            booking_number: None,
+            carrier_name: None,
+            customer_service_phone_number: None,
+            days_rented: None,
+            distance: None,
+            drivers: None,
+            drop_off: drop_off.into(),
+            insurances: None,
+            no_show_indicator: None,
+            pickup: pickup.into(),
+            renter_name: None,
+            total: total.into(),
+            vehicle: None,
+        }
+    }
+}
+/// Distance details for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentIntentPaymentDetailsCarRentalDataDistance {
+    /// Distance traveled.
+    pub amount: i64,
+    /// Unit of measurement for the distance traveled. One of `miles` or `kilometers`.
+    pub unit: CreatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsCarRentalDataDistance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentDetailsCarRentalDataDistance")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePaymentIntentPaymentDetailsCarRentalDataDistance {
+    pub fn new(
+        amount: impl Into<i64>,
+        unit: impl Into<CreatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit>,
+    ) -> Self {
+        Self { amount: amount.into(), unit: unit.into() }
+    }
+}
+/// Unit of measurement for the distance traveled. One of `miles` or `kilometers`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    Kilometers,
+    Miles,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit::*;
+        match self {
+            Kilometers => "kilometers",
+            Miles => "miles",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit::*;
+        match s {
+            "kilometers" => Ok(Kilometers),
+            "miles" => Ok(Miles),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Insurance details for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentIntentPaymentDetailsCarRentalDataInsurances {
+    /// Amount of the insurance coverage in cents.
+    pub amount: i64,
+    /// Currency of the insurance amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Name of the insurance company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub insurance_company_name: Option<String>,
+    /// Type of insurance coverage.
+    pub insurance_type: CreatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsCarRentalDataInsurances {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentDetailsCarRentalDataInsurances")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePaymentIntentPaymentDetailsCarRentalDataInsurances {
+    pub fn new(
+        amount: impl Into<i64>,
+        insurance_type: impl Into<CreatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType>,
+    ) -> Self {
+        Self {
+            amount: amount.into(),
+            currency: None,
+            insurance_company_name: None,
+            insurance_type: insurance_type.into(),
+        }
+    }
+}
+/// Type of insurance coverage.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    LiabilitySupplement,
+    LossDamageWaiver,
+    Other,
+    PartialDamageWaiver,
+    PersonalAccident,
+    PersonalEffects,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType::*;
+        match self {
+            LiabilitySupplement => "liability_supplement",
+            LossDamageWaiver => "loss_damage_waiver",
+            Other => "other",
+            PartialDamageWaiver => "partial_damage_waiver",
+            PersonalAccident => "personal_accident",
+            PersonalEffects => "personal_effects",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType::*;
+        match s {
+            "liability_supplement" => Ok(LiabilitySupplement),
+            "loss_damage_waiver" => Ok(LossDamageWaiver),
+            "other" => Ok(Other),
+            "partial_damage_waiver" => Ok(PartialDamageWaiver),
+            "personal_accident" => Ok(PersonalAccident),
+            "personal_effects" => Ok(PersonalEffects),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Total cost breakdown for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentIntentPaymentDetailsCarRentalDataTotal {
+    /// Total amount in cents.
+    pub amount: i64,
+    /// Currency of the amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Discount details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Discounts>,
+    /// Additional charges for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extra_charges: Option<Vec<CreatePaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges>>,
+    /// Rate per unit for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rate_per_unit: Option<i64>,
+    /// Unit of measurement for the rate.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rate_unit: Option<CreatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit>,
+    /// Tax breakdown for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<Tax>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsCarRentalDataTotal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentDetailsCarRentalDataTotal")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePaymentIntentPaymentDetailsCarRentalDataTotal {
+    pub fn new(amount: impl Into<i64>) -> Self {
+        Self {
+            amount: amount.into(),
+            currency: None,
+            discounts: None,
+            extra_charges: None,
+            rate_per_unit: None,
+            rate_unit: None,
+            tax: None,
+        }
+    }
+}
+/// Additional charges for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges {
+    /// Amount of the extra charge in cents.
+    pub amount: i64,
+    /// Type of extra charge.
+    #[serde(rename = "type")]
+    pub type_: CreatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges {
+    pub fn new(
+        amount: impl Into<i64>,
+        type_: impl Into<CreatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType>,
+    ) -> Self {
+        Self { amount: amount.into(), type_: type_.into() }
+    }
+}
+/// Type of extra charge.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    ExtraMileage,
+    Gas,
+    Gps,
+    LateCharge,
+    OneWayDropOff,
+    Other,
+    Parking,
+    Phone,
+    RegularMileage,
+    Towing,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType::*;
+        match self {
+            ExtraMileage => "extra_mileage",
+            Gas => "gas",
+            Gps => "gps",
+            LateCharge => "late_charge",
+            OneWayDropOff => "one_way_drop_off",
+            Other => "other",
+            Parking => "parking",
+            Phone => "phone",
+            RegularMileage => "regular_mileage",
+            Towing => "towing",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType::*;
+        match s {
+            "extra_mileage" => Ok(ExtraMileage),
+            "gas" => Ok(Gas),
+            "gps" => Ok(Gps),
+            "late_charge" => Ok(LateCharge),
+            "one_way_drop_off" => Ok(OneWayDropOff),
+            "other" => Ok(Other),
+            "parking" => Ok(Parking),
+            "phone" => Ok(Phone),
+            "regular_mileage" => Ok(RegularMileage),
+            "towing" => Ok(Towing),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Unit of measurement for the rate.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    Days,
+    Kilometers,
+    Miles,
+    Months,
+    Weeks,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit::*;
+        match self {
+            Days => "days",
+            Kilometers => "kilometers",
+            Miles => "miles",
+            Months => "months",
+            Weeks => "weeks",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit::*;
+        match s {
+            "days" => Ok(Days),
+            "kilometers" => Ok(Kilometers),
+            "miles" => Ok(Miles),
+            "months" => Ok(Months),
+            "weeks" => Ok(Weeks),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Vehicle details for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentIntentPaymentDetailsCarRentalDataVehicle {
+    /// Make of the rental vehicle.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub make: Option<String>,
+    /// Model of the rental vehicle.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub model: Option<String>,
+    /// Odometer reading at the time of rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub odometer: Option<i64>,
+    /// Type of the rental vehicle.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<CreatePaymentIntentPaymentDetailsCarRentalDataVehicleType>,
+    /// Class of the rental vehicle.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vehicle_class: Option<CreatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass>,
+    /// Vehicle identification number (VIN).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vehicle_identification_number: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsCarRentalDataVehicle {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentDetailsCarRentalDataVehicle")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePaymentIntentPaymentDetailsCarRentalDataVehicle {
+    pub fn new() -> Self {
+        Self {
+            make: None,
+            model: None,
+            odometer: None,
+            type_: None,
+            vehicle_class: None,
+            vehicle_identification_number: None,
+        }
+    }
+}
+impl Default for CreatePaymentIntentPaymentDetailsCarRentalDataVehicle {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of the rental vehicle.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    CargoVan,
+    Compact,
+    Economy,
+    Exotic,
+    ExoticSuv,
+    FifteenPassengerVan,
+    FourWheelDrive,
+    FullSize,
+    Intermediate,
+    LargeSuv,
+    LargeTruck,
+    Luxury,
+    MediumSuv,
+    Midsize,
+    Mini,
+    Minivan,
+    Miscellaneous,
+    Moped,
+    MovingVan,
+    Premium,
+    Regular,
+    SmallMediumTruck,
+    SmallSuv,
+    Special,
+    Standard,
+    Stretch,
+    Subcompact,
+    Taxi,
+    TwelveFootTruck,
+    TwelvePassengerVan,
+    TwentyFootTruck,
+    TwentyFourFootTruck,
+    TwentySixFootTruck,
+    Unique,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentIntentPaymentDetailsCarRentalDataVehicleType::*;
+        match self {
+            CargoVan => "cargo_van",
+            Compact => "compact",
+            Economy => "economy",
+            Exotic => "exotic",
+            ExoticSuv => "exotic_suv",
+            FifteenPassengerVan => "fifteen_passenger_van",
+            FourWheelDrive => "four_wheel_drive",
+            FullSize => "full_size",
+            Intermediate => "intermediate",
+            LargeSuv => "large_suv",
+            LargeTruck => "large_truck",
+            Luxury => "luxury",
+            MediumSuv => "medium_suv",
+            Midsize => "midsize",
+            Mini => "mini",
+            Minivan => "minivan",
+            Miscellaneous => "miscellaneous",
+            Moped => "moped",
+            MovingVan => "moving_van",
+            Premium => "premium",
+            Regular => "regular",
+            SmallMediumTruck => "small_medium_truck",
+            SmallSuv => "small_suv",
+            Special => "special",
+            Standard => "standard",
+            Stretch => "stretch",
+            Subcompact => "subcompact",
+            Taxi => "taxi",
+            TwelveFootTruck => "twelve_foot_truck",
+            TwelvePassengerVan => "twelve_passenger_van",
+            TwentyFootTruck => "twenty_foot_truck",
+            TwentyFourFootTruck => "twenty_four_foot_truck",
+            TwentySixFootTruck => "twenty_six_foot_truck",
+            Unique => "unique",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentDetailsCarRentalDataVehicleType::*;
+        match s {
+            "cargo_van" => Ok(CargoVan),
+            "compact" => Ok(Compact),
+            "economy" => Ok(Economy),
+            "exotic" => Ok(Exotic),
+            "exotic_suv" => Ok(ExoticSuv),
+            "fifteen_passenger_van" => Ok(FifteenPassengerVan),
+            "four_wheel_drive" => Ok(FourWheelDrive),
+            "full_size" => Ok(FullSize),
+            "intermediate" => Ok(Intermediate),
+            "large_suv" => Ok(LargeSuv),
+            "large_truck" => Ok(LargeTruck),
+            "luxury" => Ok(Luxury),
+            "medium_suv" => Ok(MediumSuv),
+            "midsize" => Ok(Midsize),
+            "mini" => Ok(Mini),
+            "minivan" => Ok(Minivan),
+            "miscellaneous" => Ok(Miscellaneous),
+            "moped" => Ok(Moped),
+            "moving_van" => Ok(MovingVan),
+            "premium" => Ok(Premium),
+            "regular" => Ok(Regular),
+            "small_medium_truck" => Ok(SmallMediumTruck),
+            "small_suv" => Ok(SmallSuv),
+            "special" => Ok(Special),
+            "standard" => Ok(Standard),
+            "stretch" => Ok(Stretch),
+            "subcompact" => Ok(Subcompact),
+            "taxi" => Ok(Taxi),
+            "twelve_foot_truck" => Ok(TwelveFootTruck),
+            "twelve_passenger_van" => Ok(TwelvePassengerVan),
+            "twenty_foot_truck" => Ok(TwentyFootTruck),
+            "twenty_four_foot_truck" => Ok(TwentyFourFootTruck),
+            "twenty_six_foot_truck" => Ok(TwentySixFootTruck),
+            "unique" => Ok(Unique),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentIntentPaymentDetailsCarRentalDataVehicleType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentDetailsCarRentalDataVehicleType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Class of the rental vehicle.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    Business,
+    Economy,
+    FirstClass,
+    PremiumEconomy,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass::*;
+        match self {
+            Business => "business",
+            Economy => "economy",
+            FirstClass => "first_class",
+            PremiumEconomy => "premium_economy",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass::*;
+        match s {
+            "business" => Ok(Business),
+            "economy" => Ok(Economy),
+            "first_class" => Ok(FirstClass),
+            "premium_economy" => Ok(PremiumEconomy),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Lodging data for this PaymentIntent.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentIntentPaymentDetailsLodgingData {
+    /// Accommodation details for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub accommodation: Option<CreatePaymentIntentPaymentDetailsLodgingDataAccommodation>,
+    /// Affiliate details if applicable.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affiliate: Option<CreatePaymentIntentPaymentDetailsLodgingDataAffiliate>,
+    /// Booking confirmation number for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub booking_number: Option<String>,
+    /// Check-in date.
+    pub checkin_at: stripe_types::Timestamp,
+    /// Check-out date.
+    pub checkout_at: stripe_types::Timestamp,
+    /// Customer service phone number for the lodging company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_service_phone_number: Option<String>,
+    /// Whether the lodging is compliant with any hotel fire safety regulations.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fire_safety_act_compliance_indicator: Option<bool>,
+    /// List of guests for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub guests: Option<Vec<Guest>>,
+    /// Host details for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub host: Option<CreatePaymentIntentPaymentDetailsLodgingDataHost>,
+    /// List of insurances for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub insurances: Option<Vec<CreatePaymentIntentPaymentDetailsLodgingDataInsurances>>,
+    /// Whether the renter is a no-show.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub no_show_indicator: Option<bool>,
+    /// Renter ID number for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub renter_id_number: Option<String>,
+    /// Renter name for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub renter_name: Option<String>,
+    /// Total details for the lodging.
+    pub total: CreatePaymentIntentPaymentDetailsLodgingDataTotal,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsLodgingData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentDetailsLodgingData").finish_non_exhaustive()
+    }
+}
+impl CreatePaymentIntentPaymentDetailsLodgingData {
+    pub fn new(
+        checkin_at: impl Into<stripe_types::Timestamp>,
+        checkout_at: impl Into<stripe_types::Timestamp>,
+        total: impl Into<CreatePaymentIntentPaymentDetailsLodgingDataTotal>,
+    ) -> Self {
+        Self {
+            accommodation: None,
+            affiliate: None,
+            booking_number: None,
+            checkin_at: checkin_at.into(),
+            checkout_at: checkout_at.into(),
+            customer_service_phone_number: None,
+            fire_safety_act_compliance_indicator: None,
+            guests: None,
+            host: None,
+            insurances: None,
+            no_show_indicator: None,
+            renter_id_number: None,
+            renter_name: None,
+            total: total.into(),
+        }
+    }
+}
+/// Accommodation details for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentIntentPaymentDetailsLodgingDataAccommodation {
+    /// Type of accommodation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub accommodation_type:
+        Option<CreatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType>,
+    /// Bed type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bed_type: Option<String>,
+    /// Daily accommodation rate in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub daily_rate_amount: Option<i64>,
+    /// Number of nights.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nights: Option<i64>,
+    /// Number of rooms, cabanas, apartments, and so on.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub number_of_rooms: Option<i64>,
+    /// Rate type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rate_type: Option<String>,
+    /// Whether smoking is allowed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub smoking_indicator: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsLodgingDataAccommodation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentDetailsLodgingDataAccommodation")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePaymentIntentPaymentDetailsLodgingDataAccommodation {
+    pub fn new() -> Self {
+        Self {
+            accommodation_type: None,
+            bed_type: None,
+            daily_rate_amount: None,
+            nights: None,
+            number_of_rooms: None,
+            rate_type: None,
+            smoking_indicator: None,
+        }
+    }
+}
+impl Default for CreatePaymentIntentPaymentDetailsLodgingDataAccommodation {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of accommodation.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType {
+    Apartment,
+    Cabana,
+    House,
+    Penthouse,
+    Room,
+    Standard,
+    Suite,
+    Villa,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType::*;
+        match self {
+            Apartment => "apartment",
+            Cabana => "cabana",
+            House => "house",
+            Penthouse => "penthouse",
+            Room => "room",
+            Standard => "standard",
+            Suite => "suite",
+            Villa => "villa",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType::*;
+        match s {
+            "apartment" => Ok(Apartment),
+            "cabana" => Ok(Cabana),
+            "house" => Ok(House),
+            "penthouse" => Ok(Penthouse),
+            "room" => Ok(Room),
+            "standard" => Ok(Standard),
+            "suite" => Ok(Suite),
+            "villa" => Ok(Villa),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for CreatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for CreatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Affiliate details if applicable.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentIntentPaymentDetailsLodgingDataAffiliate {
+    /// Affiliate partner code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code: Option<String>,
+    /// Affiliate partner name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsLodgingDataAffiliate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentDetailsLodgingDataAffiliate")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePaymentIntentPaymentDetailsLodgingDataAffiliate {
+    pub fn new() -> Self {
+        Self { code: None, name: None }
+    }
+}
+impl Default for CreatePaymentIntentPaymentDetailsLodgingDataAffiliate {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Host details for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentIntentPaymentDetailsLodgingDataHost {
+    /// Address of the host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<RequiredAddress>,
+    /// Host's country of domicile.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country_of_domicile: Option<String>,
+    /// Reference number for the host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub host_reference: Option<String>,
+    /// Type of host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub host_type: Option<CreatePaymentIntentPaymentDetailsLodgingDataHostHostType>,
+    /// Name of the lodging property or host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Total number of reservations for the host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub number_of_reservations: Option<i64>,
+    /// Property phone number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub property_phone_number: Option<String>,
+    /// Host's registration date.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub registered_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsLodgingDataHost {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentDetailsLodgingDataHost").finish_non_exhaustive()
+    }
+}
+impl CreatePaymentIntentPaymentDetailsLodgingDataHost {
+    pub fn new() -> Self {
+        Self {
+            address: None,
+            country_of_domicile: None,
+            host_reference: None,
+            host_type: None,
+            name: None,
+            number_of_reservations: None,
+            property_phone_number: None,
+            registered_at: None,
+        }
+    }
+}
+impl Default for CreatePaymentIntentPaymentDetailsLodgingDataHost {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of host.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    Hostel,
+    Hotel,
+    Owner,
+    RentalAgency,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentIntentPaymentDetailsLodgingDataHostHostType::*;
+        match self {
+            Hostel => "hostel",
+            Hotel => "hotel",
+            Owner => "owner",
+            RentalAgency => "rental_agency",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentDetailsLodgingDataHostHostType::*;
+        match s {
+            "hostel" => Ok(Hostel),
+            "hotel" => Ok(Hotel),
+            "owner" => Ok(Owner),
+            "rental_agency" => Ok(RentalAgency),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentIntentPaymentDetailsLodgingDataHostHostType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentDetailsLodgingDataHostHostType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// List of insurances for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentIntentPaymentDetailsLodgingDataInsurances {
+    /// Price of the insurance coverage in cents.
+    pub amount: i64,
+    /// Currency of the insurance amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Name of the insurance company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub insurance_company_name: Option<String>,
+    /// Type of insurance coverage.
+    pub insurance_type: CreatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsLodgingDataInsurances {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentDetailsLodgingDataInsurances")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePaymentIntentPaymentDetailsLodgingDataInsurances {
+    pub fn new(
+        amount: impl Into<i64>,
+        insurance_type: impl Into<CreatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType>,
+    ) -> Self {
+        Self {
+            amount: amount.into(),
+            currency: None,
+            insurance_company_name: None,
+            insurance_type: insurance_type.into(),
+        }
+    }
+}
+/// Type of insurance coverage.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    Bankruptcy,
+    Cancelation,
+    Emergency,
+    Medical,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType::*;
+        match self {
+            Bankruptcy => "bankruptcy",
+            Cancelation => "cancelation",
+            Emergency => "emergency",
+            Medical => "medical",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType::*;
+        match s {
+            "bankruptcy" => Ok(Bankruptcy),
+            "cancelation" => Ok(Cancelation),
+            "emergency" => Ok(Emergency),
+            "medical" => Ok(Medical),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Total details for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentIntentPaymentDetailsLodgingDataTotal {
+    /// Total price of the lodging reservation in cents.
+    pub amount: i64,
+    /// Cash advances in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cash_advances: Option<i64>,
+    /// Currency of the total amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Discount details for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Discount>,
+    /// Additional charges for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extra_charges: Option<Vec<CreatePaymentIntentPaymentDetailsLodgingDataTotalExtraCharges>>,
+    /// Prepaid amount in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prepaid_amount: Option<i64>,
+    /// Tax breakdown for the lodging reservation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<CreatePaymentIntentPaymentDetailsLodgingDataTotalTax>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsLodgingDataTotal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentDetailsLodgingDataTotal").finish_non_exhaustive()
+    }
+}
+impl CreatePaymentIntentPaymentDetailsLodgingDataTotal {
+    pub fn new(amount: impl Into<i64>) -> Self {
+        Self {
+            amount: amount.into(),
+            cash_advances: None,
+            currency: None,
+            discounts: None,
+            extra_charges: None,
+            prepaid_amount: None,
+            tax: None,
+        }
+    }
+}
+/// Additional charges for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentIntentPaymentDetailsLodgingDataTotalExtraCharges {
+    /// Amount of the extra charge in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// Type of extra charge.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<CreatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsLodgingDataTotalExtraCharges {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentDetailsLodgingDataTotalExtraCharges")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePaymentIntentPaymentDetailsLodgingDataTotalExtraCharges {
+    pub fn new() -> Self {
+        Self { amount: None, type_: None }
+    }
+}
+impl Default for CreatePaymentIntentPaymentDetailsLodgingDataTotalExtraCharges {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of extra charge.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    GiftShop,
+    Laundry,
+    MiniBar,
+    Other,
+    Phone,
+    Restaurant,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType::*;
+        match self {
+            GiftShop => "gift_shop",
+            Laundry => "laundry",
+            MiniBar => "mini_bar",
+            Other => "other",
+            Phone => "phone",
+            Restaurant => "restaurant",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType::*;
+        match s {
+            "gift_shop" => Ok(GiftShop),
+            "laundry" => Ok(Laundry),
+            "mini_bar" => Ok(MiniBar),
+            "other" => Ok(Other),
+            "phone" => Ok(Phone),
+            "restaurant" => Ok(Restaurant),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Tax breakdown for the lodging reservation.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentIntentPaymentDetailsLodgingDataTotalTax {
+    /// Indicates whether the transaction is tax exempt.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_exempt_indicator: Option<bool>,
+    /// Tax details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_items: Option<Vec<CreatePaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsLodgingDataTotalTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentDetailsLodgingDataTotalTax")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePaymentIntentPaymentDetailsLodgingDataTotalTax {
+    pub fn new() -> Self {
+        Self { tax_exempt_indicator: None, tax_items: None }
+    }
+}
+impl Default for CreatePaymentIntentPaymentDetailsLodgingDataTotalTax {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Tax details.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems {
+    /// Tax amount in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// Tax rate.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rate: Option<i64>,
+    /// Type of tax applied.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems {
+    pub fn new() -> Self {
+        Self { amount: None, rate: None, type_: None }
+    }
+}
+impl Default for CreatePaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems {
     fn default() -> Self {
         Self::new()
     }
@@ -2165,7 +3771,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataIdealB
 pub struct CreatePaymentIntentPaymentMethodDataKlarna {
     /// Customer's date of birth
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub dob: Option<DateOfBirth>,
+    pub dob: Option<CreatePaymentIntentPaymentMethodDataKlarnaDob>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataKlarna {
@@ -2181,6 +3787,29 @@ impl CreatePaymentIntentPaymentMethodDataKlarna {
 impl Default for CreatePaymentIntentPaymentMethodDataKlarna {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Customer's date of birth
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentIntentPaymentMethodDataKlarnaDob {
+    /// The day of birth, between 1 and 31.
+    pub day: i64,
+    /// The month of birth, between 1 and 12.
+    pub month: i64,
+    /// The four-digit year of birth.
+    pub year: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataKlarnaDob {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataKlarnaDob").finish_non_exhaustive()
+    }
+}
+impl CreatePaymentIntentPaymentMethodDataKlarnaDob {
+    pub fn new(day: impl Into<i64>, month: impl Into<i64>, year: impl Into<i64>) -> Self {
+        Self { day: day.into(), month: month.into(), year: year.into() }
     }
 }
 /// If this is a `naver_pay` PaymentMethod, this hash contains details about the Naver Pay payment method.
@@ -16976,6 +18605,9 @@ impl CreatePaymentIntent {
     }
     /// Provides information about a card charge.
     /// Concatenated to the account's [statement descriptor prefix](https://docs.stripe.com/get-started/account/statement-descriptors#static) to form the complete statement descriptor that appears on the customer's statement.
+    /// A suffix longer than 22 characters returns an error.
+    /// If a valid suffix makes the complete statement descriptor longer than 22 characters, Stripe truncates the descriptor instead of returning an error.
+    /// Learn how to [fit the suffix in the complete descriptor](https://docs.stripe.com/get-started/account/statement-descriptors#suffix-length).
     pub fn statement_descriptor_suffix(
         mut self,
         statement_descriptor_suffix: impl Into<String>,
@@ -17455,11 +19087,17 @@ impl<'de> serde::Deserialize<'de>
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentDetails {
+    /// Car rental data for this PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub car_rental_data: Option<Vec<UpdatePaymentIntentPaymentDetailsCarRentalData>>,
     /// A unique value to identify the customer. This field is available only for card payments.
     ///
     /// This field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_reference: Option<String>,
+    /// Lodging data for this PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub lodging_data: Option<Vec<UpdatePaymentIntentPaymentDetailsLodgingData>>,
     /// A unique value assigned by the business to identify the transaction. Required for L2 and L3 rates.
     ///
     /// For Cards, this field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
@@ -17475,10 +19113,1610 @@ impl std::fmt::Debug for UpdatePaymentIntentPaymentDetails {
 }
 impl UpdatePaymentIntentPaymentDetails {
     pub fn new() -> Self {
-        Self { customer_reference: None, order_reference: None }
+        Self {
+            car_rental_data: None,
+            customer_reference: None,
+            lodging_data: None,
+            order_reference: None,
+        }
     }
 }
 impl Default for UpdatePaymentIntentPaymentDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Car rental data for this PaymentIntent.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentDetailsCarRentalData {
+    /// Affiliate (such as travel agency) details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affiliate: Option<Affiliate>,
+    /// Booking confirmation number for the car rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub booking_number: Option<String>,
+    /// Name of the car rental company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub carrier_name: Option<String>,
+    /// Customer service phone number for the car rental company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_service_phone_number: Option<String>,
+    /// Number of days the car is being rented.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub days_rented: Option<u32>,
+    /// Distance details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub distance: Option<UpdatePaymentIntentPaymentDetailsCarRentalDataDistance>,
+    /// List of drivers for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub drivers: Option<Vec<Driver>>,
+    /// Drop-off location details.
+    pub drop_off: Location,
+    /// Insurance details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub insurances: Option<Vec<UpdatePaymentIntentPaymentDetailsCarRentalDataInsurances>>,
+    /// Indicates if the customer was a no-show.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub no_show_indicator: Option<bool>,
+    /// Pickup location details.
+    pub pickup: Location,
+    /// Name of the person renting the vehicle.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub renter_name: Option<String>,
+    /// Total cost breakdown for the rental.
+    pub total: UpdatePaymentIntentPaymentDetailsCarRentalDataTotal,
+    /// Vehicle details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vehicle: Option<UpdatePaymentIntentPaymentDetailsCarRentalDataVehicle>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsCarRentalData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentDetailsCarRentalData").finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentIntentPaymentDetailsCarRentalData {
+    pub fn new(
+        drop_off: impl Into<Location>,
+        pickup: impl Into<Location>,
+        total: impl Into<UpdatePaymentIntentPaymentDetailsCarRentalDataTotal>,
+    ) -> Self {
+        Self {
+            affiliate: None,
+            booking_number: None,
+            carrier_name: None,
+            customer_service_phone_number: None,
+            days_rented: None,
+            distance: None,
+            drivers: None,
+            drop_off: drop_off.into(),
+            insurances: None,
+            no_show_indicator: None,
+            pickup: pickup.into(),
+            renter_name: None,
+            total: total.into(),
+            vehicle: None,
+        }
+    }
+}
+/// Distance details for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentDetailsCarRentalDataDistance {
+    /// Distance traveled.
+    pub amount: i64,
+    /// Unit of measurement for the distance traveled. One of `miles` or `kilometers`.
+    pub unit: UpdatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsCarRentalDataDistance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentDetailsCarRentalDataDistance")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentIntentPaymentDetailsCarRentalDataDistance {
+    pub fn new(
+        amount: impl Into<i64>,
+        unit: impl Into<UpdatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit>,
+    ) -> Self {
+        Self { amount: amount.into(), unit: unit.into() }
+    }
+}
+/// Unit of measurement for the distance traveled. One of `miles` or `kilometers`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    Kilometers,
+    Miles,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit::*;
+        match self {
+            Kilometers => "kilometers",
+            Miles => "miles",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit::*;
+        match s {
+            "kilometers" => Ok(Kilometers),
+            "miles" => Ok(Miles),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Insurance details for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentDetailsCarRentalDataInsurances {
+    /// Amount of the insurance coverage in cents.
+    pub amount: i64,
+    /// Currency of the insurance amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Name of the insurance company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub insurance_company_name: Option<String>,
+    /// Type of insurance coverage.
+    pub insurance_type: UpdatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsCarRentalDataInsurances {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentDetailsCarRentalDataInsurances")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentIntentPaymentDetailsCarRentalDataInsurances {
+    pub fn new(
+        amount: impl Into<i64>,
+        insurance_type: impl Into<UpdatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType>,
+    ) -> Self {
+        Self {
+            amount: amount.into(),
+            currency: None,
+            insurance_company_name: None,
+            insurance_type: insurance_type.into(),
+        }
+    }
+}
+/// Type of insurance coverage.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    LiabilitySupplement,
+    LossDamageWaiver,
+    Other,
+    PartialDamageWaiver,
+    PersonalAccident,
+    PersonalEffects,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType::*;
+        match self {
+            LiabilitySupplement => "liability_supplement",
+            LossDamageWaiver => "loss_damage_waiver",
+            Other => "other",
+            PartialDamageWaiver => "partial_damage_waiver",
+            PersonalAccident => "personal_accident",
+            PersonalEffects => "personal_effects",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType::*;
+        match s {
+            "liability_supplement" => Ok(LiabilitySupplement),
+            "loss_damage_waiver" => Ok(LossDamageWaiver),
+            "other" => Ok(Other),
+            "partial_damage_waiver" => Ok(PartialDamageWaiver),
+            "personal_accident" => Ok(PersonalAccident),
+            "personal_effects" => Ok(PersonalEffects),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Total cost breakdown for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentDetailsCarRentalDataTotal {
+    /// Total amount in cents.
+    pub amount: i64,
+    /// Currency of the amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Discount details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Discounts>,
+    /// Additional charges for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extra_charges: Option<Vec<UpdatePaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges>>,
+    /// Rate per unit for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rate_per_unit: Option<i64>,
+    /// Unit of measurement for the rate.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rate_unit: Option<UpdatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit>,
+    /// Tax breakdown for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<Tax>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsCarRentalDataTotal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentDetailsCarRentalDataTotal")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentIntentPaymentDetailsCarRentalDataTotal {
+    pub fn new(amount: impl Into<i64>) -> Self {
+        Self {
+            amount: amount.into(),
+            currency: None,
+            discounts: None,
+            extra_charges: None,
+            rate_per_unit: None,
+            rate_unit: None,
+            tax: None,
+        }
+    }
+}
+/// Additional charges for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges {
+    /// Amount of the extra charge in cents.
+    pub amount: i64,
+    /// Type of extra charge.
+    #[serde(rename = "type")]
+    pub type_: UpdatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges {
+    pub fn new(
+        amount: impl Into<i64>,
+        type_: impl Into<UpdatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType>,
+    ) -> Self {
+        Self { amount: amount.into(), type_: type_.into() }
+    }
+}
+/// Type of extra charge.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    ExtraMileage,
+    Gas,
+    Gps,
+    LateCharge,
+    OneWayDropOff,
+    Other,
+    Parking,
+    Phone,
+    RegularMileage,
+    Towing,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType::*;
+        match self {
+            ExtraMileage => "extra_mileage",
+            Gas => "gas",
+            Gps => "gps",
+            LateCharge => "late_charge",
+            OneWayDropOff => "one_way_drop_off",
+            Other => "other",
+            Parking => "parking",
+            Phone => "phone",
+            RegularMileage => "regular_mileage",
+            Towing => "towing",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType::*;
+        match s {
+            "extra_mileage" => Ok(ExtraMileage),
+            "gas" => Ok(Gas),
+            "gps" => Ok(Gps),
+            "late_charge" => Ok(LateCharge),
+            "one_way_drop_off" => Ok(OneWayDropOff),
+            "other" => Ok(Other),
+            "parking" => Ok(Parking),
+            "phone" => Ok(Phone),
+            "regular_mileage" => Ok(RegularMileage),
+            "towing" => Ok(Towing),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Unit of measurement for the rate.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    Days,
+    Kilometers,
+    Miles,
+    Months,
+    Weeks,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit::*;
+        match self {
+            Days => "days",
+            Kilometers => "kilometers",
+            Miles => "miles",
+            Months => "months",
+            Weeks => "weeks",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit::*;
+        match s {
+            "days" => Ok(Days),
+            "kilometers" => Ok(Kilometers),
+            "miles" => Ok(Miles),
+            "months" => Ok(Months),
+            "weeks" => Ok(Weeks),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Vehicle details for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentDetailsCarRentalDataVehicle {
+    /// Make of the rental vehicle.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub make: Option<String>,
+    /// Model of the rental vehicle.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub model: Option<String>,
+    /// Odometer reading at the time of rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub odometer: Option<i64>,
+    /// Type of the rental vehicle.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleType>,
+    /// Class of the rental vehicle.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vehicle_class: Option<UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass>,
+    /// Vehicle identification number (VIN).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vehicle_identification_number: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsCarRentalDataVehicle {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentDetailsCarRentalDataVehicle")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentIntentPaymentDetailsCarRentalDataVehicle {
+    pub fn new() -> Self {
+        Self {
+            make: None,
+            model: None,
+            odometer: None,
+            type_: None,
+            vehicle_class: None,
+            vehicle_identification_number: None,
+        }
+    }
+}
+impl Default for UpdatePaymentIntentPaymentDetailsCarRentalDataVehicle {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of the rental vehicle.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    CargoVan,
+    Compact,
+    Economy,
+    Exotic,
+    ExoticSuv,
+    FifteenPassengerVan,
+    FourWheelDrive,
+    FullSize,
+    Intermediate,
+    LargeSuv,
+    LargeTruck,
+    Luxury,
+    MediumSuv,
+    Midsize,
+    Mini,
+    Minivan,
+    Miscellaneous,
+    Moped,
+    MovingVan,
+    Premium,
+    Regular,
+    SmallMediumTruck,
+    SmallSuv,
+    Special,
+    Standard,
+    Stretch,
+    Subcompact,
+    Taxi,
+    TwelveFootTruck,
+    TwelvePassengerVan,
+    TwentyFootTruck,
+    TwentyFourFootTruck,
+    TwentySixFootTruck,
+    Unique,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleType::*;
+        match self {
+            CargoVan => "cargo_van",
+            Compact => "compact",
+            Economy => "economy",
+            Exotic => "exotic",
+            ExoticSuv => "exotic_suv",
+            FifteenPassengerVan => "fifteen_passenger_van",
+            FourWheelDrive => "four_wheel_drive",
+            FullSize => "full_size",
+            Intermediate => "intermediate",
+            LargeSuv => "large_suv",
+            LargeTruck => "large_truck",
+            Luxury => "luxury",
+            MediumSuv => "medium_suv",
+            Midsize => "midsize",
+            Mini => "mini",
+            Minivan => "minivan",
+            Miscellaneous => "miscellaneous",
+            Moped => "moped",
+            MovingVan => "moving_van",
+            Premium => "premium",
+            Regular => "regular",
+            SmallMediumTruck => "small_medium_truck",
+            SmallSuv => "small_suv",
+            Special => "special",
+            Standard => "standard",
+            Stretch => "stretch",
+            Subcompact => "subcompact",
+            Taxi => "taxi",
+            TwelveFootTruck => "twelve_foot_truck",
+            TwelvePassengerVan => "twelve_passenger_van",
+            TwentyFootTruck => "twenty_foot_truck",
+            TwentyFourFootTruck => "twenty_four_foot_truck",
+            TwentySixFootTruck => "twenty_six_foot_truck",
+            Unique => "unique",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleType::*;
+        match s {
+            "cargo_van" => Ok(CargoVan),
+            "compact" => Ok(Compact),
+            "economy" => Ok(Economy),
+            "exotic" => Ok(Exotic),
+            "exotic_suv" => Ok(ExoticSuv),
+            "fifteen_passenger_van" => Ok(FifteenPassengerVan),
+            "four_wheel_drive" => Ok(FourWheelDrive),
+            "full_size" => Ok(FullSize),
+            "intermediate" => Ok(Intermediate),
+            "large_suv" => Ok(LargeSuv),
+            "large_truck" => Ok(LargeTruck),
+            "luxury" => Ok(Luxury),
+            "medium_suv" => Ok(MediumSuv),
+            "midsize" => Ok(Midsize),
+            "mini" => Ok(Mini),
+            "minivan" => Ok(Minivan),
+            "miscellaneous" => Ok(Miscellaneous),
+            "moped" => Ok(Moped),
+            "moving_van" => Ok(MovingVan),
+            "premium" => Ok(Premium),
+            "regular" => Ok(Regular),
+            "small_medium_truck" => Ok(SmallMediumTruck),
+            "small_suv" => Ok(SmallSuv),
+            "special" => Ok(Special),
+            "standard" => Ok(Standard),
+            "stretch" => Ok(Stretch),
+            "subcompact" => Ok(Subcompact),
+            "taxi" => Ok(Taxi),
+            "twelve_foot_truck" => Ok(TwelveFootTruck),
+            "twelve_passenger_van" => Ok(TwelvePassengerVan),
+            "twenty_foot_truck" => Ok(TwentyFootTruck),
+            "twenty_four_foot_truck" => Ok(TwentyFourFootTruck),
+            "twenty_six_foot_truck" => Ok(TwentySixFootTruck),
+            "unique" => Ok(Unique),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Class of the rental vehicle.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    Business,
+    Economy,
+    FirstClass,
+    PremiumEconomy,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass::*;
+        match self {
+            Business => "business",
+            Economy => "economy",
+            FirstClass => "first_class",
+            PremiumEconomy => "premium_economy",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass::*;
+        match s {
+            "business" => Ok(Business),
+            "economy" => Ok(Economy),
+            "first_class" => Ok(FirstClass),
+            "premium_economy" => Ok(PremiumEconomy),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Lodging data for this PaymentIntent.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentDetailsLodgingData {
+    /// Accommodation details for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub accommodation: Option<UpdatePaymentIntentPaymentDetailsLodgingDataAccommodation>,
+    /// Affiliate details if applicable.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affiliate: Option<UpdatePaymentIntentPaymentDetailsLodgingDataAffiliate>,
+    /// Booking confirmation number for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub booking_number: Option<String>,
+    /// Check-in date.
+    pub checkin_at: stripe_types::Timestamp,
+    /// Check-out date.
+    pub checkout_at: stripe_types::Timestamp,
+    /// Customer service phone number for the lodging company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_service_phone_number: Option<String>,
+    /// Whether the lodging is compliant with any hotel fire safety regulations.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fire_safety_act_compliance_indicator: Option<bool>,
+    /// List of guests for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub guests: Option<Vec<Guest>>,
+    /// Host details for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub host: Option<UpdatePaymentIntentPaymentDetailsLodgingDataHost>,
+    /// List of insurances for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub insurances: Option<Vec<UpdatePaymentIntentPaymentDetailsLodgingDataInsurances>>,
+    /// Whether the renter is a no-show.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub no_show_indicator: Option<bool>,
+    /// Renter ID number for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub renter_id_number: Option<String>,
+    /// Renter name for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub renter_name: Option<String>,
+    /// Total details for the lodging.
+    pub total: UpdatePaymentIntentPaymentDetailsLodgingDataTotal,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsLodgingData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentDetailsLodgingData").finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentIntentPaymentDetailsLodgingData {
+    pub fn new(
+        checkin_at: impl Into<stripe_types::Timestamp>,
+        checkout_at: impl Into<stripe_types::Timestamp>,
+        total: impl Into<UpdatePaymentIntentPaymentDetailsLodgingDataTotal>,
+    ) -> Self {
+        Self {
+            accommodation: None,
+            affiliate: None,
+            booking_number: None,
+            checkin_at: checkin_at.into(),
+            checkout_at: checkout_at.into(),
+            customer_service_phone_number: None,
+            fire_safety_act_compliance_indicator: None,
+            guests: None,
+            host: None,
+            insurances: None,
+            no_show_indicator: None,
+            renter_id_number: None,
+            renter_name: None,
+            total: total.into(),
+        }
+    }
+}
+/// Accommodation details for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentDetailsLodgingDataAccommodation {
+    /// Type of accommodation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub accommodation_type:
+        Option<UpdatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType>,
+    /// Bed type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bed_type: Option<String>,
+    /// Daily accommodation rate in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub daily_rate_amount: Option<i64>,
+    /// Number of nights.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nights: Option<i64>,
+    /// Number of rooms, cabanas, apartments, and so on.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub number_of_rooms: Option<i64>,
+    /// Rate type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rate_type: Option<String>,
+    /// Whether smoking is allowed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub smoking_indicator: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsLodgingDataAccommodation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentDetailsLodgingDataAccommodation")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentIntentPaymentDetailsLodgingDataAccommodation {
+    pub fn new() -> Self {
+        Self {
+            accommodation_type: None,
+            bed_type: None,
+            daily_rate_amount: None,
+            nights: None,
+            number_of_rooms: None,
+            rate_type: None,
+            smoking_indicator: None,
+        }
+    }
+}
+impl Default for UpdatePaymentIntentPaymentDetailsLodgingDataAccommodation {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of accommodation.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType {
+    Apartment,
+    Cabana,
+    House,
+    Penthouse,
+    Room,
+    Standard,
+    Suite,
+    Villa,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType::*;
+        match self {
+            Apartment => "apartment",
+            Cabana => "cabana",
+            House => "house",
+            Penthouse => "penthouse",
+            Room => "room",
+            Standard => "standard",
+            Suite => "suite",
+            Villa => "villa",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType::*;
+        match s {
+            "apartment" => Ok(Apartment),
+            "cabana" => Ok(Cabana),
+            "house" => Ok(House),
+            "penthouse" => Ok(Penthouse),
+            "room" => Ok(Room),
+            "standard" => Ok(Standard),
+            "suite" => Ok(Suite),
+            "villa" => Ok(Villa),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for UpdatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for UpdatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for UpdatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Affiliate details if applicable.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentDetailsLodgingDataAffiliate {
+    /// Affiliate partner code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code: Option<String>,
+    /// Affiliate partner name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsLodgingDataAffiliate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentDetailsLodgingDataAffiliate")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentIntentPaymentDetailsLodgingDataAffiliate {
+    pub fn new() -> Self {
+        Self { code: None, name: None }
+    }
+}
+impl Default for UpdatePaymentIntentPaymentDetailsLodgingDataAffiliate {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Host details for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentDetailsLodgingDataHost {
+    /// Address of the host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<RequiredAddress>,
+    /// Host's country of domicile.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country_of_domicile: Option<String>,
+    /// Reference number for the host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub host_reference: Option<String>,
+    /// Type of host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub host_type: Option<UpdatePaymentIntentPaymentDetailsLodgingDataHostHostType>,
+    /// Name of the lodging property or host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Total number of reservations for the host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub number_of_reservations: Option<i64>,
+    /// Property phone number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub property_phone_number: Option<String>,
+    /// Host's registration date.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub registered_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsLodgingDataHost {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentDetailsLodgingDataHost").finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentIntentPaymentDetailsLodgingDataHost {
+    pub fn new() -> Self {
+        Self {
+            address: None,
+            country_of_domicile: None,
+            host_reference: None,
+            host_type: None,
+            name: None,
+            number_of_reservations: None,
+            property_phone_number: None,
+            registered_at: None,
+        }
+    }
+}
+impl Default for UpdatePaymentIntentPaymentDetailsLodgingDataHost {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of host.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    Hostel,
+    Hotel,
+    Owner,
+    RentalAgency,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentIntentPaymentDetailsLodgingDataHostHostType::*;
+        match self {
+            Hostel => "hostel",
+            Hotel => "hotel",
+            Owner => "owner",
+            RentalAgency => "rental_agency",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentDetailsLodgingDataHostHostType::*;
+        match s {
+            "hostel" => Ok(Hostel),
+            "hotel" => Ok(Hotel),
+            "owner" => Ok(Owner),
+            "rental_agency" => Ok(RentalAgency),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentIntentPaymentDetailsLodgingDataHostHostType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentDetailsLodgingDataHostHostType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// List of insurances for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentDetailsLodgingDataInsurances {
+    /// Price of the insurance coverage in cents.
+    pub amount: i64,
+    /// Currency of the insurance amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Name of the insurance company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub insurance_company_name: Option<String>,
+    /// Type of insurance coverage.
+    pub insurance_type: UpdatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsLodgingDataInsurances {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentDetailsLodgingDataInsurances")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentIntentPaymentDetailsLodgingDataInsurances {
+    pub fn new(
+        amount: impl Into<i64>,
+        insurance_type: impl Into<UpdatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType>,
+    ) -> Self {
+        Self {
+            amount: amount.into(),
+            currency: None,
+            insurance_company_name: None,
+            insurance_type: insurance_type.into(),
+        }
+    }
+}
+/// Type of insurance coverage.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    Bankruptcy,
+    Cancelation,
+    Emergency,
+    Medical,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType::*;
+        match self {
+            Bankruptcy => "bankruptcy",
+            Cancelation => "cancelation",
+            Emergency => "emergency",
+            Medical => "medical",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType::*;
+        match s {
+            "bankruptcy" => Ok(Bankruptcy),
+            "cancelation" => Ok(Cancelation),
+            "emergency" => Ok(Emergency),
+            "medical" => Ok(Medical),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Total details for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentDetailsLodgingDataTotal {
+    /// Total price of the lodging reservation in cents.
+    pub amount: i64,
+    /// Cash advances in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cash_advances: Option<i64>,
+    /// Currency of the total amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Discount details for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Discount>,
+    /// Additional charges for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extra_charges: Option<Vec<UpdatePaymentIntentPaymentDetailsLodgingDataTotalExtraCharges>>,
+    /// Prepaid amount in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prepaid_amount: Option<i64>,
+    /// Tax breakdown for the lodging reservation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<UpdatePaymentIntentPaymentDetailsLodgingDataTotalTax>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsLodgingDataTotal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentDetailsLodgingDataTotal").finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentIntentPaymentDetailsLodgingDataTotal {
+    pub fn new(amount: impl Into<i64>) -> Self {
+        Self {
+            amount: amount.into(),
+            cash_advances: None,
+            currency: None,
+            discounts: None,
+            extra_charges: None,
+            prepaid_amount: None,
+            tax: None,
+        }
+    }
+}
+/// Additional charges for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentDetailsLodgingDataTotalExtraCharges {
+    /// Amount of the extra charge in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// Type of extra charge.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<UpdatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsLodgingDataTotalExtraCharges {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentDetailsLodgingDataTotalExtraCharges")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentIntentPaymentDetailsLodgingDataTotalExtraCharges {
+    pub fn new() -> Self {
+        Self { amount: None, type_: None }
+    }
+}
+impl Default for UpdatePaymentIntentPaymentDetailsLodgingDataTotalExtraCharges {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of extra charge.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    GiftShop,
+    Laundry,
+    MiniBar,
+    Other,
+    Phone,
+    Restaurant,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType::*;
+        match self {
+            GiftShop => "gift_shop",
+            Laundry => "laundry",
+            MiniBar => "mini_bar",
+            Other => "other",
+            Phone => "phone",
+            Restaurant => "restaurant",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType::*;
+        match s {
+            "gift_shop" => Ok(GiftShop),
+            "laundry" => Ok(Laundry),
+            "mini_bar" => Ok(MiniBar),
+            "other" => Ok(Other),
+            "phone" => Ok(Phone),
+            "restaurant" => Ok(Restaurant),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Tax breakdown for the lodging reservation.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentDetailsLodgingDataTotalTax {
+    /// Indicates whether the transaction is tax exempt.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_exempt_indicator: Option<bool>,
+    /// Tax details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_items: Option<Vec<UpdatePaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsLodgingDataTotalTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentDetailsLodgingDataTotalTax")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentIntentPaymentDetailsLodgingDataTotalTax {
+    pub fn new() -> Self {
+        Self { tax_exempt_indicator: None, tax_items: None }
+    }
+}
+impl Default for UpdatePaymentIntentPaymentDetailsLodgingDataTotalTax {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Tax details.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems {
+    /// Tax amount in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// Tax rate.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rate: Option<i64>,
+    /// Type of tax applied.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems {
+    pub fn new() -> Self {
+        Self { amount: None, rate: None, type_: None }
+    }
+}
+impl Default for UpdatePaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems {
     fn default() -> Self {
         Self::new()
     }
@@ -18596,7 +21834,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataIdealB
 pub struct UpdatePaymentIntentPaymentMethodDataKlarna {
     /// Customer's date of birth
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub dob: Option<DateOfBirth>,
+    pub dob: Option<UpdatePaymentIntentPaymentMethodDataKlarnaDob>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataKlarna {
@@ -18612,6 +21850,29 @@ impl UpdatePaymentIntentPaymentMethodDataKlarna {
 impl Default for UpdatePaymentIntentPaymentMethodDataKlarna {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Customer's date of birth
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodDataKlarnaDob {
+    /// The day of birth, between 1 and 31.
+    pub day: i64,
+    /// The month of birth, between 1 and 12.
+    pub month: i64,
+    /// The four-digit year of birth.
+    pub year: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataKlarnaDob {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataKlarnaDob").finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentIntentPaymentMethodDataKlarnaDob {
+    pub fn new(day: impl Into<i64>, month: impl Into<i64>, year: impl Into<i64>) -> Self {
+        Self { day: day.into(), month: month.into(), year: year.into() }
     }
 }
 /// If this is a `naver_pay` PaymentMethod, this hash contains details about the Naver Pay payment method.
@@ -33330,6 +36591,9 @@ impl UpdatePaymentIntent {
     }
     /// Provides information about a card charge.
     /// Concatenated to the account's [statement descriptor prefix](https://docs.stripe.com/get-started/account/statement-descriptors#static) to form the complete statement descriptor that appears on the customer's statement.
+    /// A suffix longer than 22 characters returns an error.
+    /// If a valid suffix makes the complete statement descriptor longer than 22 characters, Stripe truncates the descriptor instead of returning an error.
+    /// Learn how to [fit the suffix in the complete descriptor](https://docs.stripe.com/get-started/account/statement-descriptors#suffix-length).
     pub fn statement_descriptor_suffix(
         mut self,
         statement_descriptor_suffix: impl Into<String>,
@@ -34025,11 +37289,17 @@ impl<'de> serde::Deserialize<'de>
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CapturePaymentIntentPaymentDetails {
+    /// Car rental data for this PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub car_rental_data: Option<Vec<CapturePaymentIntentPaymentDetailsCarRentalData>>,
     /// A unique value to identify the customer. This field is available only for card payments.
     ///
     /// This field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_reference: Option<String>,
+    /// Lodging data for this PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub lodging_data: Option<Vec<CapturePaymentIntentPaymentDetailsLodgingData>>,
     /// A unique value assigned by the business to identify the transaction. Required for L2 and L3 rates.
     ///
     /// For Cards, this field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
@@ -34045,10 +37315,1613 @@ impl std::fmt::Debug for CapturePaymentIntentPaymentDetails {
 }
 impl CapturePaymentIntentPaymentDetails {
     pub fn new() -> Self {
-        Self { customer_reference: None, order_reference: None }
+        Self {
+            car_rental_data: None,
+            customer_reference: None,
+            lodging_data: None,
+            order_reference: None,
+        }
     }
 }
 impl Default for CapturePaymentIntentPaymentDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Car rental data for this PaymentIntent.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CapturePaymentIntentPaymentDetailsCarRentalData {
+    /// Affiliate (such as travel agency) details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affiliate: Option<Affiliate>,
+    /// Booking confirmation number for the car rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub booking_number: Option<String>,
+    /// Name of the car rental company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub carrier_name: Option<String>,
+    /// Customer service phone number for the car rental company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_service_phone_number: Option<String>,
+    /// Number of days the car is being rented.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub days_rented: Option<u32>,
+    /// Distance details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub distance: Option<CapturePaymentIntentPaymentDetailsCarRentalDataDistance>,
+    /// List of drivers for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub drivers: Option<Vec<Driver>>,
+    /// Drop-off location details.
+    pub drop_off: Location,
+    /// Insurance details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub insurances: Option<Vec<CapturePaymentIntentPaymentDetailsCarRentalDataInsurances>>,
+    /// Indicates if the customer was a no-show.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub no_show_indicator: Option<bool>,
+    /// Pickup location details.
+    pub pickup: Location,
+    /// Name of the person renting the vehicle.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub renter_name: Option<String>,
+    /// Total cost breakdown for the rental.
+    pub total: CapturePaymentIntentPaymentDetailsCarRentalDataTotal,
+    /// Vehicle details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vehicle: Option<CapturePaymentIntentPaymentDetailsCarRentalDataVehicle>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsCarRentalData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentPaymentDetailsCarRentalData").finish_non_exhaustive()
+    }
+}
+impl CapturePaymentIntentPaymentDetailsCarRentalData {
+    pub fn new(
+        drop_off: impl Into<Location>,
+        pickup: impl Into<Location>,
+        total: impl Into<CapturePaymentIntentPaymentDetailsCarRentalDataTotal>,
+    ) -> Self {
+        Self {
+            affiliate: None,
+            booking_number: None,
+            carrier_name: None,
+            customer_service_phone_number: None,
+            days_rented: None,
+            distance: None,
+            drivers: None,
+            drop_off: drop_off.into(),
+            insurances: None,
+            no_show_indicator: None,
+            pickup: pickup.into(),
+            renter_name: None,
+            total: total.into(),
+            vehicle: None,
+        }
+    }
+}
+/// Distance details for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CapturePaymentIntentPaymentDetailsCarRentalDataDistance {
+    /// Distance traveled.
+    pub amount: i64,
+    /// Unit of measurement for the distance traveled. One of `miles` or `kilometers`.
+    pub unit: CapturePaymentIntentPaymentDetailsCarRentalDataDistanceUnit,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsCarRentalDataDistance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentPaymentDetailsCarRentalDataDistance")
+            .finish_non_exhaustive()
+    }
+}
+impl CapturePaymentIntentPaymentDetailsCarRentalDataDistance {
+    pub fn new(
+        amount: impl Into<i64>,
+        unit: impl Into<CapturePaymentIntentPaymentDetailsCarRentalDataDistanceUnit>,
+    ) -> Self {
+        Self { amount: amount.into(), unit: unit.into() }
+    }
+}
+/// Unit of measurement for the distance traveled. One of `miles` or `kilometers`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CapturePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    Kilometers,
+    Miles,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CapturePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    pub fn as_str(&self) -> &str {
+        use CapturePaymentIntentPaymentDetailsCarRentalDataDistanceUnit::*;
+        match self {
+            Kilometers => "kilometers",
+            Miles => "miles",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CapturePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CapturePaymentIntentPaymentDetailsCarRentalDataDistanceUnit::*;
+        match s {
+            "kilometers" => Ok(Kilometers),
+            "miles" => Ok(Miles),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CapturePaymentIntentPaymentDetailsCarRentalDataDistanceUnit"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CapturePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CapturePaymentIntentPaymentDetailsCarRentalDataDistanceUnit))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CapturePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CapturePaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Insurance details for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CapturePaymentIntentPaymentDetailsCarRentalDataInsurances {
+    /// Amount of the insurance coverage in cents.
+    pub amount: i64,
+    /// Currency of the insurance amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Name of the insurance company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub insurance_company_name: Option<String>,
+    /// Type of insurance coverage.
+    pub insurance_type: CapturePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsCarRentalDataInsurances {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentPaymentDetailsCarRentalDataInsurances")
+            .finish_non_exhaustive()
+    }
+}
+impl CapturePaymentIntentPaymentDetailsCarRentalDataInsurances {
+    pub fn new(
+        amount: impl Into<i64>,
+        insurance_type: impl Into<
+            CapturePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType,
+        >,
+    ) -> Self {
+        Self {
+            amount: amount.into(),
+            currency: None,
+            insurance_company_name: None,
+            insurance_type: insurance_type.into(),
+        }
+    }
+}
+/// Type of insurance coverage.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CapturePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    LiabilitySupplement,
+    LossDamageWaiver,
+    Other,
+    PartialDamageWaiver,
+    PersonalAccident,
+    PersonalEffects,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CapturePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    pub fn as_str(&self) -> &str {
+        use CapturePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType::*;
+        match self {
+            LiabilitySupplement => "liability_supplement",
+            LossDamageWaiver => "loss_damage_waiver",
+            Other => "other",
+            PartialDamageWaiver => "partial_damage_waiver",
+            PersonalAccident => "personal_accident",
+            PersonalEffects => "personal_effects",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CapturePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CapturePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType::*;
+        match s {
+            "liability_supplement" => Ok(LiabilitySupplement),
+            "loss_damage_waiver" => Ok(LossDamageWaiver),
+            "other" => Ok(Other),
+            "partial_damage_waiver" => Ok(PartialDamageWaiver),
+            "personal_accident" => Ok(PersonalAccident),
+            "personal_effects" => Ok(PersonalEffects),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CapturePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CapturePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CapturePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CapturePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CapturePaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Total cost breakdown for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CapturePaymentIntentPaymentDetailsCarRentalDataTotal {
+    /// Total amount in cents.
+    pub amount: i64,
+    /// Currency of the amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Discount details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Discounts>,
+    /// Additional charges for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extra_charges:
+        Option<Vec<CapturePaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges>>,
+    /// Rate per unit for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rate_per_unit: Option<i64>,
+    /// Unit of measurement for the rate.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rate_unit: Option<CapturePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit>,
+    /// Tax breakdown for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<Tax>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsCarRentalDataTotal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentPaymentDetailsCarRentalDataTotal")
+            .finish_non_exhaustive()
+    }
+}
+impl CapturePaymentIntentPaymentDetailsCarRentalDataTotal {
+    pub fn new(amount: impl Into<i64>) -> Self {
+        Self {
+            amount: amount.into(),
+            currency: None,
+            discounts: None,
+            extra_charges: None,
+            rate_per_unit: None,
+            rate_unit: None,
+            tax: None,
+        }
+    }
+}
+/// Additional charges for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CapturePaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges {
+    /// Amount of the extra charge in cents.
+    pub amount: i64,
+    /// Type of extra charge.
+    #[serde(rename = "type")]
+    pub type_: CapturePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges")
+            .finish_non_exhaustive()
+    }
+}
+impl CapturePaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges {
+    pub fn new(
+        amount: impl Into<i64>,
+        type_: impl Into<CapturePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType>,
+    ) -> Self {
+        Self { amount: amount.into(), type_: type_.into() }
+    }
+}
+/// Type of extra charge.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CapturePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    ExtraMileage,
+    Gas,
+    Gps,
+    LateCharge,
+    OneWayDropOff,
+    Other,
+    Parking,
+    Phone,
+    RegularMileage,
+    Towing,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CapturePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    pub fn as_str(&self) -> &str {
+        use CapturePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType::*;
+        match self {
+            ExtraMileage => "extra_mileage",
+            Gas => "gas",
+            Gps => "gps",
+            LateCharge => "late_charge",
+            OneWayDropOff => "one_way_drop_off",
+            Other => "other",
+            Parking => "parking",
+            Phone => "phone",
+            RegularMileage => "regular_mileage",
+            Towing => "towing",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CapturePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CapturePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType::*;
+        match s {
+            "extra_mileage" => Ok(ExtraMileage),
+            "gas" => Ok(Gas),
+            "gps" => Ok(Gps),
+            "late_charge" => Ok(LateCharge),
+            "one_way_drop_off" => Ok(OneWayDropOff),
+            "other" => Ok(Other),
+            "parking" => Ok(Parking),
+            "phone" => Ok(Phone),
+            "regular_mileage" => Ok(RegularMileage),
+            "towing" => Ok(Towing),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CapturePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CapturePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CapturePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CapturePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CapturePaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Unit of measurement for the rate.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CapturePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    Days,
+    Kilometers,
+    Miles,
+    Months,
+    Weeks,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CapturePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    pub fn as_str(&self) -> &str {
+        use CapturePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit::*;
+        match self {
+            Days => "days",
+            Kilometers => "kilometers",
+            Miles => "miles",
+            Months => "months",
+            Weeks => "weeks",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CapturePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CapturePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit::*;
+        match s {
+            "days" => Ok(Days),
+            "kilometers" => Ok(Kilometers),
+            "miles" => Ok(Miles),
+            "months" => Ok(Months),
+            "weeks" => Ok(Weeks),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CapturePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CapturePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CapturePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CapturePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CapturePaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Vehicle details for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CapturePaymentIntentPaymentDetailsCarRentalDataVehicle {
+    /// Make of the rental vehicle.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub make: Option<String>,
+    /// Model of the rental vehicle.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub model: Option<String>,
+    /// Odometer reading at the time of rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub odometer: Option<i64>,
+    /// Type of the rental vehicle.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<CapturePaymentIntentPaymentDetailsCarRentalDataVehicleType>,
+    /// Class of the rental vehicle.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vehicle_class: Option<CapturePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass>,
+    /// Vehicle identification number (VIN).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vehicle_identification_number: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsCarRentalDataVehicle {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentPaymentDetailsCarRentalDataVehicle")
+            .finish_non_exhaustive()
+    }
+}
+impl CapturePaymentIntentPaymentDetailsCarRentalDataVehicle {
+    pub fn new() -> Self {
+        Self {
+            make: None,
+            model: None,
+            odometer: None,
+            type_: None,
+            vehicle_class: None,
+            vehicle_identification_number: None,
+        }
+    }
+}
+impl Default for CapturePaymentIntentPaymentDetailsCarRentalDataVehicle {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of the rental vehicle.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CapturePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    CargoVan,
+    Compact,
+    Economy,
+    Exotic,
+    ExoticSuv,
+    FifteenPassengerVan,
+    FourWheelDrive,
+    FullSize,
+    Intermediate,
+    LargeSuv,
+    LargeTruck,
+    Luxury,
+    MediumSuv,
+    Midsize,
+    Mini,
+    Minivan,
+    Miscellaneous,
+    Moped,
+    MovingVan,
+    Premium,
+    Regular,
+    SmallMediumTruck,
+    SmallSuv,
+    Special,
+    Standard,
+    Stretch,
+    Subcompact,
+    Taxi,
+    TwelveFootTruck,
+    TwelvePassengerVan,
+    TwentyFootTruck,
+    TwentyFourFootTruck,
+    TwentySixFootTruck,
+    Unique,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CapturePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    pub fn as_str(&self) -> &str {
+        use CapturePaymentIntentPaymentDetailsCarRentalDataVehicleType::*;
+        match self {
+            CargoVan => "cargo_van",
+            Compact => "compact",
+            Economy => "economy",
+            Exotic => "exotic",
+            ExoticSuv => "exotic_suv",
+            FifteenPassengerVan => "fifteen_passenger_van",
+            FourWheelDrive => "four_wheel_drive",
+            FullSize => "full_size",
+            Intermediate => "intermediate",
+            LargeSuv => "large_suv",
+            LargeTruck => "large_truck",
+            Luxury => "luxury",
+            MediumSuv => "medium_suv",
+            Midsize => "midsize",
+            Mini => "mini",
+            Minivan => "minivan",
+            Miscellaneous => "miscellaneous",
+            Moped => "moped",
+            MovingVan => "moving_van",
+            Premium => "premium",
+            Regular => "regular",
+            SmallMediumTruck => "small_medium_truck",
+            SmallSuv => "small_suv",
+            Special => "special",
+            Standard => "standard",
+            Stretch => "stretch",
+            Subcompact => "subcompact",
+            Taxi => "taxi",
+            TwelveFootTruck => "twelve_foot_truck",
+            TwelvePassengerVan => "twelve_passenger_van",
+            TwentyFootTruck => "twenty_foot_truck",
+            TwentyFourFootTruck => "twenty_four_foot_truck",
+            TwentySixFootTruck => "twenty_six_foot_truck",
+            Unique => "unique",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CapturePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CapturePaymentIntentPaymentDetailsCarRentalDataVehicleType::*;
+        match s {
+            "cargo_van" => Ok(CargoVan),
+            "compact" => Ok(Compact),
+            "economy" => Ok(Economy),
+            "exotic" => Ok(Exotic),
+            "exotic_suv" => Ok(ExoticSuv),
+            "fifteen_passenger_van" => Ok(FifteenPassengerVan),
+            "four_wheel_drive" => Ok(FourWheelDrive),
+            "full_size" => Ok(FullSize),
+            "intermediate" => Ok(Intermediate),
+            "large_suv" => Ok(LargeSuv),
+            "large_truck" => Ok(LargeTruck),
+            "luxury" => Ok(Luxury),
+            "medium_suv" => Ok(MediumSuv),
+            "midsize" => Ok(Midsize),
+            "mini" => Ok(Mini),
+            "minivan" => Ok(Minivan),
+            "miscellaneous" => Ok(Miscellaneous),
+            "moped" => Ok(Moped),
+            "moving_van" => Ok(MovingVan),
+            "premium" => Ok(Premium),
+            "regular" => Ok(Regular),
+            "small_medium_truck" => Ok(SmallMediumTruck),
+            "small_suv" => Ok(SmallSuv),
+            "special" => Ok(Special),
+            "standard" => Ok(Standard),
+            "stretch" => Ok(Stretch),
+            "subcompact" => Ok(Subcompact),
+            "taxi" => Ok(Taxi),
+            "twelve_foot_truck" => Ok(TwelveFootTruck),
+            "twelve_passenger_van" => Ok(TwelvePassengerVan),
+            "twenty_foot_truck" => Ok(TwentyFootTruck),
+            "twenty_four_foot_truck" => Ok(TwentyFourFootTruck),
+            "twenty_six_foot_truck" => Ok(TwentySixFootTruck),
+            "unique" => Ok(Unique),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CapturePaymentIntentPaymentDetailsCarRentalDataVehicleType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CapturePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CapturePaymentIntentPaymentDetailsCarRentalDataVehicleType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CapturePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CapturePaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Class of the rental vehicle.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CapturePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    Business,
+    Economy,
+    FirstClass,
+    PremiumEconomy,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CapturePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    pub fn as_str(&self) -> &str {
+        use CapturePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass::*;
+        match self {
+            Business => "business",
+            Economy => "economy",
+            FirstClass => "first_class",
+            PremiumEconomy => "premium_economy",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CapturePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CapturePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass::*;
+        match s {
+            "business" => Ok(Business),
+            "economy" => Ok(Economy),
+            "first_class" => Ok(FirstClass),
+            "premium_economy" => Ok(PremiumEconomy),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CapturePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CapturePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CapturePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CapturePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CapturePaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Lodging data for this PaymentIntent.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CapturePaymentIntentPaymentDetailsLodgingData {
+    /// Accommodation details for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub accommodation: Option<CapturePaymentIntentPaymentDetailsLodgingDataAccommodation>,
+    /// Affiliate details if applicable.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affiliate: Option<CapturePaymentIntentPaymentDetailsLodgingDataAffiliate>,
+    /// Booking confirmation number for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub booking_number: Option<String>,
+    /// Check-in date.
+    pub checkin_at: stripe_types::Timestamp,
+    /// Check-out date.
+    pub checkout_at: stripe_types::Timestamp,
+    /// Customer service phone number for the lodging company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_service_phone_number: Option<String>,
+    /// Whether the lodging is compliant with any hotel fire safety regulations.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fire_safety_act_compliance_indicator: Option<bool>,
+    /// List of guests for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub guests: Option<Vec<Guest>>,
+    /// Host details for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub host: Option<CapturePaymentIntentPaymentDetailsLodgingDataHost>,
+    /// List of insurances for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub insurances: Option<Vec<CapturePaymentIntentPaymentDetailsLodgingDataInsurances>>,
+    /// Whether the renter is a no-show.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub no_show_indicator: Option<bool>,
+    /// Renter ID number for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub renter_id_number: Option<String>,
+    /// Renter name for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub renter_name: Option<String>,
+    /// Total details for the lodging.
+    pub total: CapturePaymentIntentPaymentDetailsLodgingDataTotal,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsLodgingData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentPaymentDetailsLodgingData").finish_non_exhaustive()
+    }
+}
+impl CapturePaymentIntentPaymentDetailsLodgingData {
+    pub fn new(
+        checkin_at: impl Into<stripe_types::Timestamp>,
+        checkout_at: impl Into<stripe_types::Timestamp>,
+        total: impl Into<CapturePaymentIntentPaymentDetailsLodgingDataTotal>,
+    ) -> Self {
+        Self {
+            accommodation: None,
+            affiliate: None,
+            booking_number: None,
+            checkin_at: checkin_at.into(),
+            checkout_at: checkout_at.into(),
+            customer_service_phone_number: None,
+            fire_safety_act_compliance_indicator: None,
+            guests: None,
+            host: None,
+            insurances: None,
+            no_show_indicator: None,
+            renter_id_number: None,
+            renter_name: None,
+            total: total.into(),
+        }
+    }
+}
+/// Accommodation details for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CapturePaymentIntentPaymentDetailsLodgingDataAccommodation {
+    /// Type of accommodation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub accommodation_type:
+        Option<CapturePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType>,
+    /// Bed type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bed_type: Option<String>,
+    /// Daily accommodation rate in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub daily_rate_amount: Option<i64>,
+    /// Number of nights.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nights: Option<i64>,
+    /// Number of rooms, cabanas, apartments, and so on.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub number_of_rooms: Option<i64>,
+    /// Rate type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rate_type: Option<String>,
+    /// Whether smoking is allowed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub smoking_indicator: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsLodgingDataAccommodation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentPaymentDetailsLodgingDataAccommodation")
+            .finish_non_exhaustive()
+    }
+}
+impl CapturePaymentIntentPaymentDetailsLodgingDataAccommodation {
+    pub fn new() -> Self {
+        Self {
+            accommodation_type: None,
+            bed_type: None,
+            daily_rate_amount: None,
+            nights: None,
+            number_of_rooms: None,
+            rate_type: None,
+            smoking_indicator: None,
+        }
+    }
+}
+impl Default for CapturePaymentIntentPaymentDetailsLodgingDataAccommodation {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of accommodation.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CapturePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType {
+    Apartment,
+    Cabana,
+    House,
+    Penthouse,
+    Room,
+    Standard,
+    Suite,
+    Villa,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CapturePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType {
+    pub fn as_str(&self) -> &str {
+        use CapturePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType::*;
+        match self {
+            Apartment => "apartment",
+            Cabana => "cabana",
+            House => "house",
+            Penthouse => "penthouse",
+            Room => "room",
+            Standard => "standard",
+            Suite => "suite",
+            Villa => "villa",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CapturePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CapturePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType::*;
+        match s {
+            "apartment" => Ok(Apartment),
+            "cabana" => Ok(Cabana),
+            "house" => Ok(House),
+            "penthouse" => Ok(Penthouse),
+            "room" => Ok(Room),
+            "standard" => Ok(Standard),
+            "suite" => Ok(Suite),
+            "villa" => Ok(Villa),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CapturePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CapturePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for CapturePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CapturePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CapturePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for CapturePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CapturePaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Affiliate details if applicable.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CapturePaymentIntentPaymentDetailsLodgingDataAffiliate {
+    /// Affiliate partner code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code: Option<String>,
+    /// Affiliate partner name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsLodgingDataAffiliate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentPaymentDetailsLodgingDataAffiliate")
+            .finish_non_exhaustive()
+    }
+}
+impl CapturePaymentIntentPaymentDetailsLodgingDataAffiliate {
+    pub fn new() -> Self {
+        Self { code: None, name: None }
+    }
+}
+impl Default for CapturePaymentIntentPaymentDetailsLodgingDataAffiliate {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Host details for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CapturePaymentIntentPaymentDetailsLodgingDataHost {
+    /// Address of the host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<RequiredAddress>,
+    /// Host's country of domicile.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country_of_domicile: Option<String>,
+    /// Reference number for the host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub host_reference: Option<String>,
+    /// Type of host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub host_type: Option<CapturePaymentIntentPaymentDetailsLodgingDataHostHostType>,
+    /// Name of the lodging property or host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Total number of reservations for the host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub number_of_reservations: Option<i64>,
+    /// Property phone number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub property_phone_number: Option<String>,
+    /// Host's registration date.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub registered_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsLodgingDataHost {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentPaymentDetailsLodgingDataHost").finish_non_exhaustive()
+    }
+}
+impl CapturePaymentIntentPaymentDetailsLodgingDataHost {
+    pub fn new() -> Self {
+        Self {
+            address: None,
+            country_of_domicile: None,
+            host_reference: None,
+            host_type: None,
+            name: None,
+            number_of_reservations: None,
+            property_phone_number: None,
+            registered_at: None,
+        }
+    }
+}
+impl Default for CapturePaymentIntentPaymentDetailsLodgingDataHost {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of host.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CapturePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    Hostel,
+    Hotel,
+    Owner,
+    RentalAgency,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CapturePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    pub fn as_str(&self) -> &str {
+        use CapturePaymentIntentPaymentDetailsLodgingDataHostHostType::*;
+        match self {
+            Hostel => "hostel",
+            Hotel => "hotel",
+            Owner => "owner",
+            RentalAgency => "rental_agency",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CapturePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CapturePaymentIntentPaymentDetailsLodgingDataHostHostType::*;
+        match s {
+            "hostel" => Ok(Hostel),
+            "hotel" => Ok(Hotel),
+            "owner" => Ok(Owner),
+            "rental_agency" => Ok(RentalAgency),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CapturePaymentIntentPaymentDetailsLodgingDataHostHostType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CapturePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CapturePaymentIntentPaymentDetailsLodgingDataHostHostType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CapturePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CapturePaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// List of insurances for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CapturePaymentIntentPaymentDetailsLodgingDataInsurances {
+    /// Price of the insurance coverage in cents.
+    pub amount: i64,
+    /// Currency of the insurance amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Name of the insurance company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub insurance_company_name: Option<String>,
+    /// Type of insurance coverage.
+    pub insurance_type: CapturePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsLodgingDataInsurances {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentPaymentDetailsLodgingDataInsurances")
+            .finish_non_exhaustive()
+    }
+}
+impl CapturePaymentIntentPaymentDetailsLodgingDataInsurances {
+    pub fn new(
+        amount: impl Into<i64>,
+        insurance_type: impl Into<CapturePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType>,
+    ) -> Self {
+        Self {
+            amount: amount.into(),
+            currency: None,
+            insurance_company_name: None,
+            insurance_type: insurance_type.into(),
+        }
+    }
+}
+/// Type of insurance coverage.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CapturePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    Bankruptcy,
+    Cancelation,
+    Emergency,
+    Medical,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CapturePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    pub fn as_str(&self) -> &str {
+        use CapturePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType::*;
+        match self {
+            Bankruptcy => "bankruptcy",
+            Cancelation => "cancelation",
+            Emergency => "emergency",
+            Medical => "medical",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CapturePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CapturePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType::*;
+        match s {
+            "bankruptcy" => Ok(Bankruptcy),
+            "cancelation" => Ok(Cancelation),
+            "emergency" => Ok(Emergency),
+            "medical" => Ok(Medical),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CapturePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CapturePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CapturePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CapturePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CapturePaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Total details for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CapturePaymentIntentPaymentDetailsLodgingDataTotal {
+    /// Total price of the lodging reservation in cents.
+    pub amount: i64,
+    /// Cash advances in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cash_advances: Option<i64>,
+    /// Currency of the total amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Discount details for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Discount>,
+    /// Additional charges for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extra_charges: Option<Vec<CapturePaymentIntentPaymentDetailsLodgingDataTotalExtraCharges>>,
+    /// Prepaid amount in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prepaid_amount: Option<i64>,
+    /// Tax breakdown for the lodging reservation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<CapturePaymentIntentPaymentDetailsLodgingDataTotalTax>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsLodgingDataTotal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentPaymentDetailsLodgingDataTotal").finish_non_exhaustive()
+    }
+}
+impl CapturePaymentIntentPaymentDetailsLodgingDataTotal {
+    pub fn new(amount: impl Into<i64>) -> Self {
+        Self {
+            amount: amount.into(),
+            cash_advances: None,
+            currency: None,
+            discounts: None,
+            extra_charges: None,
+            prepaid_amount: None,
+            tax: None,
+        }
+    }
+}
+/// Additional charges for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CapturePaymentIntentPaymentDetailsLodgingDataTotalExtraCharges {
+    /// Amount of the extra charge in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// Type of extra charge.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<CapturePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsLodgingDataTotalExtraCharges {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentPaymentDetailsLodgingDataTotalExtraCharges")
+            .finish_non_exhaustive()
+    }
+}
+impl CapturePaymentIntentPaymentDetailsLodgingDataTotalExtraCharges {
+    pub fn new() -> Self {
+        Self { amount: None, type_: None }
+    }
+}
+impl Default for CapturePaymentIntentPaymentDetailsLodgingDataTotalExtraCharges {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of extra charge.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CapturePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    GiftShop,
+    Laundry,
+    MiniBar,
+    Other,
+    Phone,
+    Restaurant,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CapturePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    pub fn as_str(&self) -> &str {
+        use CapturePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType::*;
+        match self {
+            GiftShop => "gift_shop",
+            Laundry => "laundry",
+            MiniBar => "mini_bar",
+            Other => "other",
+            Phone => "phone",
+            Restaurant => "restaurant",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CapturePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CapturePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType::*;
+        match s {
+            "gift_shop" => Ok(GiftShop),
+            "laundry" => Ok(Laundry),
+            "mini_bar" => Ok(MiniBar),
+            "other" => Ok(Other),
+            "phone" => Ok(Phone),
+            "restaurant" => Ok(Restaurant),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CapturePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CapturePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CapturePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CapturePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CapturePaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Tax breakdown for the lodging reservation.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CapturePaymentIntentPaymentDetailsLodgingDataTotalTax {
+    /// Indicates whether the transaction is tax exempt.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_exempt_indicator: Option<bool>,
+    /// Tax details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_items: Option<Vec<CapturePaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsLodgingDataTotalTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentPaymentDetailsLodgingDataTotalTax")
+            .finish_non_exhaustive()
+    }
+}
+impl CapturePaymentIntentPaymentDetailsLodgingDataTotalTax {
+    pub fn new() -> Self {
+        Self { tax_exempt_indicator: None, tax_items: None }
+    }
+}
+impl Default for CapturePaymentIntentPaymentDetailsLodgingDataTotalTax {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Tax details.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CapturePaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems {
+    /// Tax amount in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// Tax rate.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rate: Option<i64>,
+    /// Type of tax applied.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems")
+            .finish_non_exhaustive()
+    }
+}
+impl CapturePaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems {
+    pub fn new() -> Self {
+        Self { amount: None, rate: None, type_: None }
+    }
+}
+impl Default for CapturePaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems {
     fn default() -> Self {
         Self::new()
     }
@@ -34939,11 +39812,17 @@ impl std::fmt::Debug for ConfirmPaymentIntentOffSession {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentDetails {
+    /// Car rental data for this PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub car_rental_data: Option<Vec<ConfirmPaymentIntentPaymentDetailsCarRentalData>>,
     /// A unique value to identify the customer. This field is available only for card payments.
     ///
     /// This field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_reference: Option<String>,
+    /// Lodging data for this PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub lodging_data: Option<Vec<ConfirmPaymentIntentPaymentDetailsLodgingData>>,
     /// A unique value assigned by the business to identify the transaction. Required for L2 and L3 rates.
     ///
     /// For Cards, this field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
@@ -34959,10 +39838,1613 @@ impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetails {
 }
 impl ConfirmPaymentIntentPaymentDetails {
     pub fn new() -> Self {
-        Self { customer_reference: None, order_reference: None }
+        Self {
+            car_rental_data: None,
+            customer_reference: None,
+            lodging_data: None,
+            order_reference: None,
+        }
     }
 }
 impl Default for ConfirmPaymentIntentPaymentDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Car rental data for this PaymentIntent.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentDetailsCarRentalData {
+    /// Affiliate (such as travel agency) details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affiliate: Option<Affiliate>,
+    /// Booking confirmation number for the car rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub booking_number: Option<String>,
+    /// Name of the car rental company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub carrier_name: Option<String>,
+    /// Customer service phone number for the car rental company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_service_phone_number: Option<String>,
+    /// Number of days the car is being rented.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub days_rented: Option<u32>,
+    /// Distance details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub distance: Option<ConfirmPaymentIntentPaymentDetailsCarRentalDataDistance>,
+    /// List of drivers for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub drivers: Option<Vec<Driver>>,
+    /// Drop-off location details.
+    pub drop_off: Location,
+    /// Insurance details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub insurances: Option<Vec<ConfirmPaymentIntentPaymentDetailsCarRentalDataInsurances>>,
+    /// Indicates if the customer was a no-show.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub no_show_indicator: Option<bool>,
+    /// Pickup location details.
+    pub pickup: Location,
+    /// Name of the person renting the vehicle.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub renter_name: Option<String>,
+    /// Total cost breakdown for the rental.
+    pub total: ConfirmPaymentIntentPaymentDetailsCarRentalDataTotal,
+    /// Vehicle details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vehicle: Option<ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicle>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsCarRentalData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentDetailsCarRentalData").finish_non_exhaustive()
+    }
+}
+impl ConfirmPaymentIntentPaymentDetailsCarRentalData {
+    pub fn new(
+        drop_off: impl Into<Location>,
+        pickup: impl Into<Location>,
+        total: impl Into<ConfirmPaymentIntentPaymentDetailsCarRentalDataTotal>,
+    ) -> Self {
+        Self {
+            affiliate: None,
+            booking_number: None,
+            carrier_name: None,
+            customer_service_phone_number: None,
+            days_rented: None,
+            distance: None,
+            drivers: None,
+            drop_off: drop_off.into(),
+            insurances: None,
+            no_show_indicator: None,
+            pickup: pickup.into(),
+            renter_name: None,
+            total: total.into(),
+            vehicle: None,
+        }
+    }
+}
+/// Distance details for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentDetailsCarRentalDataDistance {
+    /// Distance traveled.
+    pub amount: i64,
+    /// Unit of measurement for the distance traveled. One of `miles` or `kilometers`.
+    pub unit: ConfirmPaymentIntentPaymentDetailsCarRentalDataDistanceUnit,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsCarRentalDataDistance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentDetailsCarRentalDataDistance")
+            .finish_non_exhaustive()
+    }
+}
+impl ConfirmPaymentIntentPaymentDetailsCarRentalDataDistance {
+    pub fn new(
+        amount: impl Into<i64>,
+        unit: impl Into<ConfirmPaymentIntentPaymentDetailsCarRentalDataDistanceUnit>,
+    ) -> Self {
+        Self { amount: amount.into(), unit: unit.into() }
+    }
+}
+/// Unit of measurement for the distance traveled. One of `miles` or `kilometers`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmPaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    Kilometers,
+    Miles,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmPaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    pub fn as_str(&self) -> &str {
+        use ConfirmPaymentIntentPaymentDetailsCarRentalDataDistanceUnit::*;
+        match self {
+            Kilometers => "kilometers",
+            Miles => "miles",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentDetailsCarRentalDataDistanceUnit::*;
+        match s {
+            "kilometers" => Ok(Kilometers),
+            "miles" => Ok(Miles),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmPaymentIntentPaymentDetailsCarRentalDataDistanceUnit"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentDetailsCarRentalDataDistanceUnit))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentDetailsCarRentalDataDistanceUnit {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Insurance details for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentDetailsCarRentalDataInsurances {
+    /// Amount of the insurance coverage in cents.
+    pub amount: i64,
+    /// Currency of the insurance amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Name of the insurance company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub insurance_company_name: Option<String>,
+    /// Type of insurance coverage.
+    pub insurance_type: ConfirmPaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsCarRentalDataInsurances {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentDetailsCarRentalDataInsurances")
+            .finish_non_exhaustive()
+    }
+}
+impl ConfirmPaymentIntentPaymentDetailsCarRentalDataInsurances {
+    pub fn new(
+        amount: impl Into<i64>,
+        insurance_type: impl Into<
+            ConfirmPaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType,
+        >,
+    ) -> Self {
+        Self {
+            amount: amount.into(),
+            currency: None,
+            insurance_company_name: None,
+            insurance_type: insurance_type.into(),
+        }
+    }
+}
+/// Type of insurance coverage.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmPaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    LiabilitySupplement,
+    LossDamageWaiver,
+    Other,
+    PartialDamageWaiver,
+    PersonalAccident,
+    PersonalEffects,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmPaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    pub fn as_str(&self) -> &str {
+        use ConfirmPaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType::*;
+        match self {
+            LiabilitySupplement => "liability_supplement",
+            LossDamageWaiver => "loss_damage_waiver",
+            Other => "other",
+            PartialDamageWaiver => "partial_damage_waiver",
+            PersonalAccident => "personal_accident",
+            PersonalEffects => "personal_effects",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType::*;
+        match s {
+            "liability_supplement" => Ok(LiabilitySupplement),
+            "loss_damage_waiver" => Ok(LossDamageWaiver),
+            "other" => Ok(Other),
+            "partial_damage_waiver" => Ok(PartialDamageWaiver),
+            "personal_accident" => Ok(PersonalAccident),
+            "personal_effects" => Ok(PersonalEffects),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmPaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentDetailsCarRentalDataInsurancesInsuranceType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Total cost breakdown for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentDetailsCarRentalDataTotal {
+    /// Total amount in cents.
+    pub amount: i64,
+    /// Currency of the amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Discount details for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Discounts>,
+    /// Additional charges for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extra_charges:
+        Option<Vec<ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges>>,
+    /// Rate per unit for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rate_per_unit: Option<i64>,
+    /// Unit of measurement for the rate.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rate_unit: Option<ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalRateUnit>,
+    /// Tax breakdown for the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<Tax>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsCarRentalDataTotal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentDetailsCarRentalDataTotal")
+            .finish_non_exhaustive()
+    }
+}
+impl ConfirmPaymentIntentPaymentDetailsCarRentalDataTotal {
+    pub fn new(amount: impl Into<i64>) -> Self {
+        Self {
+            amount: amount.into(),
+            currency: None,
+            discounts: None,
+            extra_charges: None,
+            rate_per_unit: None,
+            rate_unit: None,
+            tax: None,
+        }
+    }
+}
+/// Additional charges for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges {
+    /// Amount of the extra charge in cents.
+    pub amount: i64,
+    /// Type of extra charge.
+    #[serde(rename = "type")]
+    pub type_: ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges")
+            .finish_non_exhaustive()
+    }
+}
+impl ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalExtraCharges {
+    pub fn new(
+        amount: impl Into<i64>,
+        type_: impl Into<ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType>,
+    ) -> Self {
+        Self { amount: amount.into(), type_: type_.into() }
+    }
+}
+/// Type of extra charge.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    ExtraMileage,
+    Gas,
+    Gps,
+    LateCharge,
+    OneWayDropOff,
+    Other,
+    Parking,
+    Phone,
+    RegularMileage,
+    Towing,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    pub fn as_str(&self) -> &str {
+        use ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType::*;
+        match self {
+            ExtraMileage => "extra_mileage",
+            Gas => "gas",
+            Gps => "gps",
+            LateCharge => "late_charge",
+            OneWayDropOff => "one_way_drop_off",
+            Other => "other",
+            Parking => "parking",
+            Phone => "phone",
+            RegularMileage => "regular_mileage",
+            Towing => "towing",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType::*;
+        match s {
+            "extra_mileage" => Ok(ExtraMileage),
+            "gas" => Ok(Gas),
+            "gps" => Ok(Gps),
+            "late_charge" => Ok(LateCharge),
+            "one_way_drop_off" => Ok(OneWayDropOff),
+            "other" => Ok(Other),
+            "parking" => Ok(Parking),
+            "phone" => Ok(Phone),
+            "regular_mileage" => Ok(RegularMileage),
+            "towing" => Ok(Towing),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalExtraChargesType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Unit of measurement for the rate.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    Days,
+    Kilometers,
+    Miles,
+    Months,
+    Weeks,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    pub fn as_str(&self) -> &str {
+        use ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalRateUnit::*;
+        match self {
+            Days => "days",
+            Kilometers => "kilometers",
+            Miles => "miles",
+            Months => "months",
+            Weeks => "weeks",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalRateUnit::*;
+        match s {
+            "days" => Ok(Days),
+            "kilometers" => Ok(Kilometers),
+            "miles" => Ok(Miles),
+            "months" => Ok(Months),
+            "weeks" => Ok(Weeks),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalRateUnit"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalRateUnit))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentDetailsCarRentalDataTotalRateUnit {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Vehicle details for the rental.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicle {
+    /// Make of the rental vehicle.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub make: Option<String>,
+    /// Model of the rental vehicle.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub model: Option<String>,
+    /// Odometer reading at the time of rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub odometer: Option<i64>,
+    /// Type of the rental vehicle.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleType>,
+    /// Class of the rental vehicle.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vehicle_class: Option<ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass>,
+    /// Vehicle identification number (VIN).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vehicle_identification_number: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicle {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicle")
+            .finish_non_exhaustive()
+    }
+}
+impl ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicle {
+    pub fn new() -> Self {
+        Self {
+            make: None,
+            model: None,
+            odometer: None,
+            type_: None,
+            vehicle_class: None,
+            vehicle_identification_number: None,
+        }
+    }
+}
+impl Default for ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicle {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of the rental vehicle.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    CargoVan,
+    Compact,
+    Economy,
+    Exotic,
+    ExoticSuv,
+    FifteenPassengerVan,
+    FourWheelDrive,
+    FullSize,
+    Intermediate,
+    LargeSuv,
+    LargeTruck,
+    Luxury,
+    MediumSuv,
+    Midsize,
+    Mini,
+    Minivan,
+    Miscellaneous,
+    Moped,
+    MovingVan,
+    Premium,
+    Regular,
+    SmallMediumTruck,
+    SmallSuv,
+    Special,
+    Standard,
+    Stretch,
+    Subcompact,
+    Taxi,
+    TwelveFootTruck,
+    TwelvePassengerVan,
+    TwentyFootTruck,
+    TwentyFourFootTruck,
+    TwentySixFootTruck,
+    Unique,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    pub fn as_str(&self) -> &str {
+        use ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleType::*;
+        match self {
+            CargoVan => "cargo_van",
+            Compact => "compact",
+            Economy => "economy",
+            Exotic => "exotic",
+            ExoticSuv => "exotic_suv",
+            FifteenPassengerVan => "fifteen_passenger_van",
+            FourWheelDrive => "four_wheel_drive",
+            FullSize => "full_size",
+            Intermediate => "intermediate",
+            LargeSuv => "large_suv",
+            LargeTruck => "large_truck",
+            Luxury => "luxury",
+            MediumSuv => "medium_suv",
+            Midsize => "midsize",
+            Mini => "mini",
+            Minivan => "minivan",
+            Miscellaneous => "miscellaneous",
+            Moped => "moped",
+            MovingVan => "moving_van",
+            Premium => "premium",
+            Regular => "regular",
+            SmallMediumTruck => "small_medium_truck",
+            SmallSuv => "small_suv",
+            Special => "special",
+            Standard => "standard",
+            Stretch => "stretch",
+            Subcompact => "subcompact",
+            Taxi => "taxi",
+            TwelveFootTruck => "twelve_foot_truck",
+            TwelvePassengerVan => "twelve_passenger_van",
+            TwentyFootTruck => "twenty_foot_truck",
+            TwentyFourFootTruck => "twenty_four_foot_truck",
+            TwentySixFootTruck => "twenty_six_foot_truck",
+            Unique => "unique",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleType::*;
+        match s {
+            "cargo_van" => Ok(CargoVan),
+            "compact" => Ok(Compact),
+            "economy" => Ok(Economy),
+            "exotic" => Ok(Exotic),
+            "exotic_suv" => Ok(ExoticSuv),
+            "fifteen_passenger_van" => Ok(FifteenPassengerVan),
+            "four_wheel_drive" => Ok(FourWheelDrive),
+            "full_size" => Ok(FullSize),
+            "intermediate" => Ok(Intermediate),
+            "large_suv" => Ok(LargeSuv),
+            "large_truck" => Ok(LargeTruck),
+            "luxury" => Ok(Luxury),
+            "medium_suv" => Ok(MediumSuv),
+            "midsize" => Ok(Midsize),
+            "mini" => Ok(Mini),
+            "minivan" => Ok(Minivan),
+            "miscellaneous" => Ok(Miscellaneous),
+            "moped" => Ok(Moped),
+            "moving_van" => Ok(MovingVan),
+            "premium" => Ok(Premium),
+            "regular" => Ok(Regular),
+            "small_medium_truck" => Ok(SmallMediumTruck),
+            "small_suv" => Ok(SmallSuv),
+            "special" => Ok(Special),
+            "standard" => Ok(Standard),
+            "stretch" => Ok(Stretch),
+            "subcompact" => Ok(Subcompact),
+            "taxi" => Ok(Taxi),
+            "twelve_foot_truck" => Ok(TwelveFootTruck),
+            "twelve_passenger_van" => Ok(TwelvePassengerVan),
+            "twenty_foot_truck" => Ok(TwentyFootTruck),
+            "twenty_four_foot_truck" => Ok(TwentyFourFootTruck),
+            "twenty_six_foot_truck" => Ok(TwentySixFootTruck),
+            "unique" => Ok(Unique),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Class of the rental vehicle.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    Business,
+    Economy,
+    FirstClass,
+    PremiumEconomy,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    pub fn as_str(&self) -> &str {
+        use ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass::*;
+        match self {
+            Business => "business",
+            Economy => "economy",
+            FirstClass => "first_class",
+            PremiumEconomy => "premium_economy",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass::*;
+        match s {
+            "business" => Ok(Business),
+            "economy" => Ok(Economy),
+            "first_class" => Ok(FirstClass),
+            "premium_economy" => Ok(PremiumEconomy),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentDetailsCarRentalDataVehicleVehicleClass
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Lodging data for this PaymentIntent.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentDetailsLodgingData {
+    /// Accommodation details for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub accommodation: Option<ConfirmPaymentIntentPaymentDetailsLodgingDataAccommodation>,
+    /// Affiliate details if applicable.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affiliate: Option<ConfirmPaymentIntentPaymentDetailsLodgingDataAffiliate>,
+    /// Booking confirmation number for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub booking_number: Option<String>,
+    /// Check-in date.
+    pub checkin_at: stripe_types::Timestamp,
+    /// Check-out date.
+    pub checkout_at: stripe_types::Timestamp,
+    /// Customer service phone number for the lodging company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_service_phone_number: Option<String>,
+    /// Whether the lodging is compliant with any hotel fire safety regulations.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fire_safety_act_compliance_indicator: Option<bool>,
+    /// List of guests for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub guests: Option<Vec<Guest>>,
+    /// Host details for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub host: Option<ConfirmPaymentIntentPaymentDetailsLodgingDataHost>,
+    /// List of insurances for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub insurances: Option<Vec<ConfirmPaymentIntentPaymentDetailsLodgingDataInsurances>>,
+    /// Whether the renter is a no-show.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub no_show_indicator: Option<bool>,
+    /// Renter ID number for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub renter_id_number: Option<String>,
+    /// Renter name for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub renter_name: Option<String>,
+    /// Total details for the lodging.
+    pub total: ConfirmPaymentIntentPaymentDetailsLodgingDataTotal,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsLodgingData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentDetailsLodgingData").finish_non_exhaustive()
+    }
+}
+impl ConfirmPaymentIntentPaymentDetailsLodgingData {
+    pub fn new(
+        checkin_at: impl Into<stripe_types::Timestamp>,
+        checkout_at: impl Into<stripe_types::Timestamp>,
+        total: impl Into<ConfirmPaymentIntentPaymentDetailsLodgingDataTotal>,
+    ) -> Self {
+        Self {
+            accommodation: None,
+            affiliate: None,
+            booking_number: None,
+            checkin_at: checkin_at.into(),
+            checkout_at: checkout_at.into(),
+            customer_service_phone_number: None,
+            fire_safety_act_compliance_indicator: None,
+            guests: None,
+            host: None,
+            insurances: None,
+            no_show_indicator: None,
+            renter_id_number: None,
+            renter_name: None,
+            total: total.into(),
+        }
+    }
+}
+/// Accommodation details for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentDetailsLodgingDataAccommodation {
+    /// Type of accommodation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub accommodation_type:
+        Option<ConfirmPaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType>,
+    /// Bed type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bed_type: Option<String>,
+    /// Daily accommodation rate in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub daily_rate_amount: Option<i64>,
+    /// Number of nights.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nights: Option<i64>,
+    /// Number of rooms, cabanas, apartments, and so on.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub number_of_rooms: Option<i64>,
+    /// Rate type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rate_type: Option<String>,
+    /// Whether smoking is allowed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub smoking_indicator: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsLodgingDataAccommodation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentDetailsLodgingDataAccommodation")
+            .finish_non_exhaustive()
+    }
+}
+impl ConfirmPaymentIntentPaymentDetailsLodgingDataAccommodation {
+    pub fn new() -> Self {
+        Self {
+            accommodation_type: None,
+            bed_type: None,
+            daily_rate_amount: None,
+            nights: None,
+            number_of_rooms: None,
+            rate_type: None,
+            smoking_indicator: None,
+        }
+    }
+}
+impl Default for ConfirmPaymentIntentPaymentDetailsLodgingDataAccommodation {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of accommodation.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmPaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType {
+    Apartment,
+    Cabana,
+    House,
+    Penthouse,
+    Room,
+    Standard,
+    Suite,
+    Villa,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmPaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType {
+    pub fn as_str(&self) -> &str {
+        use ConfirmPaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType::*;
+        match self {
+            Apartment => "apartment",
+            Cabana => "cabana",
+            House => "house",
+            Penthouse => "penthouse",
+            Room => "room",
+            Standard => "standard",
+            Suite => "suite",
+            Villa => "villa",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for ConfirmPaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType::*;
+        match s {
+            "apartment" => Ok(Apartment),
+            "cabana" => Ok(Cabana),
+            "house" => Ok(House),
+            "penthouse" => Ok(Penthouse),
+            "room" => Ok(Room),
+            "standard" => Ok(Standard),
+            "suite" => Ok(Suite),
+            "villa" => Ok(Villa),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmPaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for ConfirmPaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for ConfirmPaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for ConfirmPaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for ConfirmPaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentDetailsLodgingDataAccommodationAccommodationType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Affiliate details if applicable.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentDetailsLodgingDataAffiliate {
+    /// Affiliate partner code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code: Option<String>,
+    /// Affiliate partner name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsLodgingDataAffiliate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentDetailsLodgingDataAffiliate")
+            .finish_non_exhaustive()
+    }
+}
+impl ConfirmPaymentIntentPaymentDetailsLodgingDataAffiliate {
+    pub fn new() -> Self {
+        Self { code: None, name: None }
+    }
+}
+impl Default for ConfirmPaymentIntentPaymentDetailsLodgingDataAffiliate {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Host details for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentDetailsLodgingDataHost {
+    /// Address of the host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<RequiredAddress>,
+    /// Host's country of domicile.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country_of_domicile: Option<String>,
+    /// Reference number for the host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub host_reference: Option<String>,
+    /// Type of host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub host_type: Option<ConfirmPaymentIntentPaymentDetailsLodgingDataHostHostType>,
+    /// Name of the lodging property or host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Total number of reservations for the host.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub number_of_reservations: Option<i64>,
+    /// Property phone number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub property_phone_number: Option<String>,
+    /// Host's registration date.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub registered_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsLodgingDataHost {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentDetailsLodgingDataHost").finish_non_exhaustive()
+    }
+}
+impl ConfirmPaymentIntentPaymentDetailsLodgingDataHost {
+    pub fn new() -> Self {
+        Self {
+            address: None,
+            country_of_domicile: None,
+            host_reference: None,
+            host_type: None,
+            name: None,
+            number_of_reservations: None,
+            property_phone_number: None,
+            registered_at: None,
+        }
+    }
+}
+impl Default for ConfirmPaymentIntentPaymentDetailsLodgingDataHost {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of host.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmPaymentIntentPaymentDetailsLodgingDataHostHostType {
+    Hostel,
+    Hotel,
+    Owner,
+    RentalAgency,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmPaymentIntentPaymentDetailsLodgingDataHostHostType {
+    pub fn as_str(&self) -> &str {
+        use ConfirmPaymentIntentPaymentDetailsLodgingDataHostHostType::*;
+        match self {
+            Hostel => "hostel",
+            Hotel => "hotel",
+            Owner => "owner",
+            RentalAgency => "rental_agency",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentDetailsLodgingDataHostHostType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentDetailsLodgingDataHostHostType::*;
+        match s {
+            "hostel" => Ok(Hostel),
+            "hotel" => Ok(Hotel),
+            "owner" => Ok(Owner),
+            "rental_agency" => Ok(RentalAgency),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmPaymentIntentPaymentDetailsLodgingDataHostHostType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentDetailsLodgingDataHostHostType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentDetailsLodgingDataHostHostType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// List of insurances for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentDetailsLodgingDataInsurances {
+    /// Price of the insurance coverage in cents.
+    pub amount: i64,
+    /// Currency of the insurance amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Name of the insurance company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub insurance_company_name: Option<String>,
+    /// Type of insurance coverage.
+    pub insurance_type: ConfirmPaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsLodgingDataInsurances {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentDetailsLodgingDataInsurances")
+            .finish_non_exhaustive()
+    }
+}
+impl ConfirmPaymentIntentPaymentDetailsLodgingDataInsurances {
+    pub fn new(
+        amount: impl Into<i64>,
+        insurance_type: impl Into<ConfirmPaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType>,
+    ) -> Self {
+        Self {
+            amount: amount.into(),
+            currency: None,
+            insurance_company_name: None,
+            insurance_type: insurance_type.into(),
+        }
+    }
+}
+/// Type of insurance coverage.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmPaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    Bankruptcy,
+    Cancelation,
+    Emergency,
+    Medical,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmPaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    pub fn as_str(&self) -> &str {
+        use ConfirmPaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType::*;
+        match self {
+            Bankruptcy => "bankruptcy",
+            Cancelation => "cancelation",
+            Emergency => "emergency",
+            Medical => "medical",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType::*;
+        match s {
+            "bankruptcy" => Ok(Bankruptcy),
+            "cancelation" => Ok(Cancelation),
+            "emergency" => Ok(Emergency),
+            "medical" => Ok(Medical),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmPaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentDetailsLodgingDataInsurancesInsuranceType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Total details for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentDetailsLodgingDataTotal {
+    /// Total price of the lodging reservation in cents.
+    pub amount: i64,
+    /// Cash advances in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cash_advances: Option<i64>,
+    /// Currency of the total amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Discount details for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Discount>,
+    /// Additional charges for the lodging.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extra_charges: Option<Vec<ConfirmPaymentIntentPaymentDetailsLodgingDataTotalExtraCharges>>,
+    /// Prepaid amount in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prepaid_amount: Option<i64>,
+    /// Tax breakdown for the lodging reservation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<ConfirmPaymentIntentPaymentDetailsLodgingDataTotalTax>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsLodgingDataTotal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentDetailsLodgingDataTotal").finish_non_exhaustive()
+    }
+}
+impl ConfirmPaymentIntentPaymentDetailsLodgingDataTotal {
+    pub fn new(amount: impl Into<i64>) -> Self {
+        Self {
+            amount: amount.into(),
+            cash_advances: None,
+            currency: None,
+            discounts: None,
+            extra_charges: None,
+            prepaid_amount: None,
+            tax: None,
+        }
+    }
+}
+/// Additional charges for the lodging.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentDetailsLodgingDataTotalExtraCharges {
+    /// Amount of the extra charge in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// Type of extra charge.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<ConfirmPaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsLodgingDataTotalExtraCharges {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentDetailsLodgingDataTotalExtraCharges")
+            .finish_non_exhaustive()
+    }
+}
+impl ConfirmPaymentIntentPaymentDetailsLodgingDataTotalExtraCharges {
+    pub fn new() -> Self {
+        Self { amount: None, type_: None }
+    }
+}
+impl Default for ConfirmPaymentIntentPaymentDetailsLodgingDataTotalExtraCharges {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Type of extra charge.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmPaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    GiftShop,
+    Laundry,
+    MiniBar,
+    Other,
+    Phone,
+    Restaurant,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmPaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    pub fn as_str(&self) -> &str {
+        use ConfirmPaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType::*;
+        match self {
+            GiftShop => "gift_shop",
+            Laundry => "laundry",
+            MiniBar => "mini_bar",
+            Other => "other",
+            Phone => "phone",
+            Restaurant => "restaurant",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType::*;
+        match s {
+            "gift_shop" => Ok(GiftShop),
+            "laundry" => Ok(Laundry),
+            "mini_bar" => Ok(MiniBar),
+            "other" => Ok(Other),
+            "phone" => Ok(Phone),
+            "restaurant" => Ok(Restaurant),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmPaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentDetailsLodgingDataTotalExtraChargesType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Tax breakdown for the lodging reservation.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentDetailsLodgingDataTotalTax {
+    /// Indicates whether the transaction is tax exempt.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_exempt_indicator: Option<bool>,
+    /// Tax details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_items: Option<Vec<ConfirmPaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsLodgingDataTotalTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentDetailsLodgingDataTotalTax")
+            .finish_non_exhaustive()
+    }
+}
+impl ConfirmPaymentIntentPaymentDetailsLodgingDataTotalTax {
+    pub fn new() -> Self {
+        Self { tax_exempt_indicator: None, tax_items: None }
+    }
+}
+impl Default for ConfirmPaymentIntentPaymentDetailsLodgingDataTotalTax {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Tax details.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems {
+    /// Tax amount in cents.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// Tax rate.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rate: Option<i64>,
+    /// Type of tax applied.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems")
+            .finish_non_exhaustive()
+    }
+}
+impl ConfirmPaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems {
+    pub fn new() -> Self {
+        Self { amount: None, rate: None, type_: None }
+    }
+}
+impl Default for ConfirmPaymentIntentPaymentDetailsLodgingDataTotalTaxTaxItems {
     fn default() -> Self {
         Self::new()
     }
@@ -36081,7 +42563,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataIdeal
 pub struct ConfirmPaymentIntentPaymentMethodDataKlarna {
     /// Customer's date of birth
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub dob: Option<DateOfBirth>,
+    pub dob: Option<ConfirmPaymentIntentPaymentMethodDataKlarnaDob>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataKlarna {
@@ -36097,6 +42579,29 @@ impl ConfirmPaymentIntentPaymentMethodDataKlarna {
 impl Default for ConfirmPaymentIntentPaymentMethodDataKlarna {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Customer's date of birth
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentMethodDataKlarnaDob {
+    /// The day of birth, between 1 and 31.
+    pub day: i64,
+    /// The month of birth, between 1 and 12.
+    pub month: i64,
+    /// The four-digit year of birth.
+    pub year: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataKlarnaDob {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataKlarnaDob").finish_non_exhaustive()
+    }
+}
+impl ConfirmPaymentIntentPaymentMethodDataKlarnaDob {
+    pub fn new(day: impl Into<i64>, month: impl Into<i64>, year: impl Into<i64>) -> Self {
+        Self { day: day.into(), month: month.into(), year: year.into() }
     }
 }
 /// If this is a `naver_pay` PaymentMethod, this hash contains details about the Naver Pay payment method.
@@ -51694,6 +58199,203 @@ impl OnlineParam {
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
+pub struct Affiliate {
+    /// Affiliate partner code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code: Option<String>,
+    /// Name of affiliate partner.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Affiliate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Affiliate").finish_non_exhaustive()
+    }
+}
+impl Affiliate {
+    pub fn new() -> Self {
+        Self { code: None, name: None }
+    }
+}
+impl Default for Affiliate {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct DateOfBirth {
+    /// Day of birth (1-31).
+    pub day: i64,
+    /// Month of birth (1-12).
+    pub month: i64,
+    /// Year of birth (must be greater than 1900).
+    pub year: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DateOfBirth {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DateOfBirth").finish_non_exhaustive()
+    }
+}
+impl DateOfBirth {
+    pub fn new(day: impl Into<i64>, month: impl Into<i64>, year: impl Into<i64>) -> Self {
+        Self { day: day.into(), month: month.into(), year: year.into() }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct RequiredAddress {
+    /// City, district, suburb, town, or village.
+    pub city: String,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    pub country: String,
+    /// Address line 1, such as the street, PO Box, or company name.
+    pub line1: String,
+    /// Address line 2, such as the apartment, suite, unit, or building.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+    /// ZIP or postal code.
+    pub postal_code: String,
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RequiredAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RequiredAddress").finish_non_exhaustive()
+    }
+}
+impl RequiredAddress {
+    pub fn new(
+        city: impl Into<String>,
+        country: impl Into<String>,
+        line1: impl Into<String>,
+        postal_code: impl Into<String>,
+    ) -> Self {
+        Self {
+            city: city.into(),
+            country: country.into(),
+            line1: line1.into(),
+            line2: None,
+            postal_code: postal_code.into(),
+            state: None,
+        }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct Discounts {
+    /// Corporate client discount code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub corporate_client_code: Option<String>,
+    /// Coupon code applied to the rental.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+    /// Maximum number of free miles or kilometers included.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum_free_miles_or_kilometers: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Discounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Discounts").finish_non_exhaustive()
+    }
+}
+impl Discounts {
+    pub fn new() -> Self {
+        Self { corporate_client_code: None, coupon: None, maximum_free_miles_or_kilometers: None }
+    }
+}
+impl Default for Discounts {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct TaxItem {
+    /// Tax amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// Tax rate applied.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rate: Option<i64>,
+    /// Type of tax applied.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxItem").finish_non_exhaustive()
+    }
+}
+impl TaxItem {
+    pub fn new() -> Self {
+        Self { amount: None, rate: None, type_: None }
+    }
+}
+impl Default for TaxItem {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct Guest {
+    /// Guest's full name.
+    pub name: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Guest {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Guest").finish_non_exhaustive()
+    }
+}
+impl Guest {
+    pub fn new(name: impl Into<String>) -> Self {
+        Self { name: name.into() }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct Discount {
+    /// Corporate client discount code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub corporate_client_code: Option<String>,
+    /// Coupon code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Discount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Discount").finish_non_exhaustive()
+    }
+}
+impl Discount {
+    pub fn new() -> Self {
+        Self { corporate_client_code: None, coupon: None }
+    }
+}
+impl Default for Discount {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PaymentMethodParam {
     /// Customer's bank account number.
     pub account_number: String,
@@ -51719,28 +58421,6 @@ impl PaymentMethodParam {
             institution_number: institution_number.into(),
             transit_number: transit_number.into(),
         }
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct DateOfBirth {
-    /// The day of birth, between 1 and 31.
-    pub day: i64,
-    /// The month of birth, between 1 and 12.
-    pub month: i64,
-    /// The four-digit year of birth.
-    pub year: i64,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for DateOfBirth {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("DateOfBirth").finish_non_exhaustive()
-    }
-}
-impl DateOfBirth {
-    pub fn new(day: impl Into<i64>, month: impl Into<i64>, year: impl Into<i64>) -> Self {
-        Self { day: day.into(), month: month.into(), year: year.into() }
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -51973,6 +58653,91 @@ impl AsyncWorkflowsInputsParam {
     }
 }
 impl Default for AsyncWorkflowsInputsParam {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct Driver {
+    /// Driver's date of birth.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date_of_birth: Option<DateOfBirth>,
+    /// Driver's identification number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub driver_identification_number: Option<String>,
+    /// Driver's tax number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub driver_tax_number: Option<String>,
+    /// Driver's full name.
+    pub name: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Driver {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Driver").finish_non_exhaustive()
+    }
+}
+impl Driver {
+    pub fn new(name: impl Into<String>) -> Self {
+        Self {
+            date_of_birth: None,
+            driver_identification_number: None,
+            driver_tax_number: None,
+            name: name.into(),
+        }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct Location {
+    /// Address of the rental location.
+    pub address: RequiredAddress,
+    /// Location name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub location_name: Option<String>,
+    /// Timestamp for the location.
+    pub time: stripe_types::Timestamp,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Location {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Location").finish_non_exhaustive()
+    }
+}
+impl Location {
+    pub fn new(
+        address: impl Into<RequiredAddress>,
+        time: impl Into<stripe_types::Timestamp>,
+    ) -> Self {
+        Self { address: address.into(), location_name: None, time: time.into() }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct Tax {
+    /// Indicates if the transaction is tax exempt.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_exempt_indicator: Option<bool>,
+    /// Array of tax details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_items: Option<Vec<TaxItem>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Tax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Tax").finish_non_exhaustive()
+    }
+}
+impl Tax {
+    pub fn new() -> Self {
+        Self { tax_exempt_indicator: None, tax_items: None }
+    }
+}
+impl Default for Tax {
     fn default() -> Self {
         Self::new()
     }

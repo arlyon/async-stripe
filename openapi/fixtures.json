@@ -2240,6 +2240,7 @@
       ],
       "evidence": {
         "access_activity_log": null,
+        "appeal": {},
         "billing_address": null,
         "cancellation_policy": null,
         "cancellation_policy_disclosure": null,
@@ -3159,11 +3160,13 @@
           "customs": {
             "eori_number": null
           },
+          "delivered_at": null,
           "eta": null,
           "name": "name",
           "phone_number": null,
           "require_signature": null,
           "service": "express",
+          "shipped_at": null,
           "status": null,
           "tracking_number": null,
           "tracking_url": null,
@@ -3394,11 +3397,13 @@
         "customs": {
           "eori_number": null
         },
+        "delivered_at": null,
         "eta": null,
         "name": "name",
         "phone_number": null,
         "require_signature": null,
         "service": "express",
+        "shipped_at": null,
         "status": null,
         "tracking_number": null,
         "tracking_url": null,
@@ -4986,6 +4991,7 @@
     },
     "refund": {
       "amount": 100,
+      "application": null,
       "balance_transaction": null,
       "charge": "ch_1PgafuB7WZ01zgkWXYmPNZs8",
       "created": 1234567890,
@@ -6614,7 +6620,13 @@
       "currency": "usd",
       "description": "InboundTransfer from my external bank account",
       "failure_details": {
-        "code": "insufficient_funds"
+        "code": "insufficient_funds",
+        "network_details": {
+          "ach": {
+            "return_code": "R01",
+            "return_reason": "Insufficient Funds"
+          }
+        }
       },
       "financial_account": "fa_1Pgc7BB7WZ01zgkWxDkCj857",
       "hosted_regulatory_receipt_url": "https://sangeekp-15t6ai--agrippa-mydev.dev.stripe.me/regulatory-receipt/CBQaFwoVYWNjdF8xUGdhZlRCN1daMDF6Z2tXKJ_ei7UGMgYKg2PTYkI6Nv0SjUVDsJYyegKhOMmAGzmg4wwaTYDnBu71ORJHkusIcWVsk-jhNAZH7A3P6dVmpXZBTZ6_jw",
@@ -6695,6 +6707,12 @@
       "object": "treasury.outbound_payment",
       "returned_details": {
         "code": "account_frozen",
+        "network_details": {
+          "ach": {
+            "return_code": "R16",
+            "return_reason": "Account Frozen"
+          }
+        },
         "transaction": {
           "amount": 1413853096,
           "balance_impact": {
@@ -6771,6 +6789,12 @@
       "object": "treasury.outbound_transfer",
       "returned_details": {
         "code": "account_frozen",
+        "network_details": {
+          "ach": {
+            "return_code": "R16",
+            "return_reason": "Account Frozen"
+          }
+        },
         "transaction": {
           "amount": 1413853096,
           "balance_impact": {
@@ -6957,5 +6981,5 @@
       "url": "https://example.com/my/webhook/endpoint"
     }
   },
-  "version": "v2600"
+  "version": "v2602"
 }

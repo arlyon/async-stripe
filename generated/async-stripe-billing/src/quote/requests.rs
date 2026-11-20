@@ -806,7 +806,7 @@ impl<'de> serde::Deserialize<'de> for CreateQuoteInvoiceSettingsIssuerType {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateQuoteLineItems {
-    /// The discounts applied to this line item.
+    /// The discounts applied to this line item. Repeating coupons are only supported for recurring prices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
     /// The ID of the price object. One of `price` or `price_data` is required.
@@ -1866,7 +1866,7 @@ impl<'de> serde::Deserialize<'de> for UpdateQuoteInvoiceSettingsIssuerType {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct UpdateQuoteLineItems {
-    /// The discounts applied to this line item.
+    /// The discounts applied to this line item. Repeating coupons are only supported for recurring prices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
     /// The ID of an existing line item on the quote.

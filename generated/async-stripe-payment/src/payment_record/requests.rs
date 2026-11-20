@@ -939,7 +939,7 @@ impl StripeRequest for ReportPaymentAttemptInformationalPaymentRecord {
 #[derive(serde::Serialize)]
 struct ReportRefundPaymentRecordBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
-    amount: Option<Amount>,
+    amount: Option<Params>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1206,7 +1206,7 @@ impl ReportRefundPaymentRecord {
     }
     /// A positive integer in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) representing how much of this payment to refund.
     /// Can refund only up to the remaining, unrefunded amount of the payment.
-    pub fn amount(mut self, amount: impl Into<Amount>) -> Self {
+    pub fn amount(mut self, amount: impl Into<Params>) -> Self {
         self.inner.amount = Some(amount.into());
         self
     }
@@ -1268,7 +1268,7 @@ impl StripeRequest for ReportRefundPaymentRecord {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 struct ReportPaymentPaymentRecordBuilder {
-    amount_requested: Amount,
+    amount_requested: Params,
     #[serde(skip_serializing_if = "Option::is_none")]
     canceled: Option<Canceled>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1302,7 +1302,7 @@ impl std::fmt::Debug for ReportPaymentPaymentRecordBuilder {
 }
 impl ReportPaymentPaymentRecordBuilder {
     fn new(
-        amount_requested: impl Into<Amount>,
+        amount_requested: impl Into<Params>,
         initiated_at: impl Into<stripe_types::Timestamp>,
         payment_method_details: impl Into<ReportPaymentPaymentRecordPaymentMethodDetails>,
     ) -> Self {
@@ -1642,7 +1642,7 @@ impl std::fmt::Debug for ReportPaymentPaymentRecord {
 impl ReportPaymentPaymentRecord {
     /// Construct a new `ReportPaymentPaymentRecord`.
     pub fn new(
-        amount_requested: impl Into<Amount>,
+        amount_requested: impl Into<Params>,
         initiated_at: impl Into<stripe_types::Timestamp>,
         payment_method_details: impl Into<ReportPaymentPaymentRecordPaymentMethodDetails>,
     ) -> Self {
@@ -1905,7 +1905,7 @@ impl Default for CustomerDetails {
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
-pub struct Amount {
+pub struct Params {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
@@ -1914,12 +1914,12 @@ pub struct Amount {
     pub value: i64,
 }
 #[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for Amount {
+impl std::fmt::Debug for Params {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("Amount").finish_non_exhaustive()
+        f.debug_struct("Params").finish_non_exhaustive()
     }
 }
-impl Amount {
+impl Params {
     pub fn new(currency: impl Into<stripe_types::Currency>, value: impl Into<i64>) -> Self {
         Self { currency: currency.into(), value: value.into() }
     }

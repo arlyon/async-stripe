@@ -866,6 +866,15 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionAllowedPaymentMethodT
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionAutomaticTax {
+    /// Controls how much address information Checkout collects when [automatic_tax](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-automatic_tax-enabled) is enabled.
+    ///
+    /// Defaults to `full`, which collects the address fields needed for the most accurate tax calculation.
+    /// Set to `minimal` to collect only the fields required for tax in the buyer's country, accepting potentially less precise tax calculation in exchange for a streamlined form.
+    ///
+    /// Only honored when `automatic_tax.enabled` is `true`, `billing_address_collection` is `auto`, the resolved tax address source is the session billing address, and `ui_mode` is `form`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_collection_precision:
+        Option<CreateCheckoutSessionAutomaticTaxAddressCollectionPrecision>,
     /// Set to `true` to [calculate tax automatically](https://docs.stripe.com/tax) using the customer's location.
     ///
     /// Enabling this parameter causes Checkout to collect any billing address information necessary for tax calculation.
@@ -884,7 +893,85 @@ impl std::fmt::Debug for CreateCheckoutSessionAutomaticTax {
 }
 impl CreateCheckoutSessionAutomaticTax {
     pub fn new(enabled: impl Into<bool>) -> Self {
-        Self { enabled: enabled.into(), liability: None }
+        Self { address_collection_precision: None, enabled: enabled.into(), liability: None }
+    }
+}
+/// Controls how much address information Checkout collects when [automatic_tax](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-automatic_tax-enabled) is enabled.
+///
+/// Defaults to `full`, which collects the address fields needed for the most accurate tax calculation.
+/// Set to `minimal` to collect only the fields required for tax in the buyer's country, accepting potentially less precise tax calculation in exchange for a streamlined form.
+///
+/// Only honored when `automatic_tax.enabled` is `true`, `billing_address_collection` is `auto`, the resolved tax address source is the session billing address, and `ui_mode` is `form`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateCheckoutSessionAutomaticTaxAddressCollectionPrecision {
+    Full,
+    Minimal,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateCheckoutSessionAutomaticTaxAddressCollectionPrecision {
+    pub fn as_str(&self) -> &str {
+        use CreateCheckoutSessionAutomaticTaxAddressCollectionPrecision::*;
+        match self {
+            Full => "full",
+            Minimal => "minimal",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionAutomaticTaxAddressCollectionPrecision {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionAutomaticTaxAddressCollectionPrecision::*;
+        match s {
+            "full" => Ok(Full),
+            "minimal" => Ok(Minimal),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateCheckoutSessionAutomaticTaxAddressCollectionPrecision"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionAutomaticTaxAddressCollectionPrecision {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateCheckoutSessionAutomaticTaxAddressCollectionPrecision {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionAutomaticTaxAddressCollectionPrecision {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionAutomaticTaxAddressCollectionPrecision))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionAutomaticTaxAddressCollectionPrecision {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionAutomaticTaxAddressCollectionPrecision {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The account that's liable for tax.
@@ -17199,6 +17286,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionWalletOptionsLinkDisp
     }
 }
 /// Creates a Checkout Session object.
+///
+/// Validate requests on your server and protect your application’s Session-creation endpoint with access controls and limits on repeated creation.
+/// See [Protect your Session-creation endpoint](https://docs.stripe.com/payments/accept-a-payment?payment-ui=elements&api-integration=checkout#protect-session-creation).
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
