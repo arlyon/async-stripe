@@ -1,6 +1,5 @@
 use std::str::FromStr;
 
-use chrono::Utc;
 use hmac::{Hmac, KeyInit, Mac};
 use sha2::Sha256;
 use stripe_shared::ApiVersion;
@@ -208,7 +207,7 @@ impl Webhook {
     /// assert_eq!(event.id.as_str(), "evt_test");
     /// ```
     pub fn generate_test_header(payload: &str, secret: &str, timestamp: Option<i64>) -> String {
-        let timestamp = timestamp.unwrap_or_else(|| Utc::now().timestamp());
+        let timestamp = timestamp.unwrap_or_else(unix_now);
         let signed_payload = format!("{timestamp}.{payload}");
 
         let mut mac = Hmac::<Sha256>::new_from_slice(secret.as_bytes())
@@ -250,7 +249,7 @@ impl Webhook {
     ///  - the signature timestamp is older than 5 minutes
     ///  - the payload could not be parsed
     pub fn construct_event(payload: &str, sig: &str, secret: &str) -> Result<Event, WebhookError> {
-        Self { current_timestamp: Utc::now().timestamp() }.do_construct_event(payload, sig, secret)
+        Self { current_timestamp: unix_now() }.do_construct_event(payload, sig, secret)
     }
 
     /// Construct an event from a webhook payload and signature, verifying its signature
@@ -382,6 +381,22 @@ impl<'r> Signature<'r> {
             return Err(WebhookError::BadSignature);
         }
         Ok(Signature { t: t.ok_or(WebhookError::BadSignature)?, v1 })
+    }
+}
+
+/// The current time in whole seconds since the Unix epoch.
+///
+/// Rounds toward negative infinity, the same as `chrono::Utc::now().timestamp()`,
+/// which this replaces.
+fn unix_now() -> i64 {
+    use std::time::{SystemTime, UNIX_EPOCH};
+    match SystemTime::now().duration_since(UNIX_EPOCH) {
+        Ok(d) => i64::try_from(d.as_secs()).unwrap_or(i64::MAX),
+        Err(e) => {
+            let d = e.duration();
+            let secs = i64::try_from(d.as_secs()).unwrap_or(i64::MAX);
+            if d.subsec_nanos() == 0 { -secs } else { -secs - 1 }
+        }
     }
 }
 
@@ -829,7 +844,7 @@ mod tests {
         .to_string();
 
         let secret = "whsec_test_secret";
-        let timestamp = Utc::now().timestamp();
+        let timestamp = unix_now();
 
         // Generate test signature
         let signature = Webhook::generate_test_header(&payload, secret, Some(timestamp));
@@ -870,7 +885,7 @@ mod tests {
 
     #[track_caller]
     fn parse_mock_webhook_event(event_type: EventType, data: Value) -> EventObject {
-        let now = Utc::now().timestamp();
+        let now = unix_now();
         let payload = mock_webhook_event(&event_type, data).to_string();
         let sig = get_mock_stripe_sig(&payload, now);
 

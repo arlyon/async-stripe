@@ -20,7 +20,6 @@ async-stripe-shared = { path = "../generated/async-stripe-shared", version = "1.
 hmac = "0.13"
 sha2 = "0.11"
 hex = "0.4"
-chrono = { version = "0.4", default-features = false, features = ["clock"] }
 thiserror = "2.0.16"
 tracing = { version = "0.1", default-features = false, features = ["attributes"] }
 miniserde.workspace = true
