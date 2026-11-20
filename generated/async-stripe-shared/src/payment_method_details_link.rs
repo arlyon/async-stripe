@@ -8,6 +8,8 @@ pub struct PaymentMethodDetailsLink {
     pub country: Option<String>,
     /// The [funding source group code](https://docs.stripe.com/payments/link/link-payment-methods) applied to this Link payment at confirmation time.
     pub funding_source_group: Option<String>,
+    /// Details about the funding sources used for this Link payment.
+    pub funding_sources: Option<Vec<stripe_shared::PaymentMethodDetailsLinkFundingSource>>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for PaymentMethodDetailsLink {
@@ -19,6 +21,7 @@ impl std::fmt::Debug for PaymentMethodDetailsLink {
 pub struct PaymentMethodDetailsLinkBuilder {
     country: Option<Option<String>>,
     funding_source_group: Option<Option<String>>,
+    funding_sources: Option<Option<Vec<stripe_shared::PaymentMethodDetailsLinkFundingSource>>>,
 }
 
 #[allow(
@@ -63,21 +66,28 @@ const _: () = {
             Ok(match k {
                 "country" => Deserialize::begin(&mut self.country),
                 "funding_source_group" => Deserialize::begin(&mut self.funding_source_group),
+                "funding_sources" => Deserialize::begin(&mut self.funding_sources),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { country: Some(None), funding_source_group: Some(None) }
+            Self {
+                country: Some(None),
+                funding_source_group: Some(None),
+                funding_sources: Some(None),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(country), Some(funding_source_group)) =
-                (self.country.take(), self.funding_source_group.take())
-            else {
+            let (Some(country), Some(funding_source_group), Some(funding_sources)) = (
+                self.country.take(),
+                self.funding_source_group.take(),
+                self.funding_sources.take(),
+            ) else {
                 return None;
             };
-            Some(Self::Out { country, funding_source_group })
+            Some(Self::Out { country, funding_source_group, funding_sources })
         }
     }
 
@@ -106,6 +116,7 @@ const _: () = {
                 match k.as_str() {
                     "country" => b.country = FromValueOpt::from_value(v),
                     "funding_source_group" => b.funding_source_group = FromValueOpt::from_value(v),
+                    "funding_sources" => b.funding_sources = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }

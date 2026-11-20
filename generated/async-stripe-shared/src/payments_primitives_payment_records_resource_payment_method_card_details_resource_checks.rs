@@ -5,7 +5,7 @@
 pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecks {
         /// If you provide a value for `address.line1`, the check result is one of `pass`, `fail`, `unavailable`, or `unchecked`.
 pub address_line1_check: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksAddressLine1Check>,
-        /// If you provide a address postal code, the check result is one of `pass`, `fail`, `unavailable`, or `unchecked`.
+        /// If you provide an address postal code, the check result is one of `pass`, `fail`, `unavailable`, or `unchecked`.
 pub address_postal_code_check: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksAddressPostalCodeCheck>,
     /// If you provide a CVC, the check results is one of `pass`, `fail`, `unavailable`, or `unchecked`.
 pub cvc_check: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksCvcCheck>,
@@ -238,7 +238,7 @@ impl<'de> serde::Deserialize<'de> for PaymentsPrimitivesPaymentRecordsResourcePa
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// If you provide a address postal code, the check result is one of `pass`, `fail`, `unavailable`, or `unchecked`.
+/// If you provide an address postal code, the check result is one of `pass`, `fail`, `unavailable`, or `unchecked`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecksAddressPostalCodeCheck

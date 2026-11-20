@@ -24,6 +24,22 @@ pub use stripe_shared::card_mandate_payment_method_details::*;
 pub use stripe_shared::card_mandate_payment_method_details_india::*;
 pub mod confirmation_token;
 #[doc(hidden)]
+pub mod confirmation_token_payment_method_preview_card;
+#[doc(inline)]
+pub use confirmation_token_payment_method_preview_card::*;
+#[doc(hidden)]
+pub mod confirmation_token_payment_method_preview_card_wallet;
+#[doc(inline)]
+pub use confirmation_token_payment_method_preview_card_wallet::*;
+#[doc(hidden)]
+pub mod confirmation_token_payment_method_preview_card_wallet_link;
+#[doc(inline)]
+pub use confirmation_token_payment_method_preview_card_wallet_link::*;
+#[doc(hidden)]
+pub mod confirmation_token_payment_method_preview_link;
+#[doc(inline)]
+pub use confirmation_token_payment_method_preview_link::*;
+#[doc(hidden)]
 pub mod confirmation_tokens_resource_mandate_data;
 #[doc(inline)]
 pub use confirmation_tokens_resource_mandate_data::*;
@@ -194,6 +210,8 @@ pub use stripe_shared::payment_method_details_klarna::*;
 pub use stripe_shared::payment_method_details_konbini::*;
 pub use stripe_shared::payment_method_details_kr_card::*;
 pub use stripe_shared::payment_method_details_link::*;
+pub use stripe_shared::payment_method_details_link_funding_source::*;
+pub use stripe_shared::payment_method_details_link_funding_source_card::*;
 pub use stripe_shared::payment_method_details_mb_way::*;
 pub use stripe_shared::payment_method_details_mobilepay::*;
 pub use stripe_shared::payment_method_details_multibanco::*;

@@ -12,7 +12,7 @@ pub struct Dispute {
     /// Disputed amount.
     /// Usually the amount of the charge, but it can differ (usually because of currency fluctuation or because only part of the order is disputed).
     pub amount: i64,
-    /// List of zero, one, or two balance transactions that show funds withdrawn and reinstated to your Stripe account as a result of this dispute.
+    /// List of balance transactions that show funds withdrawn and reinstated to your Stripe account as a result of this dispute.
     pub balance_transactions: Vec<stripe_shared::BalanceTransaction>,
     /// ID of the charge that's disputed.
     pub charge: stripe_types::Expandable<stripe_shared::Charge>,

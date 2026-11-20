@@ -1268,6 +1268,15 @@ impl CustomUnitAmount {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct Features {
+    /// Optional text that describes what a customer loses by canceling, shown for this marketing feature in the Customer Portal cancellation flow.
+    /// Up to 80 characters long.
+    /// If you omit it when you update `marketing_features`, Stripe keeps the message stored for the feature with the same name.
+    /// Duplicate names are matched in order.
+    /// Set it to an empty string to remove the override.
+    /// When no override is stored, eligible cancellation flows use the marketing feature name.
+    /// A renamed feature is treated as a new feature, so send the message again to keep it.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub loss_message: Option<String>,
     /// The marketing feature name. Up to 80 characters long.
     pub name: String,
 }
@@ -1279,7 +1288,7 @@ impl std::fmt::Debug for Features {
 }
 impl Features {
     pub fn new(name: impl Into<String>) -> Self {
-        Self { name: name.into() }
+        Self { loss_message: None, name: name.into() }
     }
 }
 #[derive(Copy, Clone)]

@@ -12,7 +12,7 @@
 pub struct Balance {
     /// Available funds that you can transfer or pay out automatically by Stripe or explicitly through the [Transfers API](https://docs.stripe.com/api#transfers) or [Payouts API](https://docs.stripe.com/api#payouts).
     /// You can find the available balance for each currency and payment type in the `source_types` property.
-    pub available: Vec<stripe_core::BalanceAmount>,
+    pub available: Vec<stripe_core::BalanceAmountAvailable>,
     /// Funds held due to negative balances on connected accounts where [account.controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
     /// You can find the connect reserve balance for each currency and payment type in the `source_types` property.
     pub connect_reserved: Option<Vec<stripe_core::BalanceAmount>>,
@@ -35,7 +35,7 @@ impl std::fmt::Debug for Balance {
 }
 #[doc(hidden)]
 pub struct BalanceBuilder {
-    available: Option<Vec<stripe_core::BalanceAmount>>,
+    available: Option<Vec<stripe_core::BalanceAmountAvailable>>,
     connect_reserved: Option<Option<Vec<stripe_core::BalanceAmount>>>,
     instant_available: Option<Option<Vec<stripe_core::BalanceAmountNet>>>,
     issuing: Option<Option<stripe_core::BalanceDetail>>,

@@ -366,8 +366,8 @@ impl Default for UpdateTreasuryOutboundTransferTrackingDetailsUsDomesticWire {
         Self::new()
     }
 }
-/// Updates a test mode created OutboundTransfer with tracking details.
-/// The OutboundTransfer must not be cancelable, and cannot be in the `canceled` or `failed` states.
+/// Updates a test `OutboundTransfer` with tracking details.
+/// The `OutboundTransfer` must not be cancelable, and can’t be in the `canceled` or `failed` states.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -446,8 +446,8 @@ impl FailTreasuryOutboundTransferBuilder {
         Self { expand: None }
     }
 }
-/// Transitions a test mode created OutboundTransfer to the `failed` status.
-/// The OutboundTransfer must already be in the `processing` state.
+/// Transitions a test `OutboundTransfer` to the `failed` status.
+/// The `OutboundTransfer` must already be in the `processing` state.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -523,8 +523,8 @@ impl PostTreasuryOutboundTransferBuilder {
         Self { expand: None }
     }
 }
-/// Transitions a test mode created OutboundTransfer to the `posted` status.
-/// The OutboundTransfer must already be in the `processing` state.
+/// Transitions a test `OutboundTransfer` to the `posted` status.
+/// The `OutboundTransfer` must already be in the `processing` state.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -730,8 +730,8 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Transitions a test mode created OutboundTransfer to the `returned` status.
-/// The OutboundTransfer must already be in the `processing` state.
+/// Transitions a test `OutboundTransfer` to the `returned` status.
+/// The `OutboundTransfer` must already be in the `posted` state.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]

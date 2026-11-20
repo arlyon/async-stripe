@@ -23,8 +23,7 @@ pub struct RadarPaymentEvaluation {
     /// Indicates the final outcome for the payment evaluation.
     pub outcome: Option<stripe_fraud::InsightsResourcesPaymentEvaluationOutcome>,
     pub payment_details: Option<stripe_fraud::InsightsResourcesPaymentEvaluationPaymentDetails>,
-    /// Recommended action based on the score of the `fraudulent_payment` signal.
-    /// Possible values are `block`, `continue` and `request_three_d_secure`.
+    /// Recommended action for this payment based on its evaluated signals and rules.
     pub recommended_action: RadarPaymentEvaluationRecommendedAction,
     pub signals: stripe_fraud::InsightsResourcesPaymentEvaluationSignals,
 }
@@ -233,8 +232,7 @@ impl serde::Serialize for RadarPaymentEvaluation {
         s.end()
     }
 }
-/// Recommended action based on the score of the `fraudulent_payment` signal.
-/// Possible values are `block`, `continue` and `request_three_d_secure`.
+/// Recommended action for this payment based on its evaluated signals and rules.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum RadarPaymentEvaluationRecommendedAction {

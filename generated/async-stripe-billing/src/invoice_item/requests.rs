@@ -666,6 +666,8 @@ impl CreateInvoiceItem {
     /// When left blank, the invoice item is added to the next upcoming scheduled invoice.
     /// When set, scheduled invoices for subscriptions other than the specified subscription will ignore the invoice item.
     /// Use this when you want to express that an invoice item has been accrued within the context of a particular subscription.
+    /// You can use this parameter with either `customer` or `customer_account`.
+    /// The subscription must belong to the customer you specify.
     pub fn subscription(mut self, subscription: impl Into<String>) -> Self {
         self.inner.subscription = Some(subscription.into());
         self

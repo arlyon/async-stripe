@@ -5,6 +5,9 @@
 pub struct TreasuryOutboundPaymentsResourceReturnedStatus {
     /// Reason for the return.
     pub code: TreasuryOutboundPaymentsResourceReturnedStatusCode,
+    /// Money movement network-specific details regarding the failure.
+    pub network_details:
+        Option<stripe_treasury::TreasurySharedResourceFailureDetailsNetworkDetails>,
     /// The Transaction associated with this object.
     pub transaction: stripe_types::Expandable<stripe_treasury::TreasuryTransaction>,
 }
@@ -17,6 +20,8 @@ impl std::fmt::Debug for TreasuryOutboundPaymentsResourceReturnedStatus {
 #[doc(hidden)]
 pub struct TreasuryOutboundPaymentsResourceReturnedStatusBuilder {
     code: Option<TreasuryOutboundPaymentsResourceReturnedStatusCode>,
+    network_details:
+        Option<Option<stripe_treasury::TreasurySharedResourceFailureDetailsNetworkDetails>>,
     transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>,
 }
 
@@ -61,21 +66,23 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "code" => Deserialize::begin(&mut self.code),
+                "network_details" => Deserialize::begin(&mut self.network_details),
                 "transaction" => Deserialize::begin(&mut self.transaction),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { code: None, transaction: None }
+            Self { code: None, network_details: Some(None), transaction: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(code), Some(transaction)) = (self.code.take(), self.transaction.take())
+            let (Some(code), Some(network_details), Some(transaction)) =
+                (self.code.take(), self.network_details.take(), self.transaction.take())
             else {
                 return None;
             };
-            Some(Self::Out { code, transaction })
+            Some(Self::Out { code, network_details, transaction })
         }
     }
 
@@ -103,6 +110,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "code" => b.code = FromValueOpt::from_value(v),
+                    "network_details" => b.network_details = FromValueOpt::from_value(v),
                     "transaction" => b.transaction = FromValueOpt::from_value(v),
                     _ => {}
                 }

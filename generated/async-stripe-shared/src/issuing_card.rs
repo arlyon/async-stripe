@@ -30,7 +30,8 @@ pub struct IssuingCard {
     /// The last 4 digits of the card number.
     pub last4: String,
     /// Stripe’s assessment of whether this card’s details have been compromised.
-    /// If this property isn't null, cancel and reissue the card to prevent fraudulent activity risk.
+    /// If this property isn’t null, cancel and reissue the card to reduce the risk of fraudulent activity.
+    /// Stripe may remove a fraud warning if the cardholder confirms that the activity on the card is legitimate.
     pub latest_fraud_warning: Option<stripe_shared::IssuingCardFraudWarning>,
     /// Rules that control the lifecycle of this card, such as automatic cancellation.
     /// Refer to our [documentation](/issuing/controls/lifecycle-controls) for more details.

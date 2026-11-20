@@ -130,6 +130,7 @@ pub enum ApiVersion {
     V2026_08_26_dahlia,
     V2026_09_30_endive,
     V2026_10_28_endive,
+    V2026_11_18_endive,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -266,6 +267,7 @@ impl ApiVersion {
             V2026_08_26_dahlia => "2026-08-26.dahlia",
             V2026_09_30_endive => "2026-09-30.endive",
             V2026_10_28_endive => "2026-10-28.endive",
+            V2026_11_18_endive => "2026-11-18.endive",
             Unknown(v) => v,
         }
     }
@@ -405,6 +407,7 @@ impl std::str::FromStr for ApiVersion {
             "2026-08-26.dahlia" => Ok(V2026_08_26_dahlia),
             "2026-09-30.endive" => Ok(V2026_09_30_endive),
             "2026-10-28.endive" => Ok(V2026_10_28_endive),
+            "2026-11-18.endive" => Ok(V2026_11_18_endive),
             v => {
                 tracing::warn!("Unknown value '{}' for enum '{}'", v, "ApiVersion");
                 Ok(Unknown(v.to_owned()))

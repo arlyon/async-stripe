@@ -3,6 +3,14 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ProductMarketingFeature {
+    /// Optional text that describes what a customer loses by canceling, shown for this marketing feature in the Customer Portal cancellation flow.
+    /// Up to 80 characters long.
+    /// If you omit it when you update `marketing_features`, Stripe keeps the message stored for the feature with the same name.
+    /// Duplicate names are matched in order.
+    /// Set it to an empty string to remove the override.
+    /// When no override is stored, eligible cancellation flows use the marketing feature name.
+    /// A renamed feature is treated as a new feature, so send the message again to keep it.
+    pub loss_message: Option<String>,
     /// The marketing feature name. Up to 80 characters long.
     pub name: Option<String>,
 }
@@ -14,6 +22,7 @@ impl std::fmt::Debug for ProductMarketingFeature {
 }
 #[doc(hidden)]
 pub struct ProductMarketingFeatureBuilder {
+    loss_message: Option<Option<String>>,
     name: Option<Option<String>>,
 }
 
@@ -57,20 +66,22 @@ const _: () = {
         type Out = ProductMarketingFeature;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "loss_message" => Deserialize::begin(&mut self.loss_message),
                 "name" => Deserialize::begin(&mut self.name),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { name: Some(None) }
+            Self { loss_message: Some(None), name: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(name),) = (self.name.take(),) else {
+            let (Some(loss_message), Some(name)) = (self.loss_message.take(), self.name.take())
+            else {
                 return None;
             };
-            Some(Self::Out { name })
+            Some(Self::Out { loss_message, name })
         }
     }
 
@@ -97,6 +108,7 @@ const _: () = {
             let mut b = ProductMarketingFeatureBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "loss_message" => b.loss_message = FromValueOpt::from_value(v),
                     "name" => b.name = FromValueOpt::from_value(v),
                     _ => {}
                 }

@@ -233,6 +233,9 @@ pub struct CreateReportingReportRunParameters {
     /// Category of balance transactions to be included in the report run.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reporting_category: Option<CreateReportingReportRunParametersReportingCategory>,
+    /// The tax invoice month in YYYY-MM format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_invoice_month: Option<String>,
     /// Defaults to `Etc/UTC`.
     /// The output timezone for all timestamps in the report.
     /// A list of possible time zone values is maintained at the [IANA Time Zone Database](http://www.iana.org/time-zones).
@@ -256,6 +259,7 @@ impl CreateReportingReportRunParameters {
             interval_start: None,
             payout: None,
             reporting_category: None,
+            tax_invoice_month: None,
             timezone: None,
         }
     }

@@ -432,8 +432,8 @@ impl<'de> serde::Deserialize<'de> for CreateTreasuryReceivedDebitNetwork {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Use this endpoint to simulate a test mode ReceivedDebit initiated by a third party.
-/// In live mode, you can’t directly create ReceivedDebits initiated by third parties.
+/// Simulates a test `ReceivedDebit` initiated by a third party.
+/// In live mode, you can’t directly create `ReceivedDebit` objects initiated by third parties.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]

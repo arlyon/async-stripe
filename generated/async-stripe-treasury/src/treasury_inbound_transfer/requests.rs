@@ -219,6 +219,9 @@ pub struct FailTreasuryInboundTransferFailureDetails {
     /// Reason for the failure.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub code: Option<FailTreasuryInboundTransferFailureDetailsCode>,
+    /// Network specific details for the failure.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub network_details: Option<FailTreasuryInboundTransferFailureDetailsNetworkDetails>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for FailTreasuryInboundTransferFailureDetails {
@@ -228,7 +231,7 @@ impl std::fmt::Debug for FailTreasuryInboundTransferFailureDetails {
 }
 impl FailTreasuryInboundTransferFailureDetails {
     pub fn new() -> Self {
-        Self { code: None }
+        Self { code: None, network_details: None }
     }
 }
 impl Default for FailTreasuryInboundTransferFailureDetails {
@@ -342,8 +345,104 @@ impl<'de> serde::Deserialize<'de> for FailTreasuryInboundTransferFailureDetailsC
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Transitions a test mode created InboundTransfer to the `failed` status.
-/// The InboundTransfer must already be in the `processing` state.
+/// Network specific details for the failure.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct FailTreasuryInboundTransferFailureDetailsNetworkDetails {
+    /// ACH network failure details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ach: Option<AchNetworkDetailsParam>,
+    /// The network used to transfer funds.
+    #[serde(rename = "type")]
+    pub type_: FailTreasuryInboundTransferFailureDetailsNetworkDetailsType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FailTreasuryInboundTransferFailureDetailsNetworkDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FailTreasuryInboundTransferFailureDetailsNetworkDetails")
+            .finish_non_exhaustive()
+    }
+}
+impl FailTreasuryInboundTransferFailureDetailsNetworkDetails {
+    pub fn new(
+        type_: impl Into<FailTreasuryInboundTransferFailureDetailsNetworkDetailsType>,
+    ) -> Self {
+        Self { ach: None, type_: type_.into() }
+    }
+}
+/// The network used to transfer funds.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum FailTreasuryInboundTransferFailureDetailsNetworkDetailsType {
+    Ach,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl FailTreasuryInboundTransferFailureDetailsNetworkDetailsType {
+    pub fn as_str(&self) -> &str {
+        use FailTreasuryInboundTransferFailureDetailsNetworkDetailsType::*;
+        match self {
+            Ach => "ach",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for FailTreasuryInboundTransferFailureDetailsNetworkDetailsType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use FailTreasuryInboundTransferFailureDetailsNetworkDetailsType::*;
+        match s {
+            "ach" => Ok(Ach),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "FailTreasuryInboundTransferFailureDetailsNetworkDetailsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for FailTreasuryInboundTransferFailureDetailsNetworkDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for FailTreasuryInboundTransferFailureDetailsNetworkDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FailTreasuryInboundTransferFailureDetailsNetworkDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(FailTreasuryInboundTransferFailureDetailsNetworkDetailsType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for FailTreasuryInboundTransferFailureDetailsNetworkDetailsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for FailTreasuryInboundTransferFailureDetailsNetworkDetailsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Transitions a test `InboundTransfer` to the `failed` status.
+/// The `InboundTransfer` must already be in the `processing` state.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -412,6 +511,8 @@ impl StripeRequest for FailTreasuryInboundTransfer {
 struct ReturnInboundTransferTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    failure_details: Option<ReturnInboundTransferTreasuryInboundTransferFailureDetails>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ReturnInboundTransferTreasuryInboundTransferBuilder {
@@ -422,11 +523,259 @@ impl std::fmt::Debug for ReturnInboundTransferTreasuryInboundTransferBuilder {
 }
 impl ReturnInboundTransferTreasuryInboundTransferBuilder {
     fn new() -> Self {
-        Self { expand: None }
+        Self { expand: None, failure_details: None }
     }
 }
-/// Marks the test mode InboundTransfer object as returned and links the InboundTransfer to a ReceivedDebit.
-/// The InboundTransfer must already be in the `succeeded` state.
+/// Details about a returned InboundTransfer.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ReturnInboundTransferTreasuryInboundTransferFailureDetails {
+    /// Reason for the failure.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code: Option<ReturnInboundTransferTreasuryInboundTransferFailureDetailsCode>,
+    /// Network specific details for the failure.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub network_details:
+        Option<ReturnInboundTransferTreasuryInboundTransferFailureDetailsNetworkDetails>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReturnInboundTransferTreasuryInboundTransferFailureDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReturnInboundTransferTreasuryInboundTransferFailureDetails")
+            .finish_non_exhaustive()
+    }
+}
+impl ReturnInboundTransferTreasuryInboundTransferFailureDetails {
+    pub fn new() -> Self {
+        Self { code: None, network_details: None }
+    }
+}
+impl Default for ReturnInboundTransferTreasuryInboundTransferFailureDetails {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Reason for the failure.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ReturnInboundTransferTreasuryInboundTransferFailureDetailsCode {
+    AccountClosed,
+    AccountFrozen,
+    BankAccountRestricted,
+    BankOwnershipChanged,
+    DebitNotAuthorized,
+    IncorrectAccountHolderAddress,
+    IncorrectAccountHolderName,
+    IncorrectAccountHolderTaxId,
+    InsufficientFunds,
+    InvalidAccountNumber,
+    InvalidCurrency,
+    NoAccount,
+    Other,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ReturnInboundTransferTreasuryInboundTransferFailureDetailsCode {
+    pub fn as_str(&self) -> &str {
+        use ReturnInboundTransferTreasuryInboundTransferFailureDetailsCode::*;
+        match self {
+            AccountClosed => "account_closed",
+            AccountFrozen => "account_frozen",
+            BankAccountRestricted => "bank_account_restricted",
+            BankOwnershipChanged => "bank_ownership_changed",
+            DebitNotAuthorized => "debit_not_authorized",
+            IncorrectAccountHolderAddress => "incorrect_account_holder_address",
+            IncorrectAccountHolderName => "incorrect_account_holder_name",
+            IncorrectAccountHolderTaxId => "incorrect_account_holder_tax_id",
+            InsufficientFunds => "insufficient_funds",
+            InvalidAccountNumber => "invalid_account_number",
+            InvalidCurrency => "invalid_currency",
+            NoAccount => "no_account",
+            Other => "other",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ReturnInboundTransferTreasuryInboundTransferFailureDetailsCode {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ReturnInboundTransferTreasuryInboundTransferFailureDetailsCode::*;
+        match s {
+            "account_closed" => Ok(AccountClosed),
+            "account_frozen" => Ok(AccountFrozen),
+            "bank_account_restricted" => Ok(BankAccountRestricted),
+            "bank_ownership_changed" => Ok(BankOwnershipChanged),
+            "debit_not_authorized" => Ok(DebitNotAuthorized),
+            "incorrect_account_holder_address" => Ok(IncorrectAccountHolderAddress),
+            "incorrect_account_holder_name" => Ok(IncorrectAccountHolderName),
+            "incorrect_account_holder_tax_id" => Ok(IncorrectAccountHolderTaxId),
+            "insufficient_funds" => Ok(InsufficientFunds),
+            "invalid_account_number" => Ok(InvalidAccountNumber),
+            "invalid_currency" => Ok(InvalidCurrency),
+            "no_account" => Ok(NoAccount),
+            "other" => Ok(Other),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ReturnInboundTransferTreasuryInboundTransferFailureDetailsCode"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ReturnInboundTransferTreasuryInboundTransferFailureDetailsCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ReturnInboundTransferTreasuryInboundTransferFailureDetailsCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReturnInboundTransferTreasuryInboundTransferFailureDetailsCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ReturnInboundTransferTreasuryInboundTransferFailureDetailsCode))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ReturnInboundTransferTreasuryInboundTransferFailureDetailsCode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ReturnInboundTransferTreasuryInboundTransferFailureDetailsCode
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Network specific details for the failure.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ReturnInboundTransferTreasuryInboundTransferFailureDetailsNetworkDetails {
+    /// ACH network failure details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ach: Option<AchNetworkDetailsParam>,
+    /// The network used to transfer funds.
+    #[serde(rename = "type")]
+    pub type_: ReturnInboundTransferTreasuryInboundTransferFailureDetailsNetworkDetailsType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReturnInboundTransferTreasuryInboundTransferFailureDetailsNetworkDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReturnInboundTransferTreasuryInboundTransferFailureDetailsNetworkDetails")
+            .finish_non_exhaustive()
+    }
+}
+impl ReturnInboundTransferTreasuryInboundTransferFailureDetailsNetworkDetails {
+    pub fn new(
+        type_: impl Into<ReturnInboundTransferTreasuryInboundTransferFailureDetailsNetworkDetailsType>,
+    ) -> Self {
+        Self { ach: None, type_: type_.into() }
+    }
+}
+/// The network used to transfer funds.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ReturnInboundTransferTreasuryInboundTransferFailureDetailsNetworkDetailsType {
+    Ach,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ReturnInboundTransferTreasuryInboundTransferFailureDetailsNetworkDetailsType {
+    pub fn as_str(&self) -> &str {
+        use ReturnInboundTransferTreasuryInboundTransferFailureDetailsNetworkDetailsType::*;
+        match self {
+            Ach => "ach",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for ReturnInboundTransferTreasuryInboundTransferFailureDetailsNetworkDetailsType
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ReturnInboundTransferTreasuryInboundTransferFailureDetailsNetworkDetailsType::*;
+        match s {
+            "ach" => Ok(Ach),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ReturnInboundTransferTreasuryInboundTransferFailureDetailsNetworkDetailsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for ReturnInboundTransferTreasuryInboundTransferFailureDetailsNetworkDetailsType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for ReturnInboundTransferTreasuryInboundTransferFailureDetailsNetworkDetailsType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for ReturnInboundTransferTreasuryInboundTransferFailureDetailsNetworkDetailsType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ReturnInboundTransferTreasuryInboundTransferFailureDetailsNetworkDetailsType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for ReturnInboundTransferTreasuryInboundTransferFailureDetailsNetworkDetailsType
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ReturnInboundTransferTreasuryInboundTransferFailureDetailsNetworkDetailsType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Marks the test `InboundTransfer` object as returned and links the `InboundTransfer` to a `ReceivedDebit`.
+/// The `InboundTransfer` must already be in the `succeeded` state.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -448,6 +797,14 @@ impl ReturnInboundTransferTreasuryInboundTransfer {
     /// Specifies which fields in the response should be expanded.
     pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
         self.inner.expand = Some(expand.into());
+        self
+    }
+    /// Details about a returned InboundTransfer.
+    pub fn failure_details(
+        mut self,
+        failure_details: impl Into<ReturnInboundTransferTreasuryInboundTransferFailureDetails>,
+    ) -> Self {
+        self.inner.failure_details = Some(failure_details.into());
         self
     }
 }
@@ -499,8 +856,8 @@ impl SucceedTreasuryInboundTransferBuilder {
         Self { expand: None }
     }
 }
-/// Transitions a test mode created InboundTransfer to the `succeeded` status.
-/// The InboundTransfer must already be in the `processing` state.
+/// Transitions a test `InboundTransfer` to the `succeeded` status.
+/// The `InboundTransfer` must already be in the `processing` state.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -755,5 +1112,24 @@ impl StripeRequest for CancelTreasuryInboundTransfer {
             format!("/treasury/inbound_transfers/{inbound_transfer}/cancel"),
         )
         .form(&self.inner)
+    }
+}
+
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct AchNetworkDetailsParam {
+    /// NACHA ACH return code.
+    pub return_code: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AchNetworkDetailsParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AchNetworkDetailsParam").finish_non_exhaustive()
+    }
+}
+impl AchNetworkDetailsParam {
+    pub fn new(return_code: impl Into<String>) -> Self {
+        Self { return_code: return_code.into() }
     }
 }

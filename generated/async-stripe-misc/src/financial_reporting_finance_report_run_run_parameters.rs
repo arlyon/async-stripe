@@ -19,6 +19,8 @@ pub struct FinancialReportingFinanceReportRunRunParameters {
     pub payout: Option<String>,
     /// Category of balance transactions to be included in the report run.
     pub reporting_category: Option<String>,
+    /// The tax invoice month in YYYY-MM format.
+    pub tax_invoice_month: Option<String>,
     /// Defaults to `Etc/UTC`.
     /// The output timezone for all timestamps in the report.
     /// A list of possible time zone values is maintained at the [IANA Time Zone Database](http://www.iana.org/time-zones).
@@ -40,6 +42,7 @@ pub struct FinancialReportingFinanceReportRunRunParametersBuilder {
     interval_start: Option<Option<stripe_types::Timestamp>>,
     payout: Option<Option<String>>,
     reporting_category: Option<Option<String>>,
+    tax_invoice_month: Option<Option<String>>,
     timezone: Option<Option<String>>,
 }
 
@@ -90,6 +93,7 @@ const _: () = {
                 "interval_start" => Deserialize::begin(&mut self.interval_start),
                 "payout" => Deserialize::begin(&mut self.payout),
                 "reporting_category" => Deserialize::begin(&mut self.reporting_category),
+                "tax_invoice_month" => Deserialize::begin(&mut self.tax_invoice_month),
                 "timezone" => Deserialize::begin(&mut self.timezone),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -104,6 +108,7 @@ const _: () = {
                 interval_start: Some(None),
                 payout: Some(None),
                 reporting_category: Some(None),
+                tax_invoice_month: Some(None),
                 timezone: Some(None),
             }
         }
@@ -117,6 +122,7 @@ const _: () = {
                 Some(interval_start),
                 Some(payout),
                 Some(reporting_category),
+                Some(tax_invoice_month),
                 Some(timezone),
             ) = (
                 self.columns.take(),
@@ -126,6 +132,7 @@ const _: () = {
                 self.interval_start,
                 self.payout.take(),
                 self.reporting_category.take(),
+                self.tax_invoice_month.take(),
                 self.timezone.take(),
             )
             else {
@@ -139,6 +146,7 @@ const _: () = {
                 interval_start,
                 payout,
                 reporting_category,
+                tax_invoice_month,
                 timezone,
             })
         }
@@ -174,6 +182,7 @@ const _: () = {
                     "interval_start" => b.interval_start = FromValueOpt::from_value(v),
                     "payout" => b.payout = FromValueOpt::from_value(v),
                     "reporting_category" => b.reporting_category = FromValueOpt::from_value(v),
+                    "tax_invoice_month" => b.tax_invoice_month = FromValueOpt::from_value(v),
                     "timezone" => b.timezone = FromValueOpt::from_value(v),
                     _ => {}
                 }

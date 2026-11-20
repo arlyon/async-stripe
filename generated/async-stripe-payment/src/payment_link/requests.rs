@@ -5267,6 +5267,9 @@ impl UpdatePaymentLinkLineItems {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkPaymentIntentData {
+    /// Controls when the funds will be captured from the customer's account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<UpdatePaymentLinkPaymentIntentDataCaptureMethod>,
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -5315,6 +5318,7 @@ impl std::fmt::Debug for UpdatePaymentLinkPaymentIntentData {
 impl UpdatePaymentLinkPaymentIntentData {
     pub fn new() -> Self {
         Self {
+            capture_method: None,
             description: None,
             metadata: None,
             setup_future_usage: None,
@@ -5327,6 +5331,82 @@ impl UpdatePaymentLinkPaymentIntentData {
 impl Default for UpdatePaymentLinkPaymentIntentData {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Controls when the funds will be captured from the customer's account.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentLinkPaymentIntentDataCaptureMethod {
+    Automatic,
+    AutomaticAsync,
+    Manual,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentLinkPaymentIntentDataCaptureMethod {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentLinkPaymentIntentDataCaptureMethod::*;
+        match self {
+            Automatic => "automatic",
+            AutomaticAsync => "automatic_async",
+            Manual => "manual",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentLinkPaymentIntentDataCaptureMethod {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentLinkPaymentIntentDataCaptureMethod::*;
+        match s {
+            "automatic" => Ok(Automatic),
+            "automatic_async" => Ok(AutomaticAsync),
+            "manual" => Ok(Manual),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentLinkPaymentIntentDataCaptureMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentLinkPaymentIntentDataCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentLinkPaymentIntentDataCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkPaymentIntentDataCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentLinkPaymentIntentDataCaptureMethod))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentLinkPaymentIntentDataCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkPaymentIntentDataCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Indicates that you intend to [make future payments](https://docs.stripe.com/payments/payment-intents#future-usage) with the payment method collected by this Checkout Session.

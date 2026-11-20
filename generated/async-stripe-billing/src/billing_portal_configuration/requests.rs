@@ -1063,6 +1063,7 @@ pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     pub products: Option<Vec<SubscriptionUpdateProductParam>>,
     /// Determines how to handle prorations resulting from subscription updates.
     /// Valid values are `none`, `create_prorations`, and `always_invoice`.
+    /// Defaults to `none`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior:
         Option<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior>,
@@ -1277,6 +1278,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Determines how to handle prorations resulting from subscription updates.
 /// Valid values are `none`, `create_prorations`, and `always_invoice`.
+/// Defaults to `none`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
@@ -2572,6 +2574,7 @@ pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     pub products: Option<Vec<SubscriptionUpdateProductParam>>,
     /// Determines how to handle prorations resulting from subscription updates.
     /// Valid values are `none`, `create_prorations`, and `always_invoice`.
+    /// If omitted, the proration behavior is unchanged.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior:
         Option<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior>,
@@ -2791,6 +2794,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Determines how to handle prorations resulting from subscription updates.
 /// Valid values are `none`, `create_prorations`, and `always_invoice`.
+/// If omitted, the proration behavior is unchanged.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {

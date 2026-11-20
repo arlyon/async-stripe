@@ -291,7 +291,7 @@ impl CreateCouponBuilder {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateCouponAppliesTo {
-    /// An array of Product IDs that this Coupon will apply to.
+    /// An array of up to 100 Product IDs that this Coupon will apply to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub products: Option<Vec<String>>,
 }

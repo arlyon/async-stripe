@@ -433,7 +433,7 @@ const _: () = {
                 self.payco.take(),
                 self.paynow.take(),
                 self.paypal.take(),
-                self.paypay,
+                self.paypay.take(),
                 self.payto.take(),
                 self.pix.take(),
                 self.promptpay.take(),
