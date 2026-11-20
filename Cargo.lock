@@ -737,7 +737,6 @@ dependencies = [
  "async-stripe-terminal",
  "async-stripe-treasury",
  "async-stripe-types",
- "chrono",
  "hex",
  "hmac 0.13.0",
  "miniserde",
